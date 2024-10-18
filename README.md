@@ -17,6 +17,6 @@ This is a simple process management application for Linux, developed in Python. 
 - Terminate processes by PID.
 
 ## Authors
-- [Tên thành viên 1](https://github.com/username1) - Project Manager
-- [Tên thành viên 2](https://github.com/username2) - Lead Developer
+- [Giang Trinh](https://github.com/TrinhHuuGiang) - Project Manager
+- [VuongNQ]    (https://github.com/nqv96)         - Lead Developer
 - [Tên thành viên 3](https://github.com/username3) - Documentation
