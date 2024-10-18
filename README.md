@@ -2,8 +2,9 @@
 This is a simple process management application for Linux, developed in Python. It allows users to view, suspend, resume, and terminate processes via a text-based user interface.
 
 ## Prerequisites
+- Linux operating system
 - Python 3.x
-- psutil library
+- **psutil** library
 
 ## Installation
 1. Install dependencies:
