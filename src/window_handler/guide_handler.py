@@ -50,7 +50,6 @@ def auto_run_guide_window():
 
     # wait user then update or execute or quit 'q'
     temp_input = 'nothing'
-    temp_choice= -1
     while (temp_input != 'q'):
         temp_input = w_guide.w_order.getkey()
         if(temp_input == 'w'):

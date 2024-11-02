@@ -6,12 +6,17 @@ import sys
 
 # handler libraries
 from window_handler import guide_handler, CRD_handler, CRP_handler, NS_handler
+from curses_window.main_window.main_win import max_num_choice
 
 '''****************************************************************************
 * Variable
 ****************************************************************************'''
+# list function handle of guide window
 guide_window = [guide_handler.init_guide_window,guide_handler.auto_run_guide_window,
 guide_handler.exit_guide_window]
+
+# lisr funtion handle for other window
+# depend on 'ret'
 
 
 '''****************************************************************************
@@ -33,11 +38,7 @@ def main():
         guide_window[2]()
         print("[OK - {}] - Closed".format(main.__name__), file=sys.stderr)
         return 0 # no error, exit
-    elif(ret):
-        if(ret == 0): pass
-        elif(ret == 1): pass
-        elif(ret == 2): pass
-    else:
+    elif((ret < 0 ) and (ret >= max_num_choice )):
         print("[ERR - {}] - Unexpected event".format(main.__name__), file=sys.stderr)
     
     # close the guide window and run the selected event handler
@@ -45,7 +46,7 @@ def main():
     guide_window[2]()
 
     # [run selected event handler]
-
+    print("next display: {}".format(ret))
 
 
     #any thing ok

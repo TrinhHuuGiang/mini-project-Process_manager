@@ -32,11 +32,18 @@ class Container:
     def __init__(self):
         # init main window
         self.backwin = curses.initscr()
+        # add cbreak (auto enter), keypad(true)(convert special key to curses key), noecho (hide input)
+        # :) i don't know why initscr not auto do it
+        curses.cbreak(), curses.noecho()
+
+        #init sub win
         self.w_order = curses.newwin(w_order_row,w_order_col,w_order_begin_row,w_order_begin_col)
         self.w_guide = curses.newwin(w_guide_row,w_guide_col,w_guide_begin_row,w_guide_begin_col)
 
+        # now add keypad(True)
+        self.backwin.keypad(True), self.w_order.keypad(True), self.w_guide.keypad(True)
+
     def __del__(self):
-        curses.nocbreak(); self.backwin.keypad(False); curses.echo()
         curses.endwin()
     # [Should check main window before printing anything]
     def Check_Size(self):
@@ -59,9 +66,9 @@ class Container:
         i = 0
         for item in order_choice:
             if(i == numerical_order):
-                self.w_order.addstr(i+1,2,order_choice[i],curses.A_REVERSE)
+                self.w_order.addstr(i+1,2,item,curses.A_REVERSE)
             else:
-                self.w_order.addstr(i+1,2,order_choice[i])
+                self.w_order.addstr(i+1,2,item)
             #increase i
             i+=1
         self.w_order.refresh()
