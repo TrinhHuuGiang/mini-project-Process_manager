@@ -1,11 +1,22 @@
+'''
+Include handler functions for each window:
+    + Guide
+    + CPU/RAM/DISK
+    + CPU/RAM/PROC <==
+    + NET/SERVICE
+Each function can get return user input into working window.
+Then handle and return error code to main.
+The 'main' function then decides to process the error code and control the handler functions
+'''
+
 '''****************************************************************************
 * Definitions
 ****************************************************************************'''
-# common libraries
-import sys
+# defined libraries
 
-# handler libraries
-from window_handler import guide_handler, CRD_handler, CRP_handler, NS_handler
+# -> must write inherited class for CPU/Ram/Process window
+
+
 '''****************************************************************************
 * Variable
 ****************************************************************************'''
@@ -14,4 +25,6 @@ from window_handler import guide_handler, CRD_handler, CRP_handler, NS_handler
 '''****************************************************************************
 * Code
 ****************************************************************************'''
-if __name__ == "__main__":
+# [handler for CPU/RAM/PROC window]
+
+
