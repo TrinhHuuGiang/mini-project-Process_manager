@@ -31,18 +31,21 @@ class Container:
         self.w_order = curses.newwin(w_order_row,w_order_col,w_order_begin_row,w_order_begin_col)
         self.w_guide = curses.newwin(w_guide_row,w_guide_col,w_guide_begin_row,w_guide_begin_col)
 
-        #set border and content
-        self.__private_content()
+        # #set border and content
+        # self.__private_content()
         
-        #wait
-        self.backwin.getkey()
+        # #wait
+        # self.backwin.getkey()
 
-        #end
-        self.backwin.endwin()
+        # #end
+        # self.backwin.endwin()
 
+    def __del__(self):
+        curses.nocbreak(); self.backwin.keypad(False); curses.echo()
+        curses.endwin()
     # [Should check main window before printing anything]
     def Check_Size(self):
-        if(((back_win_max_col)<self.backwin.getmaxy()) and ((back_win_max_row)<self.backwin.getmaxx())):
+        if ((back_win_max_col < self.backwin.getmaxyx()[1]) and (back_win_max_row < self.backwin.getmaxyx()[0])):
             return 0 #ok
         return -1 # col or row too little
 
