@@ -34,23 +34,23 @@ def init_guide_window():
     global w_guide
     w_guide = Container()
     if(w_guide.Check_Size()):
-        # print to stderr (terminal)
-        print("[ERR - {}] max-row {}, max-col {}".format(init_guide_window.__name__,
-        back_win_max_row, back_win_max_col), file=sys.stderr)
+        #size invalid
         return -1
     else:
-        print("[OK - {}] suitable size".format(init_guide_window.__name__,file=sys.stderr),
-        file=sys.stderr)
+        #suitable size
         return 0
 
 # auto handle
 def auto_run_guide_window():
+    global w_guide
+    w_guide.Set_border()
+    w_guide.w_guide.getkey()
     return -1
 
 # end
 def exit_guide_window():
     global w_guide
     del w_guide #free completely window curses and switch back to the original terminal 
-    print("[OK - {}] closed the guide window]".format(exit_guide_window.__name__),
+    print("[OK - {}] closed the guide window".format(exit_guide_window.__name__),
     file=sys.stderr)
     # no return
