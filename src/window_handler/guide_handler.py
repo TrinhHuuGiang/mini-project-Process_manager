@@ -16,8 +16,7 @@ The 'main' function then decides to process the error code and control the handl
 import sys
 
 # defined libraries
-from curses_window.main_window.main_win import (Container, back_win_max_row,
-back_win_max_col)#main class for guide window
+from curses_window.main_window.main_win import Container #main class for guide window)
 
 
 '''****************************************************************************
@@ -43,9 +42,30 @@ def init_guide_window():
 # auto handle
 def auto_run_guide_window():
     global w_guide
+    # draw border
     w_guide.Set_border()
-    w_guide.w_guide.getkey()
-    return -1
+    
+    # update list order
+    w_guide.update_order()
+
+    # wait user then update or execute or quit 'q'
+    temp_input = 'nothing'
+    temp_choice= -1
+    while (temp_input != 'q'):
+        temp_input = w_guide.w_order.getkey()
+        if(temp_input == 'w'):
+            w_guide.order_top()
+            # update list order
+            w_guide.update_order()
+        elif(temp_input == 's'):
+            w_guide.order_down()
+            # update list order
+            w_guide.update_order()
+        elif(temp_input == '\n'):
+            return w_guide.get_order()
+
+    #if input == q
+    return -1 # quit signal
 
 # end
 def exit_guide_window():

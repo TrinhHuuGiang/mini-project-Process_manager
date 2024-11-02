@@ -13,6 +13,10 @@ w_order_begin_col = 3
 w_order_begin_row = 1
 w_order_col = 76
 w_order_row = 18
+max_num_choice = 3
+numerical_order = 0
+order_choice = ("- Change color","- Change style","- ON/off border")
+
 #sub instruction window
 w_guide_begin_col = 3
 w_guide_begin_row = 20
@@ -39,7 +43,7 @@ class Container:
         if ((back_win_max_col < self.backwin.getmaxyx()[1]) and (back_win_max_row < self.backwin.getmaxyx()[0])):
             return 0 #ok
         return -1 # col or row too little
-
+    # add border
     def Set_border(self):
         self.backwin.box('|','-')
         self.w_order.box('|','-')
@@ -49,3 +53,35 @@ class Container:
         self.backwin.refresh()
         self.w_order.refresh()
         self.w_guide.refresh()
+
+    # [order window]
+    def update_order(self):
+        i = 0
+        for item in order_choice:
+            if(i == numerical_order):
+                self.w_order.addstr(i+1,2,order_choice[i],curses.A_REVERSE)
+            else:
+                self.w_order.addstr(i+1,2,order_choice[i])
+            #increase i
+            i+=1
+        self.w_order.refresh()
+
+    # get numerical order of current order
+    def get_order(self):
+        return numerical_order
+
+    # using update_order after order_top, down
+    # up
+    def order_down(self):
+        global numerical_order
+        numerical_order+=1
+        if(numerical_order == max_num_choice):
+            numerical_order = 0
+    # down
+    def order_top(self):
+        global numerical_order
+        numerical_order-=1
+        if(numerical_order < 0):
+            numerical_order = max_num_choice - 1
+
+    

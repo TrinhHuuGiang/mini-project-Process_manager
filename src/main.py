@@ -29,7 +29,10 @@ def main():
     ret = guide_window[1]()
 
     if(ret == -1):
-        print("[ERR - {}] - Unexpected error".format(main.__name__), file=sys.stderr)
+        # close 'curses' and switch back to the original terminal
+        guide_window[2]()
+        print("[OK - {}] - Closed".format(main.__name__), file=sys.stderr)
+        return 0 # no error, exit
     elif(ret):
         if(ret == 0): pass
         elif(ret == 1): pass
