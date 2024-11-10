@@ -23,6 +23,15 @@ w_guide_begin_row = 20
 w_guide_col = 76
 w_guide_row = 4
 
+# [pseudo color or style]
+# only use when call Container.Check_color_and_set()
+COS = [
+    "red black or BOLD", # for alert
+    "magenta black or DIM", # for not important
+    "blue black or UNDERLINE", # for suggest
+    "yellow black or REVERSE", # for highlight
+    "green black or STANDOUT", # for highlight
+    "cyan black or BLINK"] # for notification
 
 '''****************************************************************************
 * Code
@@ -55,10 +64,27 @@ class Container:
         return -1 # col or row too little
 
     # [check color and set color]
+    # if you want color, call it
     # if color not avalable -> change it by another style
     # basic color: 0:black, 1:red, 2:green, 3:yellow, 4:blue, 5:magenta, 6:cyan, and 7:white
+    # color pair index start is 1
     # basic style: A_BLINK, A_BOLD, A_DIM, A_REVERSE, A_STANDOUT, A_UNDERLINE,...
-
+    def Check_color_and_set(self):
+        global COS
+        curses.start_color()#set up default curses color
+        if not curses.has_colors():
+            COS = [curses.A_BOLD,curses.A_DIM,curses.A_UNDERLINE,
+                   curses.A_REVERSE, curses.A_STANDOUT, curses.A_BLINK]
+        else:# have color
+            curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
+            curses.init_pair(2, curses.COLOR_MAGENTA, curses.COLOR_BLACK)
+            curses.init_pair(3, curses.COLOR_BLUE, curses.COLOR_BLACK)
+            curses.init_pair(4, curses.COLOR_YELLOW, curses.COLOR_BLACK)
+            curses.init_pair(5, curses.COLOR_GREEN, curses.COLOR_BLACK)
+            curses.init_pair(6, curses.COLOR_CYAN, curses.COLOR_BLACK)
+            COS = [curses.color_pair(1), curses.color_pair(5), curses.color_pair(4),
+                   curses.color_pair(3), curses.color_pair(2), curses.color_pair(6)]
+            
     # ______________[interract with window]_____________
     # [add border]
     def Set_border(self):
@@ -70,12 +96,22 @@ class Container:
         self.backwin.refresh()
         self.w_order.refresh()
         self.w_guide.refresh()
+    
+    #print hello
+    def Hello_World(self):
+        self.backwin.addstr(19, back_win_max_col//2 -15  ,"hello",COS[0])
+        self.backwin.addstr(19, back_win_max_col//2 -10    ,"hello",COS[1])
+        self.backwin.addstr(19, back_win_max_col//2 -5      ,"hello",COS[2])
+        self.backwin.addstr(19, back_win_max_col//2          ,"hello",COS[3])
+        self.backwin.addstr(19, back_win_max_col//2 +5    ,"hello",COS[4])
+        self.backwin.addstr(19, back_win_max_col//2 +10,"hello",COS[5])
+        self.backwin.refresh()
 
     # [order window]
     def update_order(self):
         i = 0
         for item in order_choice:
-            if(i == numerical_order):
+            if(i == numerical_order):#if current order, highlight it
                 self.w_order.addstr(i+1,2,item,curses.A_REVERSE)
             else:
                 self.w_order.addstr(i+1,2,item)

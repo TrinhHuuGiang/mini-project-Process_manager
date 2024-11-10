@@ -28,16 +28,21 @@ w_guide = None
 * Code
 ****************************************************************************'''
 # [handler for guide window]
-# initialize and check size
+# initialize and check size, set color
 def init_guide_window():
     global w_guide
+    #init guide window object
     w_guide = Container()
+    #check size
     if(w_guide.Check_Size()):
         #size invalid
         return -1
-    else:
-        #suitable size
-        return 0
+    #check color
+    w_guide.Check_color_and_set()
+    #test color
+    w_guide.Hello_World()
+    #anything ok
+    return 0
 
 # auto handle manu
 # -1: quit| 0,1,2,... is order choice
