@@ -16,7 +16,7 @@ The 'main' function then decides to process the error code and control the handl
 import sys
 
 # defined libraries
-from _3_curses_window.main_window.main_win import Container #main class for guide window)
+from _3_curses_window.main_window.main_win import Main_win #main class for guide window)
 
 
 '''****************************************************************************
@@ -32,7 +32,7 @@ w_guide = None
 def init_guide_window():
     global w_guide
     #init guide window object
-    w_guide = Container()
+    w_guide = Main_win()
     #check size
     if(w_guide.Check_Size()):
         #size invalid
