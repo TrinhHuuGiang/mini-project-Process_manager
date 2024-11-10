@@ -4,54 +4,35 @@
 # common libraries
 import sys
 
-# handler libraries
-from window_handler import guide_handler, CRD_handler, CRP_handler, NS_handler
-from curses_window.main_window.main_win import max_num_choice
+# auto run libraries
+from _1_auto_run.auto_guide import guide_auto_run
 
 '''****************************************************************************
 * Variable
 ****************************************************************************'''
-# list function handle of guide window
-guide_window = [guide_handler.init_guide_window,guide_handler.auto_run_guide_window,
-guide_handler.exit_guide_window]
+#[main]
+# exit code:
+# (0) normal exit
+def main():
+    #run guilde window first
+    ret = guide_auto_run()
+    while(ret >= 0):
+        # open another window
+        print("return window:",ret)
+        input("input anything to contine :)")
+        if ret == 0:
+            pass#open auto CRP (CPU RAM PROC)
+        if ret == 1:
+            pass#open auto CRD (CPU RAM DISK)
+        if ret == 2:
+            pass#open auto NS  (NET SERVICE)
+        ret = guide_auto_run()
 
-# lisr funtion handle for other window
-# depend on 'ret'
-
+    #exit no error
+    sys.exit(0)
 
 '''****************************************************************************
 * Code
 ****************************************************************************'''
-def main():
-    ret = 0
-    # [guide handler]
-    # initialize and check size
-    if(guide_window[0]()):
-        guide_window[2]() # close 'curses' and switch back to the original terminal 
-        print("[ERR - {}] - Terminal size too small".format(main.__name__), file=sys.stderr)
-        return 1
-    # runs automatically until the user selects a display function
-    ret = guide_window[1]()
-
-    if(ret == -1):
-        # close 'curses' and switch back to the original terminal
-        guide_window[2]()
-        print("[OK - {}] - Closed".format(main.__name__), file=sys.stderr)
-        return 0 # no error, exit
-    elif((ret < 0 ) and (ret >= max_num_choice )):
-        print("[ERR - {}] - Unexpected event".format(main.__name__), file=sys.stderr)
-    
-    # close the guide window and run the selected event handler
-    # close the guide window
-    guide_window[2]()
-
-    # [run selected event handler]
-    print("next display: {}".format(ret))
-
-
-    #any thing ok
-    return 0
-
-
 if __name__ == "__main__":
     main()

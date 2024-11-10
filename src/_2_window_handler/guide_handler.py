@@ -16,7 +16,7 @@ The 'main' function then decides to process the error code and control the handl
 import sys
 
 # defined libraries
-from curses_window.main_window.main_win import Container #main class for guide window)
+from _3_curses_window.main_window.main_win import Container #main class for guide window)
 
 
 '''****************************************************************************
@@ -39,8 +39,9 @@ def init_guide_window():
         #suitable size
         return 0
 
-# auto handle
-def auto_run_guide_window():
+# auto handle manu
+# -1: quit| 0,1,2,... is order choice
+def update_menu_list_and_get_choice():
     global w_guide
     # draw border
     w_guide.Set_border()
