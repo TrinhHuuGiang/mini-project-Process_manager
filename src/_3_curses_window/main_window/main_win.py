@@ -43,14 +43,24 @@ class Container:
         # now add keypad(True)
         self.backwin.keypad(True), self.w_order.keypad(True), self.w_guide.keypad(True)
 
+    #de-init
     def __del__(self):
         curses.endwin()
-    # [Should check main window before printing anything]
+
+    # ______________[checking resource]_____________
+    # [Should check size main window before printing anything]
     def Check_Size(self):
         if ((back_win_max_col < self.backwin.getmaxyx()[1]) and (back_win_max_row < self.backwin.getmaxyx()[0])):
             return 0 #ok
         return -1 # col or row too little
-    # add border
+
+    # [check color and set color]
+    # if color not avalable -> change it by another style
+    # basic color: 0:black, 1:red, 2:green, 3:yellow, 4:blue, 5:magenta, 6:cyan, and 7:white
+    # basic style: A_BLINK, A_BOLD, A_DIM, A_REVERSE, A_STANDOUT, A_UNDERLINE,...
+
+    # ______________[interract with window]_____________
+    # [add border]
     def Set_border(self):
         self.backwin.box('|','-')
         self.w_order.box('|','-')
