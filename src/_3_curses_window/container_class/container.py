@@ -32,6 +32,8 @@ class Container:
         # :) i don't know why initscr not auto do it
         # cbreak, noecho only set once
         curses.cbreak(), curses.noecho()
+        # hide cursor
+        curses.curs_set(0)
         # now add keypad(True), this function have to set for every new window
         self.backwin.keypad(True)
 
@@ -76,10 +78,10 @@ class Container:
     #[print hello to test color]
     #must Check_color_and_set() before use this function
     def Hello_World(self):
-        self.backwin.addstr(19, back_win_max_col//2 -15  ,"hello",COS[0])
-        self.backwin.addstr(19, back_win_max_col//2 -10    ,"hello",COS[1])
+        self.backwin.addstr(19, back_win_max_col//2 -15  ,"Qquit",COS[0])
+        self.backwin.addstr(19, back_win_max_col//2 -10    ,"_____",COS[1])
         self.backwin.addstr(19, back_win_max_col//2 -5      ,"hello",COS[2])
         self.backwin.addstr(19, back_win_max_col//2          ,"hello",COS[3])
-        self.backwin.addstr(19, back_win_max_col//2 +5    ,"hello",COS[4])
-        self.backwin.addstr(19, back_win_max_col//2 +10,"hello",COS[5])
+        self.backwin.addstr(19, back_win_max_col//2 +5    ,"_____",COS[4])
+        self.backwin.addstr(19, back_win_max_col//2 +10,"Qquit",COS[5])
         self.backwin.refresh()

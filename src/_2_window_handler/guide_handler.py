@@ -27,7 +27,7 @@ w_guide = None
 * Code
 ****************************************************************************'''
 # [handler for guide window]
-# initialize and check size, set color
+# initialize and check size, set color, set box
 def init_guide_window():
     global w_guide
     #init guide window object
@@ -40,6 +40,8 @@ def init_guide_window():
     w_guide.Check_color_and_set()
     #test color
     w_guide.Hello_World()
+    # draw border
+    w_guide.Set_border()
     #anything ok
     return 0
 
@@ -47,8 +49,6 @@ def init_guide_window():
 # -1: quit| 0,1,2,... is order choice
 def update_menu_list_and_get_choice():
     global w_guide
-    # draw border
-    w_guide.Set_border()
     
     # update list order
     w_guide.update_order()

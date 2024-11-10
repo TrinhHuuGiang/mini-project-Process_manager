@@ -15,4 +15,11 @@ class CRPwin(Container):
 
     def __del__(self):
         Container.__del__(self)
+
+    # ______________[interract with window]_____________
+    # [add border]
+    def Set_border(self):
+        self.backwin.box('|','-')
         
+        #refresh
+        self.backwin.refresh()

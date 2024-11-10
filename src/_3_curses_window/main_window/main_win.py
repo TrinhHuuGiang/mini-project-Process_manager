@@ -13,7 +13,7 @@ w_order_col = 76
 w_order_row = 18
 max_num_choice = 3
 numerical_order = 0
-order_choice = ("- Change color","- Change style","- ON/off border")
+order_choice = ("CPU - RAM - PROCESS","- Change style","- ON/off border")
 
 #sub instruction window
 w_guide_begin_col = 3
@@ -33,7 +33,7 @@ class Main_win(Container):
         self.w_order = curses.newwin(w_order_row,w_order_col,w_order_begin_row,w_order_begin_col)
         self.w_guide = curses.newwin(w_guide_row,w_guide_col,w_guide_begin_row,w_guide_begin_col)
 
-        # now add keypad(True) for order and guide window
+        # now add keypad(True) for some special input
         self.w_order.keypad(True), self.w_guide.keypad(True)
 
     #de-init

@@ -12,6 +12,9 @@ The 'main' function then decides to process the error code and control the handl
 '''****************************************************************************
 * Definitions
 ****************************************************************************'''
+# common libraries
+import sys
+
 # defined libraries
 from _3_curses_window.CPU_RAM_PROC.CRP_win import CRPwin #inherit class for CRP window
 
@@ -24,8 +27,8 @@ w_CRP = None
 * Code
 ****************************************************************************'''
 # [handler for CPU/RAM/PROC window]
-# initialize and check size, set color
-def init_guide_window():
+# initialize and check size, set color, set box
+def init_CRP_window():
     global w_CRP
     #init guide window object
     w_CRP = CRPwin()
@@ -37,6 +40,22 @@ def init_guide_window():
     w_CRP.Check_color_and_set()
     #test color
     w_CRP.Hello_World()
+    # draw border
+    w_CRP.Set_border()
     #anything ok
     return 0
 
+# wait to get key
+def getkey_CRPwindow():
+    global w_CRP
+    # get an temp input to end window :)
+    temp_input = w_CRP.backwin.getkey()
+
+
+# end
+def exit_CRP_window():
+    global w_CRP
+    del w_CRP #free completely window curses and switch back to the original terminal 
+    print("[OK - {}] closed the CRP window".format(exit_CRP_window.__name__),
+    file=sys.stderr)
+    # no return
