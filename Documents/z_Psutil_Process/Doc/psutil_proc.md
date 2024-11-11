@@ -155,14 +155,14 @@ try:
 except psutil.AccessDenied as e:
     print(f"Access denied to process with PID 1: {e}")
 ```
-5. **`class psutil.TimeoutExpired(seconds, pid=None, name=None, msg=None)`**: đưa ra khi thời gian chờ trong khi chờ quá trình kết thúc nhưng tiến trình vẫn alive hoặc thực hiện một hành động. 
+5. **`class psutil.TimeoutExpired(seconds, pid=None, name=None, msg=None)`**: đưa ra khi thời gian chờ trong khi chờ tiến trình kết thúc nhưng tiến trình vẫn alive hoặc thực hiện một hành động. 
 
 **Giải pháp**
-- Điều chỉnh thời gian chờ: Giá trị thời gian chờ thích hợp tùy thuộc vào trường hợp sử dụng cụ thể và thời lượng dự kiến ​​của quá trình.
+- Điều chỉnh thời gian chờ: Giá trị thời gian chờ thích hợp tùy thuộc vào trường hợp sử dụng cụ thể và thời lượng dự kiến ​​của tiến trình.
 
 - Hoạt động không chặn: Hãy cân nhắc sử dụng các hoạt động không chặn hoặc kỹ thuật lập trình không đồng bộ để tránh chặn tập lệnh của bạn trong thời gian dài.
 
-- Thông báo lỗi: Thông báo ngoại lệ có thể cung cấp thông tin về quá trình đã hết thời gian chờ và lý do hết thời gian chờ.
+- Thông báo lỗi: Thông báo ngoại lệ có thể cung cấp thông tin về tiến trình đã hết thời gian chờ và lý do hết thời gian chờ.
 
 **Ví dụ**
 ```python
@@ -248,7 +248,7 @@ print(env_vars)
 
 <hr style="border: px solid;">
 
-**`create_time()`**: trả về thời gian tạo của một tiến trình. Nó cung cấp dấu thời gian khi quá trình được bắt đầu, được biểu thị dưới dạng số dấu phẩy động biểu thị số giây kể từ kỷ nguyên Unix (ngày 1 tháng 1 năm 1970, 00:00:00 UTC).
+**`create_time()`**: trả về thời gian tạo của một tiến trình. Nó cung cấp dấu thời gian khi tiến trình được bắt đầu, được biểu thị dưới dạng số dấu phẩy động biểu thị số giây kể từ kỷ nguyên Unix (ngày 1 tháng 1 năm 1970, 00:00:00 UTC).
 
 **Ví dụ**
 
@@ -318,7 +318,7 @@ for ancestor in ancestor_processes:
 ```
 <hr style="border: px solid;">
 
-**`status`**: Trạng thái quá trình hiện tại dưới dạng một chuỗi. Chuỗi trả về là một trong các hằng số psutil.STATUS_*.
+**`status`**: Trạng thái tiến trình hiện tại dưới dạng một chuỗi. Chuỗi trả về là một trong các hằng số psutil.STATUS_*.
 
 <hr style="border: px solid;">
 
@@ -326,7 +326,7 @@ for ancestor in ancestor_processes:
 
 <hr style="border: px solid;">
 
-**`username`**: Tên của người dùng sở hữu quá trình. Trên UNIX, điều này được tính bằng cách sử dụng uid tiến trình thực.
+**`username`**: Tên của người dùng sở hữu tiến trình. Trên UNIX, điều này được tính bằng cách sử dụng uid tiến trình thực.
 
 <hr style="border: px solid;">
 
@@ -350,7 +350,7 @@ print(f"Saved UID: {uids.saved}")
 ```
 <hr style="border: px solid;">
 
-**`gids()`**: Id người dùng thực, hiệu quả và được lưu của quá trình này dưới dạng một bộ dữ liệu namedtuple.
+**`gids()`**: Id người dùng thực, hiệu quả và được lưu của tiến trình này dưới dạng một bộ dữ liệu namedtuple.
 
 - `Namedtuple`: Đây là một kiểu dữ liệu đặc biệt trong Python, cho phép tạo các cấu trúc dữ liệu giống như tuple nhưng có tên cho từng phần tử.
 - `GID: Group` ID là một số nguyên duy nhất xác định một nhóm người dùng trong hệ thống Unix-like.
@@ -453,7 +453,7 @@ set_process_ionice(pid, psutil.IOPRIO_CLASS_IDLE, 0)
 **`rlimit(resource, limits=None)`**: Nhận hoặc đặt giới hạn tài nguyên cho tiến trình hiện tại. Các giới hạn này kiểm soát các khía cạnh khác nhau của việc sử dụng tài nguyên của tiến trình, chẳng hạn như thời gian CPU, bộ nhớ, bộ mô tả tệp, v.v.
 
 **Đặc trưng**:
-- Giới hạn tài nguyên: Đây là những hạn chế được áp đặt lên một tiến trình để ngăn chặn nó tiêu thụ quá nhiều tài nguyên hệ thống.
+- Giới hạn tài nguyên: Đây là những hạn chế được áp đặt lên một tiến trình để ngăn chặn nó tiêu thụ tiến nhiều tài nguyên hệ thống.
 
 - Giới hạn mềm: Giới hạn hiện tại mà tiến trình được thực thi.
 
@@ -505,9 +505,9 @@ print("New CPU time limits:", new_limits)
 - `write_bytes`: số byte được ghi (tích lũy). Luôn -1 trên BSD.
 
 **Đặc biệt với Linux**:
-- `read_chars`: số byte mà quá trình này chuyển tới các tòa nhà cao tầng read() và pread() (tích lũy). Khác với read_bytes, nó không quan tâm liệu I/O đĩa vật lý thực tế có xảy ra hay không.
+- `read_chars`: số byte mà tiến trình này chuyển tới các tòa nhà cao tầng read() và pread() (tích lũy). Khác với read_bytes, nó không quan tâm liệu I/O đĩa vật lý thực tế có xảy ra hay không.
 
-- `write_chars`: số byte mà quá trình này chuyển tới các tòa nhà chọc trời write() và pwrite() (tích lũy). Khác với write_bytes, nó không quan tâm liệu I/O đĩa vật lý thực tế có xảy ra hay không.
+- `write_chars`: số byte mà tiến trình này chuyển tới các tòa nhà chọc trời write() và pwrite() (tích lũy). Khác với write_bytes, nó không quan tâm liệu I/O đĩa vật lý thực tế có xảy ra hay không.
 
 **Ví dụ**
 
@@ -517,7 +517,7 @@ pio(read_count=454556, write_count=3456, read_bytes=110592, write_bytes=0, read_
 ```
 <hr style="border: px solid;">
 
-**`num_ctx_switches()`**: Số lần chuyển ngữ cảnh tự nguyện và không tự nguyện được thực hiện bởi quá trình này (tích lũy).
+**`num_ctx_switches()`**: Số lần chuyển ngữ cảnh tự nguyện và không tự nguyện được thực hiện bởi tiến trình này (tích lũy).
 
 - Voluntary Context Switches: Điều này xảy ra khi một tiến trình tự nguyện nhường CPU, thường là do phải chờ các thao tác I/O hoặc các sự kiện khác.
 
@@ -536,10 +536,10 @@ print(f"Involuntary context switches: {ctx_switches.involuntary}")
 ```
 <hr style="border: px solid;">
 
-**`num_fds()`**: Số lượng bộ mô tả tệp hiện được mở bởi quá trình này (không tích lũy).
+**`num_fds()`**: Số lượng bộ mô tả tệp hiện được mở bởi tiến trình này (không tích lũy).
 
 **Lí do sử dụng**: 
-- Phát hiện rò rỉ tài nguyên: Nếu một tiến trình giữ quá nhiều mô tả tệp mở, nó có thể gây ra rò rỉ tài nguyên và ảnh hưởng đến hiệu suất của hệ thống.
+- Phát hiện rò rỉ tài nguyên: Nếu một tiến trình giữ tiến nhiều mô tả tệp mở, nó có thể gây ra rò rỉ tài nguyên và ảnh hưởng đến hiệu suất của hệ thống.
 - Quản lý tài nguyên: Việc biết số lượng mô tả tệp của các tiến trình giúp quản lý hiệu quả các tài nguyên hệ thống.
 - Phân tích hiệu suất: Số lượng mô tả tệp có thể cung cấp thông tin về cách một tiến trình tương tác với hệ thống tệp và các thiết bị I/O.
 
@@ -553,7 +553,7 @@ print(f"Number of file descriptions: {num_fds}")
 ```
 <hr style="border: px solid;">
 
-**`num_handles()`**: Số lượng thẻ điều khiển hiện đang được quá trình này sử dụng (không tích lũy).
+**`num_handles()`**: Số lượng thẻ điều khiển hiện đang được tiến trình này sử dụng (không tích lũy).
 
 **Đặc điểm**: Tham chiếu đến nhiều đối tượng khác nhau
 
@@ -569,7 +569,7 @@ print(f"Số lượng handle của tiến trình: {num_handles}")
 ```
 <hr style="border: px solid;">
 
-**`num_threads`**: Số lượng luồng hiện đang được quá trình này sử dụng (không tích lũy).
+**`num_threads`**: Số lượng luồng hiện đang được tiến trình này sử dụng (không tích lũy).
 
 **Ví dụ**
 
@@ -621,7 +621,7 @@ sum(p.cpu_times()[:2]) # tích lũy, không bao gồm children và iowait
 ```
 <hr style="border: px solid;">
 
-**`cpu_percent(interval=None)`**: tính toán việc sử dụng CPU của một quá trình cụ thể. Nó trả về một số float biểu thị việc sử dụng CPU dưới dạng phần trăm.
+**`cpu_percent(interval=None)`**: tính toán việc sử dụng CPU của một tiến trình cụ thể. Nó trả về một số float biểu thị việc sử dụng CPU dưới dạng phần trăm.
 
 - `interval=None`: Chế độ này tính toán mức sử dụng CPU kể từ lệnh gọi cuối cùng tới cpu_percent(). Nó rất hữu ích để có được ảnh chụp nhanh về mức sử dụng CPU hiện tại. Tuy nhiên, lệnh gọi đầu tiên có interval=None sẽ luôn trả về 0,0 vì không có phép đo nào trước đó để so sánh.
 
@@ -634,12 +634,125 @@ sum(p.cpu_times()[:2]) # tích lũy, không bao gồm children và iowait
 
 - `Bối cảnh quy trình`: Phương thức cpu_percent() tính toán mức sử dụng CPU của quy trình cụ thể, chứ không phải mức sử dụng CPU của toàn hệ thống.
 
+**Chú ý**:
+
+- Giá trị trả về có thể > 100,0 trong trường hợp một tiến trình chạy nhiều luồng trên các lõi CPU khác nhau.
+
 **Ví dụ**
 
 ```python
 cpu_percent = p.cpu_percent(interval=1)
 
 print(f"CPU usage: {cpu_percent}%")
+```
+<hr style="border: px solid;">
+
+**`cpu_affinity(cpus=None)`**: đề cập đến khả năng gán/liên kết một quy trình hoặc luồng cho một lõi CPU hoặc bộ lõi cụ thể trên hệ thống đa lõi hoặc đa bộ xử lý.
+
+**Ví dụ**
+
+```python
+p.cpu_affinity()
+[0, 1, 2, 3]
+# set; from now on, process will run on CPU #0 and #1 only
+p.cpu_affinity([0, 1])
+p.cpu_affinity()
+[0, 1]
+# reset affinity against all eligible CPUs
+p.cpu_affinity([])
+```
+<hr style="border: px solid;">
+
+**`cpu_num()`**: trả về CPU mà tiến trình này hiện đang chạy.
+**`cpu_count()`**: trả về số lượng CPU vật lý
+
+- `CPU logic`: Bao gồm cả các luồng (threads) trên mỗi core.
+- `CPU vật lý`: Là số lượng core vật lý của CPU.
+- `Hyper-threading`: Công nghệ Hyper-threading của Intel làm cho mỗi core vật lý xuất hiện như nhiều core logic.
+- `Hệ thống đa socket`: Nếu hệ thống của bạn có nhiều socket, mỗi socket có thể chứa nhiều CPU.
+
+**Ví dụ**
+
+```python
+# Sử dụng psutil
+cpu_num = p.cpu_num() # CPU hiện tại tiến trình đang chạy
+
+num_cpus = psutil.cpu_count(logical=True)  # Số lượng CPU logic
+
+num_cpus = psutil.cpu_count(logical=False)  # Số lượng CPU vật lý
+
+```
+<hr style="border: px solid;">
+
+**``**:
+
+**Ví dụ**
+
+```python
+
+```
+<hr style="border: px solid;">
+
+**``**:
+
+**Ví dụ**
+
+```python
+
+```
+<hr style="border: px solid;">
+
+**``**:
+
+**Ví dụ**
+
+```python
+
+```
+<hr style="border: px solid;">
+
+**``**:
+
+**Ví dụ**
+
+```python
+
+```
+<hr style="border: px solid;">
+
+**``**:
+
+**Ví dụ**
+
+```python
+
+```
+<hr style="border: px solid;">
+
+**``**:
+
+**Ví dụ**
+
+```python
+
+```
+<hr style="border: px solid;">
+
+**``**:
+
+**Ví dụ**
+
+```python
+
+```
+<hr style="border: px solid;">
+
+**``**:
+
+**Ví dụ**
+
+```python
+
 ```
 <hr style="border: px solid;">
 
