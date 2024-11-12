@@ -59,13 +59,13 @@ for proc in psutil.process_iter(attrs=['pid', 'name', 'cpu_percent']):
 psutil.process_iter.cache_clear() //xoá bộ nhớ đệm nội bộ
 ```
 3. `psutil.wait_procs(procs, timeout=None, callback=None)`
-- Chờ danh sách các phiên bản Quy trình kết thúc. Nó cung cấp một cách thuận tiện để giám sát và quản lý nhiều tiến trình cùng một lúc.
+- Chờ danh sách các phiên bản tiến trình kết thúc. Nó cung cấp một cách thuận tiện để giám sát và quản lý nhiều tiến trình cùng một lúc.
     - Gửi SIGTERM tới danh sách các tiến trình
     - Cho các process chút thời gian để chấm dứt
     - Gửi SIGKILL cho những process vẫn còn sống
 - **Trả về**: 
-    - gone: Danh sách các phiên bản Quy trình đã kết thúc.
-    - alive: Danh sách các phiên bản Quy trình vẫn đang chạy.
+    - gone: Danh sách các phiên bản tiến trình đã kết thúc.
+    - alive: Danh sách các phiên bản tiến trình vẫn đang chạy.
 ```python
 def on_terminate(proc):
     print(f"Process {proc.pid} terminated with exit code {proc.returncode}")
@@ -81,7 +81,7 @@ for p in alive: // kill các process alive sau khi hết timeout
 ## Exceptions
 
 1. **`class psutil.Error`**: Lớp ngoại lệ cơ bản, tất cả các trường hợp ngoại lệ khác đều kế thừa từ trường hợp này.
-    - Quyền hạn không đủ: Khi chương trình của bạn không có quyền truy cập vào thông tin về các tiến trình khác hoặc không thể thực hiện các thao tác trên chúng.
+    - tiếnền hạn không đủ: Khi chương trình của bạn không có tiếnền truy cập vào thông tin về các tiến trình khác hoặc không thể thực hiện các thao tác trên chúng.
     - Tiến trình không tồn tại: Khi bạn cố gắng truy cập vào một tiến trình đã bị kết thúc hoặc không tồn tại.
     - Lỗi hệ thống: Khi có lỗi xảy ra ở cấp độ hệ điều hành, ví dụ như lỗi I/O, lỗi bộ nhớ, v.v.
     - Tham số không hợp lệ: Khi bạn truyền vào các tham số không đúng hoặc không hợp lệ cho các hàm của psutil.
@@ -136,16 +136,16 @@ except psutil.ZombieProcess as e:
 ```
 
 
-4. **`class psutil.AccessDenied(pid=None, name=None, msg=None)`**: đưa ra khi người dùng thiếu đủ quyền để truy cập thông tin về một tiến trình cụ thể hoặc thực hiện các thao tác trên đó.
-    - Quyền không đủ: Khi người dùng chạy tập lệnh Python không có các đặc quyền cần thiết để truy cập thông tin tiến trình.
+4. **`class psutil.AccessDenied(pid=None, name=None, msg=None)`**: đưa ra khi người dùng thiếu đủ tiếnền để truy cập thông tin về một tiến trình cụ thể hoặc thực hiện các thao tác trên đó.
+    - tiếnền không đủ: Khi người dùng chạy tập lệnh Python không có các đặc tiếnền cần thiết để truy cập thông tin tiến trình.
     - Hạn chế của Hệ điều hành: Một số hệ điều hành có thể áp đặt các hạn chế đối với việc truy cập thông tin tiến trình, đặc biệt là đối với các tiến trình hệ thống.
 
 **Giải pháp**
-- Chạy bằng quyền root: Trên các hệ thống giống Unix, việc chạy tập lệnh bằng quyền root thường có thể cung cấp các quyền cần thiết. Tuy nhiên, việc này cần được thực hiện một cách thận trọng và chỉ khi thực sự cần thiết.
+- Chạy bằng tiếnền root: Trên các hệ thống giống Unix, việc chạy tập lệnh bằng tiếnền root thường có thể cung cấp các tiếnền cần thiết. Tuy nhiên, việc này cần được thực hiện một cách thận trọng và chỉ khi thực sự cần thiết.
 
-- Sử dụng sudo: Trên các hệ thống giống Unix, bạn có thể sử dụng sudo để tạm thời nâng cao đặc quyền cho một lệnh cụ thể.
+- Sử dụng sudo: Trên các hệ thống giống Unix, bạn có thể sử dụng sudo để tạm thời nâng cao đặc tiếnền cho một lệnh cụ thể.
 
-- Phương pháp tiếp cận thay thế: Trong một số trường hợp, bạn có thể nhận được thông tin hạn chế về các tiến trình mà không có quyền truy cập đầy đủ.
+- Phương pháp tiếp cận thay thế: Trong một số trường hợp, bạn có thể nhận được thông tin hạn chế về các tiến trình mà không có tiếnền truy cập đầy đủ.
 
 **Ví dụ**
 ```python
@@ -330,7 +330,7 @@ for ancestor in ancestor_processes:
 
 <hr style="border: px solid;">
 
-**`uids()`**: trả về một namedtuple chứa ID người dùng (UID) thực, hiệu quả và đã lưu của một tiến trình. Các UID này rất quan trọng để hiểu các quyền và bối cảnh bảo mật của tiến trình.
+**`uids()`**: trả về một namedtuple chứa ID người dùng (UID) thực, hiệu quả và đã lưu của một tiến trình. Các UID này rất quan trọng để hiểu các tiếnền và bối cảnh bảo mật của tiến trình.
 
 **Ví dụ**
 
@@ -355,8 +355,8 @@ print(f"Saved UID: {uids.saved}")
 - `Namedtuple`: Đây là một kiểu dữ liệu đặc biệt trong Python, cho phép tạo các cấu trúc dữ liệu giống như tuple nhưng có tên cho từng phần tử.
 - `GID: Group` ID là một số nguyên duy nhất xác định một nhóm người dùng trong hệ thống Unix-like.
 - `Real GID: `GID thực tế của người dùng khởi chạy tiến trình.
-- `Effective `GID: GID hiệu dụng mà tiến trình đang sử dụng để thực hiện các hoạt động. Nó có thể khác với GID thực tế nếu tiến trình đã thay đổi quyền hạn của mình.
-- `Saved GID:` GID được lưu trữ để phục hồi sau khi tiến trình thay đổi quyền hạn của mình.
+- `Effective `GID: GID hiệu dụng mà tiến trình đang sử dụng để thực hiện các hoạt động. Nó có thể khác với GID thực tế nếu tiến trình đã thay đổi tiếnền hạn của mình.
+- `Saved GID:` GID được lưu trữ để phục hồi sau khi tiến trình thay đổi tiếnền hạn của mình.
 
 **Ví dụ**
 
@@ -420,7 +420,7 @@ p.nice()  # get
 
 **Các lớp và giá trị I/O:**
 
-- `IOPRIO_CLASS_RT`: (cao) tiến trình luôn có quyền truy cập đầu tiên vào đĩa. Sử dụng nó cẩn thận vì nó có thể làm chết đói toàn bộ hệ thống. Mức độ ưu tiên bổ sung có thể được chỉ định và nằm trong khoảng từ 0 (cao nhất) đến 7 (thấp nhất).
+- `IOPRIO_CLASS_RT`: (cao) tiến trình luôn có tiếnền truy cập đầu tiên vào đĩa. Sử dụng nó cẩn thận vì nó có thể làm chết đói toàn bộ hệ thống. Mức độ ưu tiên bổ sung có thể được chỉ định và nằm trong khoảng từ 0 (cao nhất) đến 7 (thấp nhất).
 
 - `IOPRIO_CLASS_BE`: (bình thường) mặc định cho mọi tiến trình chưa đặt mức ưu tiên I/O cụ thể. Mức độ ưu tiên bổ sung dao động từ 0 (cao nhất) đến 7 (thấp nhất).
 
@@ -494,7 +494,7 @@ print("New CPU time limits:", new_limits)
 ```
 <hr style="border: px solid;">
 
-**`io_counters()`**: Trả về số liệu thống kê I/O của quy trình dưới dạng một bộ dữ liệu được namedtuple 
+**`io_counters()`**: Trả về số liệu thống kê I/O của tiến trình dưới dạng một bộ dữ liệu được namedtuple 
 
 - `read_count`: số lượng thao tác đọc được thực hiện (tích lũy). Điều này được cho là để đếm số lượng các cuộc gọi tổng hợp liên quan đến việc đọc như read() và pread() trên UNIX.
 
@@ -521,7 +521,7 @@ pio(read_count=454556, write_count=3456, read_bytes=110592, write_bytes=0, read_
 
 - Voluntary Context Switches: Điều này xảy ra khi một tiến trình tự nguyện nhường CPU, thường là do phải chờ các thao tác I/O hoặc các sự kiện khác.
 
-- Involuntary Context Switches: Xảy ra khi hệ điều hành ưu tiên một quy trình để cho một quy trình khác có cơ hội chạy, thường là do cắt thời gian hoặc các quy trình có mức độ ưu tiên cao hơn.
+- Involuntary Context Switches: Xảy ra khi hệ điều hành ưu tiên một tiến trình để cho một tiến trình khác có cơ hội chạy, thường là do cắt thời gian hoặc các tiến trình có mức độ ưu tiên cao hơn.
 
 **Ví dụ**
 
@@ -632,7 +632,7 @@ sum(p.cpu_times()[:2]) # tích lũy, không bao gồm children và iowait
 
 - `Nhiều cuộc gọi`: Để nhận được các cập nhật sử dụng CPU liên tục, bạn có thể gọi cpu_percent() liên tục với cùng một giá trị khoảng thời gian.
 
-- `Bối cảnh quy trình`: Phương thức cpu_percent() tính toán mức sử dụng CPU của quy trình cụ thể, chứ không phải mức sử dụng CPU của toàn hệ thống.
+- `Bối cảnh tiến trình`: Phương thức cpu_percent() tính toán mức sử dụng CPU của tiến trình cụ thể, chứ không phải mức sử dụng CPU của toàn hệ thống.
 
 **Chú ý**:
 
@@ -647,7 +647,7 @@ print(f"CPU usage: {cpu_percent}%")
 ```
 <hr style="border: px solid;">
 
-**`cpu_affinity(cpus=None)`**: đề cập đến khả năng gán/liên kết một quy trình hoặc luồng cho một lõi CPU hoặc bộ lõi cụ thể trên hệ thống đa lõi hoặc đa bộ xử lý.
+**`cpu_affinity(cpus=None)`**: đề cập đến khả năng gán/liên kết một tiến trình hoặc luồng cho một lõi CPU hoặc bộ lõi cụ thể trên hệ thống đa lõi hoặc đa bộ xử lý.
 
 **Ví dụ**
 
