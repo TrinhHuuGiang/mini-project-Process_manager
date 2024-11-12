@@ -15,6 +15,8 @@ from _1_auto_run.auto_CRP import CRP_auto_run
 # exit code:
 # (0) normal exit
 def main():
+    #[add CRP window first]
+    
     #run guilde window first
     ret = guide_auto_run()
     while(ret >= 0):
