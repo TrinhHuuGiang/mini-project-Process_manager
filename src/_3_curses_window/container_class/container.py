@@ -5,13 +5,18 @@ import curses
 '''****************************************************************************
 * Variable
 ****************************************************************************'''
-#background window
-back_win_max_col = 80
-back_win_max_row = 24
 
-# [pseudo color or style]
-# only use when call Container.Check_color_and_set()
-COS = None
+'''****************************************************************************
+* Code
+****************************************************************************'''
+class Container:
+    #background window
+    back_win_min_col = 80
+    back_win_min_row = 24
+
+    # [pseudo color or style]
+    # only use when call Container.Check_color_and_set()
+    COS = None
     # [
     # "red black or BOLD", # for alert
     # "magenta black or DIM", # for not important or guide
@@ -20,11 +25,7 @@ COS = None
     # "green black or STANDOUT", # for highlight
     # "cyan black or BLINK"] # for notification
 
-'''****************************************************************************
-* Code
-****************************************************************************'''
-class Container:
-    # Initialize display windows
+    # [Initialize display windows]
     def __init__(self):
         # init main window
         self.backwin = curses.initscr()
@@ -44,8 +45,8 @@ class Container:
     # ______________[checking resource]_____________
     # [Should check size main window before printing anything]
     def Check_Size(self):
-        if ((back_win_max_col < self.backwin.getmaxyx()[1]) and 
-            (back_win_max_row < self.backwin.getmaxyx()[0])):
+        if ((Container.back_win_min_col < self.backwin.getmaxyx()[1]) and 
+            (Container.back_win_min_row < self.backwin.getmaxyx()[0])):
             return 0 #ok
         return -1 # col or row too little
 
@@ -58,10 +59,9 @@ class Container:
     # color pair index start is 1
     # basic style: A_BLINK, A_BOLD, A_DIM, A_REVERSE, A_STANDOUT, A_UNDERLINE,...
     def Check_color_and_set(self):
-        global COS
         curses.start_color()#set up default curses color
         if not curses.has_colors():
-            COS = [curses.A_BOLD,curses.A_DIM,curses.A_UNDERLINE,
+            Container.COS = [curses.A_BOLD,curses.A_DIM,curses.A_UNDERLINE,
                    curses.A_REVERSE, curses.A_STANDOUT, curses.A_BLINK]
         else:# have color
             curses.init_pair(1, 1, 0)#red
@@ -70,7 +70,7 @@ class Container:
             curses.init_pair(4, 4, 0)#yellow
             curses.init_pair(5, 5, 0)#green
             curses.init_pair(6, 6, 0)#cyan
-            COS = [curses.color_pair(1), curses.color_pair(5), curses.color_pair(4),
+            Container.COS = [curses.color_pair(1), curses.color_pair(5), curses.color_pair(4),
                    curses.color_pair(3), curses.color_pair(2), curses.color_pair(6)]
             
     # ______________[interract with window]_____________
@@ -78,10 +78,10 @@ class Container:
     #[print hello to test color]
     #must Check_color_and_set() before use this function
     def Hello_World(self):
-        self.backwin.addstr(19, back_win_max_col//2 -15  ,"Qquit",COS[0])
-        self.backwin.addstr(19, back_win_max_col//2 -10    ,"_____",COS[1])
-        self.backwin.addstr(19, back_win_max_col//2 -5      ,"hello",COS[2])
-        self.backwin.addstr(19, back_win_max_col//2          ,"hello",COS[3])
-        self.backwin.addstr(19, back_win_max_col//2 +5    ,"_____",COS[4])
-        self.backwin.addstr(19, back_win_max_col//2 +10,"Qquit",COS[5])
+        self.backwin.addstr(19, Container.back_win_min_col//2 -15 ,"Qquit",COS[0])
+        self.backwin.addstr(19, Container.back_win_min_col//2 -10 ,"_____",COS[1])
+        self.backwin.addstr(19, Container.back_win_min_col//2 -5  ,"hello",COS[2])
+        self.backwin.addstr(19, Container.back_win_min_col//2     ,"hello",COS[3])
+        self.backwin.addstr(19, Container.back_win_min_col//2 +5  ,"_____",COS[4])
+        self.backwin.addstr(19, Container.back_win_min_col//2 +10 ,"Qquit",COS[5])
         self.backwin.refresh()
