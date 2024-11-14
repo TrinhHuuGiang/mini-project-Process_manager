@@ -78,10 +78,10 @@ class Container:
     #[print hello to test color]
     #must Check_color_and_set() before use this function
     def Hello_World(self):
-        self.backwin.addstr(19, Container.back_win_min_col//2 -15 ,"Qquit",COS[0])
-        self.backwin.addstr(19, Container.back_win_min_col//2 -10 ,"_____",COS[1])
-        self.backwin.addstr(19, Container.back_win_min_col//2 -5  ,"hello",COS[2])
-        self.backwin.addstr(19, Container.back_win_min_col//2     ,"hello",COS[3])
-        self.backwin.addstr(19, Container.back_win_min_col//2 +5  ,"_____",COS[4])
-        self.backwin.addstr(19, Container.back_win_min_col//2 +10 ,"Qquit",COS[5])
+        self.backwin.addstr(19, Container.back_win_min_col//2 -15 ,"Qquit",Container.COS[0])
+        self.backwin.addstr(19, Container.back_win_min_col//2 -10 ,"_____",Container.COS[1])
+        self.backwin.addstr(19, Container.back_win_min_col//2 -5  ,"hello",Container.COS[2])
+        self.backwin.addstr(19, Container.back_win_min_col//2     ,"hello",Container.COS[3])
+        self.backwin.addstr(19, Container.back_win_min_col//2 +5  ,"_____",Container.COS[4])
+        self.backwin.addstr(19, Container.back_win_min_col//2 +10 ,"Qquit",Container.COS[5])
         self.backwin.refresh()
