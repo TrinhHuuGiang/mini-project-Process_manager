@@ -32,18 +32,8 @@ def init_guide_window():
     global w_guide
     #init guide window object
     w_guide = Main_win()
-    #check size
-    if(w_guide.Check_Size()):
-        #size invalid
-        return -1
-    #check color
-    w_guide.Check_color_and_set()
     #test color
     w_guide.Hello_World()
-    # draw border
-    w_guide.Set_border()
-    #anything ok
-    return 0
 
 # auto handle manu
 # -1: quit| 0,1,2,... is order choice

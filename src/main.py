@@ -32,7 +32,7 @@ def main():
             pass#open auto NS  (NET SERVICE)
         ret = guide_auto_run()
 
-    #exit no error
+    #exit
     sys.exit(0)
 
 '''****************************************************************************

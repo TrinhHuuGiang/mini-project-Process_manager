@@ -32,18 +32,8 @@ def init_CRP_window():
     global w_CRP
     #init guide window object
     w_CRP = CRPwin()
-    #check size
-    if(w_CRP.Check_Size()):
-        #size invalid
-        return -1
-    #check color
-    w_CRP.Check_color_and_set()
     #test color
     w_CRP.Hello_World()
-    # draw border
-    w_CRP.Set_border()
-    #anything ok
-    return 0
 
 # wait to get key
 def getkey_CRPwindow():

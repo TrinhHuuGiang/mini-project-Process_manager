@@ -12,6 +12,7 @@ class CRPwin(Container):
     # Initialize display windows
     def __init__(self):
         Container.__init__(self)
+        self.Set_border()
 
     def __del__(self):
         Container.__del__(self)
@@ -19,7 +20,7 @@ class CRPwin(Container):
     # ______________[interract with window]_____________
     # [add border]
     def Set_border(self):
-        self.backwin.box('|','-')
+        self.backwin.box('~','?')
         
         #refresh
         self.backwin.refresh()

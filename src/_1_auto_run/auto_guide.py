@@ -6,7 +6,7 @@ import sys
 
 # handler libraries
 from _2_window_handler import guide_handler
-from _3_curses_window.main_window.main_win import max_num_choice
+from _3_curses_window.main_window.main_win import max_num_choice # const max choice
 
 '''****************************************************************************
 * Variable
@@ -24,16 +24,13 @@ guide_handler.exit_guide_window]
 # - run the menu to take selections from the user
 # - close the order window and return the order code.
 # return code:
-# (-1) window too small; (-2) user want exit program
+# (-1) user want quit; (-2) unexpected return ret
 # 0,1,2,3... is code of other windows
 def guide_auto_run():
     ret = 0
     # [guide handler]
-    # initialize and check size
-    if(guide_window[0]()):
-        guide_window[2]() # close 'curses' and switch back to the original terminal 
-        print("[ERR - {}] - Terminal size too small".format(guide_auto_run.__name__), file=sys.stderr)
-        return -1
+    # initialize menu guide window
+    guide_window[0]()
     
     # runs automatically until the user selects a display window
     ret = guide_window[1]()
@@ -41,10 +38,12 @@ def guide_auto_run():
         # close 'curses' and switch back to the original terminal
         guide_window[2]()
         print("[OK - {}] - Closed".format(guide_auto_run.__name__), file=sys.stderr)
-        return -2 # no error, exit
+        return -1 # no error, exit
     elif((ret < 0 ) and (ret >= max_num_choice )):
+        # close 'curses' and switch back to the original terminal
+        guide_window[2]()
         print("[ERR - {}] - Unexpected event".format(guide_auto_run.__name__), file=sys.stderr)
-    
+        return -2 # unexpected ret choice
     # else 0<= ret < max_numchoice 
     # close the guide window and return the selected event handler
     guide_window[2]()
