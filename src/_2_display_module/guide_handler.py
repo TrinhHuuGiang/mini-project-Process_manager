@@ -16,7 +16,7 @@ The 'main' function then decides to process the error code and control the handl
 import sys
 
 # defined libraries
-from _3_curses_component.main_window.main_win import Main_win #main class for guide window
+from _3_display_component.main_window.main_win import Main_win #main class for guide window
 
 '''****************************************************************************
 * Variable

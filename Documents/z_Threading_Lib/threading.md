@@ -30,7 +30,9 @@ print("Tất cả các thread đã hoàn thành")
 
 ## 3. An toàn và Đồng bộ Thread
 
-Khi nhiều thread cùng truy cập vào dữ liệu chung, bạn cần đảm bảo tính an toàn của thread thông qua các cơ chế đồng bộ như Lock.
+Khi nhiều thread cùng truy cập vào dữ liệu chung, bạn cần đảm bảo tính an toàn của thread thông qua các cơ chế đồng bộ như Lock.  
+Đi kèm với lock là sử dụng 'with' để tạo cơ chế gọi context manager thông qua tự động gọi
+các hàm **__enter__** và **__exit__**  
 ### 3.1. Sử dụng Lock
 
 Lock đảm bảo chỉ một thread có thể truy cập vào phần mã quan trọng tại một thời điểm.

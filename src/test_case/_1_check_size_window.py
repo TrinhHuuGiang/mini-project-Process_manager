@@ -5,7 +5,7 @@
 import sys
 
 # defined libraries
-from _3_curses_component.main_window.main_win import (Container, back_win_max_row,
+from _3_display_component.main_window.main_win import (Container, back_win_max_row,
 back_win_max_col)
 
 '''****************************************************************************

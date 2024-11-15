@@ -6,7 +6,7 @@ import sys
 
 # handler libraries
 from _2_display_module import guide_handler
-from _3_curses_component.main_window.main_win import max_num_choice # const max choice
+from _3_display_component.main_window.main_win import max_num_choice # const max choice
 
 '''****************************************************************************
 * Variable

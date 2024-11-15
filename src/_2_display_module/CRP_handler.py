@@ -16,7 +16,7 @@ The 'main' function then decides to process the error code and control the handl
 import sys
 
 # defined libraries
-from _3_curses_component.CPU_RAM_PROC.CRP_win import CRPwin #inherit class for CRP window
+from _3_display_component.CPU_RAM_PROC.CRP_win import CRPwin #inherit class for CRP window
 
 '''****************************************************************************
 * Variable
