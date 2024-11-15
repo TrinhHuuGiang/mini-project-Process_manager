@@ -5,8 +5,8 @@
 import sys
 
 # handler libraries
-from _2_window_handler import guide_handler, CRD_handler, CRP_handler, NS_handler
-from _3_curses_window.main_window.main_win import max_num_choice
+from _2_display_module import guide_handler, CRD_handler, CRP_handler, NS_handler
+from _3_curses_component.main_window.main_win import max_num_choice
 
 '''****************************************************************************
 * Variable

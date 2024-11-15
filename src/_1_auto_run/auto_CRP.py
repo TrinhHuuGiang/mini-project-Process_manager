@@ -5,7 +5,7 @@
 import sys
 
 # handler libraries
-from _2_window_handler import CRP_handler
+from _2_display_module import CRP_handler
 
 '''****************************************************************************
 * Variable

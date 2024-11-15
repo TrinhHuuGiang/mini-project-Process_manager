@@ -2,7 +2,7 @@
 * Definitions
 ****************************************************************************'''
 import curses
-from _3_curses_window.container_class.container import Container
+from _3_curses_component.container_class.container import Container
 
 '''****************************************************************************
 * Constants
