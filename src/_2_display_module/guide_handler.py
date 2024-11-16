@@ -31,6 +31,10 @@ lock_size = threading.Lock()
     #using between update menu: using edge
     #update size window: re-calculate edge and coordinate
 
+sleep_resize_time = 0.01 # 10ms
+sleep_menu_time = 0.1 # 100ms
+sleep_guide_time = 0.1 # 100ms
+
 '''****************************************************************************
 * Code
 ****************************************************************************'''
@@ -48,6 +52,8 @@ def init_guide_window():
 
 # auto handle manu
 # -1: quit| 0,1,2,... is order choice
+# it can be run as thread but
+# i will run it with main process
 def update_menu_list_and_get_choice():
     global w_guide
 
@@ -58,7 +64,7 @@ def update_menu_list_and_get_choice():
             # update list order
             w_guide.update_order()
         #sleep 100ms for other threads and avoid continuous refreshes
-        time.sleep(0.1)
+        time.sleep(sleep_menu_time)
         # then check buffer input
         temp_input = w_guide.w_order.getch()
         # if nothing compare -1 and continue check after sleep 100ms
@@ -92,7 +98,7 @@ def resize_guide_window():
     # 10ms is much shorter than 100ms when 'update_order'
     # so it reduces the error rate when the user suddenly 
     # changes the screen size
-    time.sleep(0.01)
+    time.sleep(sleep_resize_time)
 
     global w_guide
     # save old background size
@@ -132,3 +138,7 @@ def resize_guide_window():
 
     #refresh to apply new change
     w_guide.Refresh_all()
+
+# B. Update static content
+# def update_guide_content():
+
