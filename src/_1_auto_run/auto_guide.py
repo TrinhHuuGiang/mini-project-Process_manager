@@ -4,7 +4,6 @@
 # common libraries
 import sys
 import threading #for
-import time
 
 # handler libraries
 from _2_display_module import guide_handler
@@ -27,7 +26,6 @@ def resize_win():
     global res_sig
     while res_sig:
         guide_handler.resize_guide_window()
-        time.sleep(1) # 1s
 
 # [guide auto run]
 # It will run processing commands step by step:

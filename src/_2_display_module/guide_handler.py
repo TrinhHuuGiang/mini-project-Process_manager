@@ -25,8 +25,11 @@ from _3_display_component.main_window.main_win import Main_win #main class for g
 ****************************************************************************'''
 # window
 w_guide = None
+
 # keymutex
-lock_size = threading.Lock() #using between update menu / update size window
+lock_size = threading.Lock()
+    #using between update menu: using edge
+    #update size window: re-calculate edge and coordinate
 
 '''****************************************************************************
 * Code
@@ -51,8 +54,9 @@ def update_menu_list_and_get_choice():
     # wait user then update or execute or quit 'q'
     temp_input = 'nothing'
     while (temp_input != 'q'):
-        # update list order
-        w_guide.update_order()
+        with lock_size:
+            # update list order
+            w_guide.update_order()
         #sleep 100ms for other threads and avoid continuous refreshes
         time.sleep(0.1)
         # then check buffer input
@@ -84,30 +88,47 @@ def exit_guide_window():
 # Call these support function after init window
 # A. Resize window
 def resize_guide_window():
+    # 10 ms sleep
+    # 10ms is much shorter than 100ms when 'update_order'
+    # so it reduces the error rate when the user suddenly 
+    # changes the screen size
+    time.sleep(0.01)
+
     global w_guide
     # save old background size
     back_col = w_guide.back_win_col
     back_row = w_guide.back_win_row
-    # get background size
+    # get background size to check change size
     w_guide.get_backwin_size()
     if((back_col == w_guide.back_win_col) and
        (back_row == w_guide.back_win_row)):
         return #size not change
-    # check min size window
-    if((w_guide.back_win_col <=  w_guide.w_back_mincol) or
-       w_guide.back_win_row <= w_guide.w_back_minrow):
-        # w_back_minrow may have to be+1 because 
-        # sometimes w_guide_begin_col = back_win_col * 10 // 100 may = 1
-        return # dont update size :) will error by curses.resize()
+    
+    #[mutex before modidy sub window edge]
+    # if size window invalid so lock display any thing
+    with lock_size:
+        # check min size window
+        while((w_guide.back_win_col <=  w_guide.w_back_mincol) or
+        (w_guide.back_win_row <= w_guide.w_back_minrow)):
+            # idont know why need refresh before get background size
+            # but if don't do it, while will be into infinite loop
+            # so great is call refresh before getmaxyx
+            w_guide.backwin.refresh()
+            # w_back_minrow may have to be+1 because 
+            # sometimes w_guide_begin_col = back_win_col * 10 // 100 may = 1
+            w_guide.get_backwin_size()  # dont update size :)
+                                        #will error by print addstr out of range
+        # when size suitable
+        # calculate, resize
+        w_guide.cal_size_sub_window()
+        w_guide.update_size_sub_window()
 
-    # calculate, resize and reset border
-    w_guide.cal_size_sub_window()
-    w_guide.update_size_sub_window()
-
-    # update some window
+    # update some static window
     w_guide.backwin.clear()
     w_guide.w_guide.clear()
 
-    w_guide.Set_border()
-    #refresh
+    w_guide.backwin.box('|','-')
+    w_guide.w_guide.box('|','-')
+
+    #refresh to apply new change
     w_guide.Refresh_all()

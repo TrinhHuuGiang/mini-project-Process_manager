@@ -42,7 +42,10 @@ class Main_win(Container):
                                      self.w_guide_begin_row,self.w_guide_begin_col)
 
         # now add keypad(True)
-        self.w_order.keypad(True), self.w_guide.keypad(True)
+        self.w_order.keypad(True); self.w_guide.keypad(True)
+
+        # add no delay for using getch()
+        self.w_order.nodelay(True); self.w_order.nodelay(True)
 
         # set border
         self.Set_border()
@@ -106,16 +109,19 @@ class Main_win(Container):
     def update_order(self):
         #clear screen first
         self.w_order.clear()
-
+        #empty space order window
+        available_space = self.w_order_row - 2
         #if order display > numerical_order
-        if ((self.w_order_row - 2) > self.numerical_order):
+        offset = None #ofset of list 'order_choice'
+        peak = None #peak of list cut out of list 'order_choice'
+        #calculate offset
+        if (available_space > self.numerical_order):
             offset = 0
-            peak = self.w_order_row - 3
         else:#display with offset
-            # offset = self.numerical_order + 1 - (self.w_order_row - 2)
-            offset = self.numerical_order - self.w_order_row + 3
-            # peak = offset + (self.w_order_row - 2) -1
-            peak = offset + self.w_order_row - 3
+            # offset = self.numerical_order + 1 - available_space
+            offset = self.numerical_order - available_space + 1
+        # peak = offset + available_space -1
+        peak = offset + available_space - 1
         i=0
         for item in self.order_choice:
             #check out of range
@@ -129,6 +135,7 @@ class Main_win(Container):
                 self.w_order.addstr(i+1-offset,2,item,curses.A_REVERSE)
             else:
                 self.w_order.addstr(i+1-offset,2,item)
+                
             #increase i
             i+=1
             
