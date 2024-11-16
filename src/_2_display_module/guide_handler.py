@@ -84,11 +84,13 @@ def resize_guide_window():
     if((back_col == w_guide.back_win_col) and
        (back_row == w_guide.back_win_row)):
         return #size not change
+    # check min size window
+    if((w_guide.back_win_col <  w_guide.w_back_mincol) or
+       w_guide.back_win_row < w_guide.w_back_minrow):
+        return # dont update size :) will error by curses.resize()
 
-    # else calculate size sub windows
-    w_guide.cal_size_sub_window()
-
-    # clear, resize and reset border
+    # clear,calculate, resize and reset border
     w_guide.clear_all_window()
+    w_guide.cal_size_sub_window()
     w_guide.update_size_sub_window()
     w_guide.Set_border()

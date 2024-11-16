@@ -24,6 +24,12 @@ class Main_win(Container):
         self.w_guide_begin_col = None; self.w_guide_begin_row = None
         self.w_guide_col = None; self.w_guide_row = None
 
+        # minsize for all window
+        self.w_order_mincol = 5; self.w_order_minrow = 5
+        self.w_guide_mincol = 5; self.w_guide_minrow = 5
+        self.w_back_mincol= self.w_order_mincol+self.w_guide_mincol
+        self.w_back_minrow= self.w_order_minrow+self.w_guide_minrow 
+
         # window variable
         self.w_order = None; self.w_guide = None
         # init backwindow
@@ -62,16 +68,10 @@ class Main_win(Container):
         self.w_guide_row = self.back_win_row * 30 // 100
 
         #fix size if invalid, min 5
-        if(self.w_order_col <= 4): self.w_order_col = 5
-        if(self.w_order_row <= 4): self.w_order_row = 5
-        if(self.w_guide_col <= 4): self.w_guide_col = 5
-        if(self.w_guide_row <= 4): self.w_guide_row = 5
-        #fix coordinate if x invalid, > back_win_col - 1, set 0
-        #fix coordinate if y invalid, > back_win_row - 1, set 0
-        if(self.w_order_begin_col > self.back_win_col - 1): self.w_order_begin_col = 0
-        if(self.w_order_begin_row > self.back_win_row - 1): self.w_order_begin_row = 0
-        if(self.w_guide_begin_col > self.back_win_col - 1): self.w_guide_begin_col = 0
-        if(self.w_guide_begin_row > self.back_win_row - 1): self.w_guide_begin_row = 0
+        if(self.w_order_col < self.w_order_mincol): self.w_order_col = self.w_order_mincol
+        if(self.w_order_row < self.w_order_minrow): self.w_order_row = self.w_order_minrow
+        if(self.w_guide_col < self.w_guide_mincol): self.w_guide_col = self.w_guide_mincol
+        if(self.w_guide_row < self.w_guide_minrow): self.w_guide_row = self.w_guide_minrow
 
     # clear all window
     def clear_all_window(self):
