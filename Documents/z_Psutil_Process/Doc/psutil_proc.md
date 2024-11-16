@@ -821,12 +821,79 @@ p.net_connections()
 - tự động xóa quy trình khỏi bộ đệm trong của process_iter() nếu PID đã được quy trình khác sử dụng lại.
 - trả về True nếu tiến trình là zombie (p.status() == psutil.STATUS_ZOMBIE).
 
+
+<hr style="border: px solid;">
+
+**`send_signal(signal)`**: gửi tín hiệu cụ thể tới các tiến trình
+
+- Chấm dứt quá trình: Gửi tín hiệu `SIGTERM` hoặc `SIGKILL`.
+
+- Tạm dừng hoặc tiếp tục quá trình: Gửi tín hiệu `SIGSTOP` hoặc `SIGCONT`.
+
+- Tùy chỉnh hành vi của quy trình: Gửi các tín hiệu khác để kích hoạt các hành động cụ thể trong quy trình.
+
 **Ví dụ**
 
 ```python
-
+p = psutil.Process(pid)
+p.send_signal(signal.SIGTERM)
 ```
 <hr style="border: px solid;">
+
+**`wait(timeout=None)`**: Đợi quá trình PID kết thúc
+- Giá trị trả về được lưu trữ trong bộ nhớ đệm. Để chờ nhiều tiến trình, hãy sử dụng `psutil.wait_procs()`.
+
+**Ví dụ**
+
+```python
+p = psutil.Process(9891)
+p.terminate()
+p.wait()
+# <Negsignal.SIGTERM: -15>
+```
+<hr style="border: px solid;">
+
+
+**`classpsutil.Popen(*args, **kwargs)`**:  tạo và quản lý các quy trình con
+
+- `args`: Một chuỗi các đối số của chương trình. Đối số đầu tiên là chương trình sẽ được thực thi
+
+**kwargs**:
+
+- `stdin`: Bộ mô tả tệp đầu vào tiêu chuẩn.
+
+- `stdout`: Bộ mô tả tệp đầu ra tiêu chuẩn.
+
+- `stderr`: Bộ mô tả tệp lỗi tiêu chuẩn.
+
+- `cwd`: Thư mục làm việc hiện tại của subprocess.
+
+- `env`: Biến môi trường cho tiến trình con.
+
+- `shell`: Nếu đúng thì lệnh sẽ được shell thực thi.
+
+- `Creationflags`: Trên Windows, các cờ tạo bổ sung cho tiến trình.
+
+- start_new_session`: Có bắt đầu một nhóm và phiên quy trình mới hay không.
+
+**Ví dụ**
+
+```python
+p = psutil.Popen(['ls', '-la'])
+
+# Wait for the subprocess to finish
+p.wait()
+
+# Print the return code
+print(p.returncode)
+# total 16
+# drwxr-xr-x 4 vuong vuong 4096 Nov 11 23:31 .
+# drwxr-xr-x 5 vuong vuong 4096 Nov 11 23:31 ..
+# drwxr-xr-x 2 vuong vuong 4096 Nov 11 23:31 Code
+# drwxr-xr-x 2 vuong vuong 4096 Nov 11 23:31 Doc
+# 0
+```
+<!-- <hr style="border: px solid;">
 
 **``**:
 
@@ -844,17 +911,7 @@ p.net_connections()
 ```python
 
 ```
-<hr style="border: px solid;">
-
-
-**``**:
-
-**Ví dụ**
-
-```python
-
-```
-<hr style="border: px solid;">
+<hr style="border: px solid;"> -->
 
 
 <!-- -----------------------Template---------------------------------------------- -->
@@ -876,6 +933,7 @@ p.net_connections()
 - [Kho mã nguồn psutil trên GitHub](https://github.com/giampaolo/psutil)
 - [Hướng dẫn Python `psutil` trên Real Python](https://realpython.com/python-psutil)
 - [Chi tiết các hàm trong psutil process ](https://psutil.readthedocs.io/en/latest/#processes)
+- [Real process memory and environ in python (Giampaolo)](https://gmpy.dev/blog/2016/real-process-memory-and-environ-in-python)
 
 ## Tài liệu chính thức
 Để có thêm thông tin chi tiết, tham khảo tài liệu chính thức:

@@ -16,7 +16,7 @@ import os
 #     print(f"Process with PID 12345 not found: {e}")
     
 # Get the current Python process
-p = psutil.Process(psutil.Process().pid)
+# p = psutil.Process(psutil.Process().pid)
 
 
 # Get the user IDs
@@ -67,20 +67,29 @@ p = psutil.Process(psutil.Process().pid)
 # print(f"CPU usage: {cpu_percent}%")
 
 
-print(p.cpu_num())
+# print(p.cpu_num())
 
-num_cpus = os.cpu_count()
-print("Số lượng CPU:", num_cpus)
+# num_cpus = os.cpu_count()
+# print("Số lượng CPU:", num_cpus)
 
-# Sử dụng psutil
-num_cpus = psutil.cpu_count(logical=True)  # Số lượng CPU logic
-print("Số lượng CPU logic:", num_cpus)
-num_cpus = psutil.cpu_count(logical=False)  # Số lượng CPU vật lý
-print("Số lượng CPU vật lý:", num_cpus)
+# # Sử dụng psutil
+# num_cpus = psutil.cpu_count(logical=True)  # Số lượng CPU logic
+# print("Số lượng CPU logic:", num_cpus)
+# num_cpus = psutil.cpu_count(logical=False)  # Số lượng CPU vật lý
+# print("Số lượng CPU vật lý:", num_cpus)
 
-# memory_maps = p.memory_maps(grouped=True)
-# for memory_map in memory_maps:
-#     print(f"Path: {memory_map.path}")
-#     print(f"RSS: {memory_map.rss / 1024 / 1024:.2f} MB")
-#     print(f"Size: {memory_map.size / 1024 / 1024:.2f} MB")
-print(p.is_running())
+# # memory_maps = p.memory_maps(grouped=True)
+# # for memory_map in memory_maps:
+# #     print(f"Path: {memory_map.path}")
+# #     print(f"RSS: {memory_map.rss / 1024 / 1024:.2f} MB")
+# #     print(f"Size: {memory_map.size / 1024 / 1024:.2f} MB")
+# print(p.is_running())
+
+# Create a subprocess to run the 'ls' command
+p = psutil.Popen(['ls', '-la'])
+
+# Wait for the subprocess to finish
+p.wait()
+
+# Print the return code
+print(p.returncode)
