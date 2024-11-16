@@ -687,11 +687,11 @@ num_cpus = psutil.cpu_count(logical=False)  # Số lượng CPU vật lý
 **`memory_info()`**: chức năng hoặc phương pháp được sử dụng để truy xuất thông tin về việc sử dụng bộ nhớ của một tiến trình
 
 **Thông số trả về**: 
-- `rss(resident sent size)`: hay còn gọi là “Kích thước cài đặt thường trú”, đây là bộ nhớ vật lý không thể hoán đổi mà một quy trình đã sử dụng. Trên UNIX nó khớp với cột RES của “top“
-- `vms(virtual memory size)`: hay còn gọi là “Kích thước bộ nhớ ảo”, đây là tổng dung lượng bộ nhớ ảo được quy trình sử dụng. Trên UNIX nó khớp với cột VIRT của “top“.
-- `shared`: bộ nhớ (Linux) có thể được chia sẻ với các quy trình khác. Điều này khớp với cột SHR của “top“
-- `text (Linux, BSD)`: hay còn gọi là TRS (text resident set) dung lượng bộ nhớ dành cho mã thực thi. Điều này khớp với cột CODE của “top“.
-- `data(Linux, BSD)`: hay còn gọi là DRS (bộ lưu trữ dữ liệu) dung lượng bộ nhớ vật lý dành cho mã không phải là mã thực thi. Nó khớp với cột DATA của “top“.
+- `rss(resident sent size)`: “Kích thước cài đặt thường trú”, đây là bộ nhớ vật lý không thể hoán đổi mà một tiến trình đã sử dụng. Trên UNIX nó khớp với cột RES của “top“
+- `vms(virtual memory size)`: “Kích thước bộ nhớ ảo”, đây là tổng dung lượng bộ nhớ ảo được tiến trình sử dụng. Trên UNIX nó khớp với cột VIRT của “top“.
+- `shared`: bộ nhớ (Linux) có thể được chia sẻ với các tiến trình khác. Điều này khớp với cột SHR của “top“
+- `text (Linux, BSD)`: TRS (text resident set) dung lượng bộ nhớ dành cho mã thực thi. Điều này khớp với cột CODE của “top“.
+- `data(Linux, BSD)`: DRS (bộ lưu trữ dữ liệu) dung lượng bộ nhớ vật lý dành cho mã không phải là mã thực thi. Nó khớp với cột DATA của “top“.
 - `lib (Linux)`: bộ nhớ được sử dụng bởi các thư viện dùng chung.
 - `dirty (Linux)`: số lượng trang bẩn.
 
@@ -706,7 +706,13 @@ p.memory_info()
 ```
 <hr style="border: px solid;">
 
-**``**:
+**`memory_full_info()`**: giống memory_info , chỉ có thêm vài thông số trả về
+
+- uss(Unique Set Size): “Kích thước cài đặt duy nhất”, bộ nhớ dành riêng cho một tiến trình và sẽ được giải phóng nếu tiến trình đó bị chấm dứt ngay bây giờ.
+
+- pss(Proportional Set Size): “Kích thước cài đặt theo tỷ lệ”, là dung lượng bộ nhớ được chia sẻ với các tiến trình khác, được tính theo cách dung lượng được chia đều cho các tiến trình chia sẻ nó. tức là nếu một tiến trình có tất cả 10 MB cho chính nó và 10 MB được chia sẻ với một tiến trình khác thì PSS của nó sẽ là 15 MB.
+
+- swap (Linux): dung lượng bộ nhớ đã được hoán đổi vào đĩa.
 
 **Ví dụ**
 
@@ -720,47 +726,100 @@ p.memory_info()
 **Ví dụ**
 
 ```python
-
+print(p.memory_full_info())
+# pfullmem(rss=12025856, vms=17358848, shared=6336512, text=2822144, lib=0, data=7196672, dirty=0, uss=5861376, pss=7316480, swap=0)
 ```
 <hr style="border: px solid;">
 
-**``**:
+**`memory_percent(memtype='rss')`**: So sánh bộ nhớ tiến trình với tổng bộ nhớ hệ thống vật lý và tính toán mức sử dụng bộ nhớ tiến trình theo phần trăm.
 
 **Ví dụ**
 
 ```python
-
+p.memory_percent(memtype="rss")
+# 0.14495697226152243
 ```
 <hr style="border: px solid;">
 
-**``**:
+**`memory_maps(grouped=True)`**: Nó trả về một danh sách các bộ dữ liệu được đặt tên, mỗi bộ đại diện cho một vùng bộ nhớ được ánh xạ bởi các tiến trình
+- Khi được `grouped = True`, phương thức sẽ nhóm các vùng bộ nhớ theo đường dẫn tệp của chúng. Xem tổng mức sử dụng bộ nhớ cho từng tệp hoặc thư viện.
+
+**Return**
+- `path, rss, pss`: tương tự với memory_info()
+- `Shared_clean`: Bộ nhớ sạch được chia sẻ.
+
+- `Shared_dirty`: Bộ nhớ bẩn được chia sẻ.
+
+- `Private_clean`: Bộ nhớ sạch riêng tư.
+
+- `Private_dirty`: Bộ nhớ bẩn riêng tư.
+
+- `refenced`: Bộ nhớ đã được truy cập gần đây.
+
+- `Private`: Bộ nhớ Private, không được hỗ trợ bởi tệp.
+
+- `Trao đổi(Swap)`: Bộ nhớ đã được hoán đổi vào đĩa.
 
 **Ví dụ**
 
 ```python
+memory_maps = p.memory_maps(grouped=True)
 
+for memory_map in memory_maps:
+    print(f"Path: {memory_map.path}")
+    print(f"RSS: {memory_map.rss / 1024 / 1024:.2f} MB")
+    print(f"Size: {memory_map.size / 1024 / 1024:.2f} MB")
 ```
 <hr style="border: px solid;">
 
-**``**:
+**`open_files()`**: Trả về các tệp thông thường được mở theo tiến trình dưới dạng danh sách các bộ dữ liệu được đặt tên
+- path: tên file tuyệt đối.
+
+- fd: số mô tả tập tin
+- vị trí (Linux): vị trí tệp (offset).
+
+- mode (Linux): một chuỗi cho biết cách mở tệp, tương tự như đối số chế độ dựng sẵn mở. Các giá trị có thể là 'r', 'w', 'a', 'r+' và 'a+'. Không có sự phân biệt giữa các tệp được mở ở chế độ nhị phân hoặc văn bản ("b" hoặc "t").
+
+- flags (Linux): các cờ được chuyển đến lệnh gọi os.open C cơ bản khi tệp được mở (ví dụ: os.O_RDONLY, os.O_TRUNC, v.v.).
 
 **Ví dụ**
 
 ```python
-
+f = open('file.ext', 'w')
+p = psutil.Process()
+p.open_files()
+[popenfile(path='/home/giampaolo/svn/psutil/file.ext', fd=3, position=0, mode='w', flags=32769)]
 ```
 <hr style="border: px solid;">
 
-**``**:
+**`net_connections(kind='inet')`**: Trả về các kết nối socket được mở theo quy trình dưới dạng danh sách các bộ dữ liệu được đặt tên
+
+**Tham số** :
+- `inet`: Các kết nối Internet (TCP hoặc UDP).
+- `inet4`: Các kết nối IPv4.
+- `inet6`': Các kết nối IPv6.
+- `unix`: Các kết nối socket Unix.
+
+**Giá trị trả về**:
+
+- `fd`: Mô tả số (file descriptor) của socket.
+- `family`: Gia đình địa chỉ (AF_INET, AF_INET6 hoặc AF_UNIX).
+- `type`: Loại socket (SOCK_STREAM, SOCK_DGRAM, SOCK_RAW).
+- `laddr`(local): Địa chỉ địa phương (ip, port).
+- `raddr`(remote): Địa chỉ từ xa (ip, port).
+- `status`: Trạng thái của kết nối (ESTABLISHED, LISTEN, CLOSE_WAIT, ...).
+- `pid`: PID của tiến trình sở hữu kết nối
 
 **Ví dụ**
 
 ```python
-
+p.net_connections()
 ```
 <hr style="border: px solid;">
 
-**``**:
+**`is_running()`**: Trả về xem quy trình hiện tại có đang chạy trong danh sách quy trình hiện tại không. 
+- tự động xóa quy trình khỏi bộ đệm trong của process_iter() nếu PID đã được quy trình khác sử dụng lại.
+- trả về True nếu tiến trình là zombie (p.status() == psutil.STATUS_ZOMBIE).
 
 **Ví dụ**
 
