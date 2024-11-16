@@ -76,3 +76,5 @@ num_cpus = psutil.cpu_count(logical=True)  # Số lượng CPU logic
 print("Số lượng CPU logic:", num_cpus)
 num_cpus = psutil.cpu_count(logical=False)  # Số lượng CPU vật lý
 print("Số lượng CPU vật lý:", num_cpus)
+
+print(p.memory_info())

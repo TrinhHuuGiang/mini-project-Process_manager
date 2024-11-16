@@ -684,12 +684,25 @@ num_cpus = psutil.cpu_count(logical=False)  # Số lượng CPU vật lý
 ```
 <hr style="border: px solid;">
 
-**``**:
+**`memory_info()`**: chức năng hoặc phương pháp được sử dụng để truy xuất thông tin về việc sử dụng bộ nhớ của một tiến trình
+
+**Thông số trả về**: 
+- `rss(resident sent size)`: hay còn gọi là “Kích thước cài đặt thường trú”, đây là bộ nhớ vật lý không thể hoán đổi mà một quy trình đã sử dụng. Trên UNIX nó khớp với cột RES của “top“
+- `vms(virtual memory size)`: hay còn gọi là “Kích thước bộ nhớ ảo”, đây là tổng dung lượng bộ nhớ ảo được quy trình sử dụng. Trên UNIX nó khớp với cột VIRT của “top“.
+- `shared`: bộ nhớ (Linux) có thể được chia sẻ với các quy trình khác. Điều này khớp với cột SHR của “top“
+- `text (Linux, BSD)`: hay còn gọi là TRS (text resident set) dung lượng bộ nhớ dành cho mã thực thi. Điều này khớp với cột CODE của “top“.
+- `data(Linux, BSD)`: hay còn gọi là DRS (bộ lưu trữ dữ liệu) dung lượng bộ nhớ vật lý dành cho mã không phải là mã thực thi. Nó khớp với cột DATA của “top“.
+- `lib (Linux)`: bộ nhớ được sử dụng bởi các thư viện dùng chung.
+- `dirty (Linux)`: số lượng trang bẩn.
 
 **Ví dụ**
 
 ```python
+import psutil
+p = psutil.Process()
+p.memory_info()
 
+# pmem(rss=11714560, vms=17358848, shared=6025216, text=2822144, lib=0, data=7196672, dirty=0)
 ```
 <hr style="border: px solid;">
 
