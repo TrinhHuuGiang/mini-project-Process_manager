@@ -669,7 +669,7 @@ p.cpu_affinity([])
 - `CPU logic`: Bao gồm cả các luồng (threads) trên mỗi core.
 - `CPU vật lý`: Là số lượng core vật lý của CPU.
 - `Hyper-threading`: Công nghệ Hyper-threading của Intel làm cho mỗi core vật lý xuất hiện như nhiều core logic.
-- `Hệ thống đa socket`: Nếu hệ thống của bạn có nhiều socket, mỗi socket có thể chứa nhiều CPU.
+- `Hệ thống đa socket`: Nếu hệ thống có nhiều socket, mỗi socket có thể chứa nhiều CPU.
 
 **Ví dụ**
 
