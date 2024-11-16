@@ -21,6 +21,7 @@ from _3_display_component.main_window.main_win import Main_win #main class for g
 '''****************************************************************************
 * Variable
 ****************************************************************************'''
+# window
 w_guide = None
 
 '''****************************************************************************
@@ -68,3 +69,26 @@ def exit_guide_window():
     print("[OK - {}] closed the guide window".format(exit_guide_window.__name__),
     file=sys.stderr)
     # no return
+
+
+# ___________[Thread_Function]___________
+# Call these support function after init window
+# A. Resize window
+def resize_guide_window():
+    global w_guide
+    # save old background size
+    back_col = w_guide.back_win_col
+    back_row = w_guide.back_win_row
+    # get background size
+    w_guide.get_backwin_size()
+    if((back_col == w_guide.back_win_col) and
+       (back_row == w_guide.back_win_row)):
+        return #size not change
+
+    # else calculate size sub windows
+    w_guide.cal_size_sub_window()
+
+    # clear, resize and reset border
+    w_guide.clear_all_window()
+    w_guide.update_size_sub_window()
+    w_guide.Set_border()

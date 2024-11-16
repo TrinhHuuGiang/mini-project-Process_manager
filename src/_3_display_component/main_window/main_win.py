@@ -29,14 +29,14 @@ class Main_win(Container):
         # init backwindow
         Container.__init__(self)
         # calculate sub win size
-        self.cal_size_window()
+        self.cal_size_sub_window()
         # init sub window
         self.w_order = curses.newwin(self.w_order_row,self.w_order_col,
                                      self.w_order_begin_row,self.w_order_begin_col)
         self.w_guide = curses.newwin(self.w_guide_row,self.w_guide_col,
                                      self.w_guide_begin_row,self.w_guide_begin_col)
 
-        # now add keypad(True) for some special input
+        # now add keypad(True)
         self.w_order.keypad(True), self.w_guide.keypad(True)
 
         # set border
@@ -48,7 +48,7 @@ class Main_win(Container):
             
     # ______________[interract with window]_____________
     # *****[A. calculate and re-set size window]*****
-    def cal_size_window(self):
+    def cal_size_sub_window(self):
         #order window
         self.w_order_begin_col = self.back_win_col * 10 // 100
         self.w_order_begin_row = self.back_win_row * 10 // 100
@@ -61,13 +61,33 @@ class Main_win(Container):
         self.w_guide_col = self.w_order_col
         self.w_guide_row = self.back_win_row * 30 // 100
 
-    # clear all window
+        #fix size if invalid, min 5
+        if(self.w_order_col <= 4): self.w_order_col = 5
+        if(self.w_order_row <= 4): self.w_order_row = 5
+        if(self.w_guide_col <= 4): self.w_guide_col = 5
+        if(self.w_guide_row <= 4): self.w_guide_row = 5
+        #fix coordinate if x invalid, > back_win_col - 1, set 0
+        #fix coordinate if y invalid, > back_win_row - 1, set 0
+        if(self.w_order_begin_col > self.back_win_col - 1): self.w_order_begin_col = 0
+        if(self.w_order_begin_row > self.back_win_row - 1): self.w_order_begin_row = 0
+        if(self.w_guide_begin_col > self.back_win_col - 1): self.w_guide_begin_col = 0
+        if(self.w_guide_begin_row > self.back_win_row - 1): self.w_guide_begin_row = 0
 
-    #update size after calculate
+    # clear all window
+    def clear_all_window(self):
+        self.backwin.clear()
+        self.w_order.clear()
+        self.w_guide.clear()
+
+
+    #update size and move coordinate after calculate
     def update_size_sub_window(self):
+        # update size
         self.w_order.resize(self.w_order_row,self.w_order_col)
         self.w_guide.resize(self.w_guide_row,self.w_guide_col)
-        self.Set_border()
+        # update coordinate
+        self.w_order.mvwin(self.w_order_begin_row,self.w_order_begin_col)
+        self.w_guide.mvwin(self.w_guide_begin_row,self.w_guide_begin_col)
 
     # *****[B. add border window]*****
     def Set_border(self):
