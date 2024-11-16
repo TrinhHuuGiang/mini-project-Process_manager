@@ -8,7 +8,6 @@ import time
 
 # handler libraries
 from _2_display_module import guide_handler
-from _3_display_component.main_window.main_win import max_num_choice # const max choice
 
 '''****************************************************************************
 * Variable
@@ -47,7 +46,7 @@ def guide_auto_run():
 
     # [guide handler]
     # initialize menu guide window
-    guide_window[0]()
+    max_num_choice = guide_window[0]()
     
     # start create support threads
     thread1 = threading.Thread(target=resize_win)

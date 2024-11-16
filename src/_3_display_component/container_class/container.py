@@ -36,6 +36,10 @@ class Container:
         # now add keypad(True), this function have to set for every new window
         self.backwin.keypad(True)
 
+        # now add non blocking mode to use getch()
+        # and getch() auto  return -1 if buffer user input empty
+        self.backwin.nodelay(True)
+
         # [Check and Update]
         # update background window size to update child window size
         self.get_backwin_size()
