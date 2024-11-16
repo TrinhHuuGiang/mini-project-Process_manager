@@ -271,7 +271,7 @@ print(f"Process created at: {create_time_str}")
 
 **Tham số**:
 - attrs: Danh sách tên thuộc tính tùy chọn để đưa vào từ điển. Nếu không được chỉ định, tất cả các thuộc tính có sẵn sẽ được bao gồm.
-- ad_value: A default value to use for attributes that cannot be retrieved due to access restrictions or other errors.
+- ad_value: Giá trị mặc định để sử dụng cho các thuộc tính không thể truy xuất do hạn chế truy cập hoặc các lỗi khác.
 
 **Ví dụ**
 
@@ -688,12 +688,17 @@ num_cpus = psutil.cpu_count(logical=False)  # Số lượng CPU vật lý
 
 **Thông số trả về**: 
 - `rss(resident sent size)`: “Kích thước cài đặt thường trú”, đây là bộ nhớ vật lý không thể hoán đổi mà một tiến trình đã sử dụng. Trên UNIX nó khớp với cột RES của “top“
+
 - `vms(virtual memory size)`: “Kích thước bộ nhớ ảo”, đây là tổng dung lượng bộ nhớ ảo được tiến trình sử dụng. Trên UNIX nó khớp với cột VIRT của “top“.
 - `shared`: bộ nhớ (Linux) có thể được chia sẻ với các tiến trình khác. Điều này khớp với cột SHR của “top“
+
 - `text (Linux, BSD)`: TRS (text resident set) dung lượng bộ nhớ dành cho mã thực thi. Điều này khớp với cột CODE của “top“.
-- `data(Linux, BSD)`: DRS (bộ lưu trữ dữ liệu) dung lượng bộ nhớ vật lý dành cho mã không phải là mã thực thi. Nó khớp với cột DATA của “top“.
-- `lib (Linux)`: bộ nhớ được sử dụng bởi các thư viện dùng chung.
-- `dirty (Linux)`: số lượng trang bẩn.
+
+- `data(Linux, BSD)`:  lượng bộ nhớ dành cho dữ liệu (data segment) và heap, tức là nơi chứa các biến toàn cục, biến động (allocated memory) và dữ liệu do tiến trình tạo ra. Nó khớp với cột DATA của “top“.
+
+- `lib (Linux)`:  lượng bộ nhớ được ánh xạ bởi các thư viện dùng chung (shared libraries). Tuy nhiên, giá trị này thường được báo cáo là 0 trên nhiều hệ điều hành hiện đại, vì bộ nhớ này thường được tính vào shared.
+
+- `dirty (Linux)`: lượng bộ nhớ được sửa đổi trong tiến trình nhưng chưa được ghi trở lại vào ổ cứng. Bộ nhớ này được gọi là "dirty" (bẩn) vì nó cần được đồng bộ hóa với lưu trữ lâu dài trước khi giải phóng.
 
 **Ví dụ**
 
