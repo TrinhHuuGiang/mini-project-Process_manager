@@ -714,17 +714,6 @@ p.memory_info()
 
 - swap (Linux): dung lượng bộ nhớ đã được hoán đổi vào đĩa.
 
-**Ví dụ**
-
-```python
-
-```
-<hr style="border: px solid;">
-
-**``**:
-
-**Ví dụ**
-
 ```python
 print(p.memory_full_info())
 # pfullmem(rss=12025856, vms=17358848, shared=6336512, text=2822144, lib=0, data=7196672, dirty=0, uss=5861376, pss=7316480, swap=0)
