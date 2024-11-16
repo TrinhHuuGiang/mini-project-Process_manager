@@ -141,6 +141,8 @@ class Main_win(Container):
             
         # refresh border
         self.w_order.box('|','-')
+        # add name
+        self.w_order.addstr(0,1,"[Menu Function]", self.COS[3])
         # refresh display
         self.w_order.refresh()
 
@@ -173,6 +175,8 @@ class Main_win(Container):
 
         # refresh border
         self.w_guide.box('|','-')
+        # add name
+        self.w_guide.addstr(0,1,"[Guide]", self.COS[1])
         # refresh display
         self.w_guide.refresh()
 

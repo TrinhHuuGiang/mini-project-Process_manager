@@ -42,6 +42,9 @@ lock_size = threading.Lock()
 sleep_resize_time = 0.01 # 10 ms
 sleep_menu_time = 0.1 # 100ms (~ 10% error)
 sleep_guide_time = 0.1 # 100ms (~ 10% error)
+
+# >>>>>>>>>>>>>> [  i think need condition variable here   ] <<<<<<<<<<<<<<<<<<<<<<
+# contact background refresh with resize_guide_window()
 sleep_back_time = 3 # 3s (no error :) but need modify for reduce flashing)
 
 # main process variable
@@ -125,7 +128,7 @@ def resize_guide_window():
         # check min size window
         while((w_guide.back_win_col <=  w_guide.w_back_mincol) or
         (w_guide.back_win_row <= w_guide.w_back_minrow)):
-            w_guide.backwin.addstr(0,0,"[Stopped]",w_guide.COS[3])
+            w_guide.backwin.addstr(0,0,"[Stopped]",w_guide.COS[0])
             # idont know why need refresh before get background size
             # but if don't do it, while will be into infinite loop
             # so great is call refresh before getmaxyx
@@ -160,10 +163,14 @@ def update_guide_content():
 
 # update background
 def update_background():
+    global w_guide
     time.sleep(sleep_back_time)
     with lock_size:
-        # update some static window
+        #clear
         w_guide.backwin.clear()
+        #add box
         w_guide.backwin.box('|','-')
+        #add name
+        w_guide.backwin.addstr(0,1,"[Task Manager]",w_guide.COS[4])
         #refresh to apply new change
         w_guide.backwin.refresh()

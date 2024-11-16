@@ -49,6 +49,7 @@ def update_background():
     
 # start and destroy threads 
 def start_threads():
+    global thread1,thread2, thread3, thread4
     thread1 = threading.Thread(target=resize_win)
     thread2 = threading.Thread(target=update_list_order)
     thread3 = threading.Thread(target=update_guide)
@@ -60,6 +61,7 @@ def start_threads():
     thread4.start()
 
 def destroy_threads():
+    global thread1,thread2, thread3, thread4
     thread1.join()
     thread2.join()
     thread3.join()
