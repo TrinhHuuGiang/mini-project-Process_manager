@@ -16,16 +16,54 @@ guide_window = [guide_handler.init_guide_window,guide_handler.update_menu_list_a
 guide_handler.exit_guide_window]
 
 # global signal for thread
-res_sig = 1
+end_sig = 1
 
+# threads
+thread1 = None
+thread2 = None
+thread3 = None
+thread4 = None
 '''****************************************************************************
 * Code
 ****************************************************************************'''
 # [Initialize support threads]
 def resize_win():
-    global res_sig
-    while res_sig:
+    global end_sig
+    while end_sig:
         guide_handler.resize_guide_window()
+
+def update_list_order():
+    global end_sig
+    while end_sig:
+        guide_handler.update_menu_list()
+
+def update_guide():
+    global end_sig
+    while end_sig:
+        guide_handler.update_guide_content()
+
+def update_background():
+    global end_sig
+    while end_sig:
+        guide_handler.update_background()
+    
+# start and destroy threads 
+def start_threads():
+    thread1 = threading.Thread(target=resize_win)
+    thread2 = threading.Thread(target=update_list_order)
+    thread3 = threading.Thread(target=update_guide)
+    thread4 = threading.Thread(target=update_background)
+
+    thread1.start() # resize always start first
+    thread2.start()
+    thread3.start()
+    thread4.start()
+
+def destroy_threads():
+    thread1.join()
+    thread2.join()
+    thread3.join()
+    thread4.join()
 
 # [guide auto run]
 # It will run processing commands step by step:
@@ -40,30 +78,29 @@ def guide_auto_run():
     global guide_window
     ret = 0
     # init variable threads
-    global res_sig
+    global end_sig
 
     # [guide handler]
     # initialize menu guide window
     max_num_choice = guide_window[0]()
     
     # start create support threads
-    thread1 = threading.Thread(target=resize_win)
-    thread1.start()
+    start_threads()
 
     # runs automatically until the user selects a display window
     ret = guide_window[1]()
     if(ret == -1):
         # wait thread end
-        res_sig = 0
-        thread1.join()
+        end_sig = 0
+        destroy_threads()
         # close 'curses' and switch back to the original terminal
         guide_window[2]()
         print("[OK - {}] - Closed".format(guide_auto_run.__name__), file=sys.stderr)
         return -1 # no error, exit
     elif((ret < 0 ) and (ret >= max_num_choice )):
         # wait thread end
-        res_sig = 0
-        thread1.join()
+        end_sig = 0
+        destroy_threads()
         # close 'curses' and switch back to the original terminal
         guide_window[2]()
         print("[ERR - {}] - Unexpected event".format(guide_auto_run.__name__), file=sys.stderr)
@@ -71,8 +108,8 @@ def guide_auto_run():
     
     # else 0<= ret < max_numchoice 
     # wait thread end
-    res_sig = 0
-    thread1.join()
+    end_sig = 0
+    destroy_threads()
     # close the guide window and return the selected event handler
     guide_window[2]()
 

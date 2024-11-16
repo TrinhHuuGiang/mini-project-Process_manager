@@ -19,7 +19,7 @@ class Main_win(Container):
                              "order 3","order 4","order 5",
                              "order 6","order 7","order 8")
         self.max_num_choice = len(self.order_choice)
-        #sub instruction window
+        #sub guide window
         self.w_guide_begin_col = None; self.w_guide_begin_row = None
         self.w_guide_col = None; self.w_guide_row = None
 
@@ -163,5 +163,16 @@ class Main_win(Container):
 
 
     #[D. guide users window]
-    
+    def update_guide(self):
+        #clear screen first
+        self.w_guide.clear()
+
+        self.w_guide.addstr(1,1,"W-up S-down")
+        self.w_guide.addstr(2,1,"Q-quit")
+        self.w_guide.addstr(3,1,"Enter-select")
+
+        # refresh border
+        self.w_guide.box('|','-')
+        # refresh display
+        self.w_guide.refresh()
 
