@@ -33,8 +33,8 @@ lock_size = threading.Lock()
     #- update size window
     #+ keep safe when window invalid size
     #+ re-calculate edge and coordinate
-    #+ refresh after changed
-    #- update menu, update guide:
+    #+ update static window: guide
+    #- update menu:
     #+ update content with user choice
     
 # sleep for cpu calculation time
@@ -42,7 +42,6 @@ lock_size = threading.Lock()
 # sometime get error when we change window size too fast
 sleep_resize_time = 0.01 # 10 ms
 sleep_menu_time = 0.1 # 100ms (~ 10% error)
-sleep_guide_time = 0.1 # 100ms (~ 10% error)
 
 # main process variable
 sleep_get_user_input = 0.1#100ms
@@ -167,6 +166,10 @@ def resize_guide_window():
 
         # clean stdin buffer before unlock
         while w_guide.backwin.getch() != -1: continue
+    
+    #[update static window]
+    #include : guide
+    w_guide.update_guide()
 
 # B. Update static content
 # update menu
@@ -177,8 +180,3 @@ def update_menu_list():
         # update list order
         w_guide.update_order()
 
-# update guide
-def update_guide_content():
-    time.sleep(sleep_guide_time)
-    with lock_size:
-        w_guide.update_guide()
