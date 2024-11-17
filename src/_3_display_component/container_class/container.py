@@ -57,6 +57,12 @@ class Container:
     # ______________[checking resource]_____________
     # [A. Should check size main window before printing anything]
     def get_backwin_size(self):
+        # idont know why need refresh before get 'get_backwin_size'
+        # but if don't do it, while will be into infinite loop because of no update size
+        # so great is call refresh before getmaxyx - get_backwin_size
+        # for reduce flashing 1 using 'noutrefresh' and 'doupdate' after few second
+        # because refresh = noutrefresh + doupdate
+        self.backwin.noutrefresh()# curses update background value 
         self.back_win_row, self.back_win_col = self.backwin.getmaxyx()
     
     # [B. check color and set color]
@@ -87,10 +93,10 @@ class Container:
     #[print hello to test color]
     #must Check_color_and_set() before use this function
     def Hello_World(self):
-        self.backwin.addstr(0, self.back_win_col//2 -15 ,"Qquit",self.COS[0])
-        self.backwin.addstr(0, self.back_win_col//2 -10 ,"_____",self.COS[1])
-        self.backwin.addstr(0, self.back_win_col//2 -5  ,"hello",self.COS[2])
-        self.backwin.addstr(0, self.back_win_col//2     ,"hello",self.COS[3])
-        self.backwin.addstr(0, self.back_win_col//2 +5  ,"_____",self.COS[4])
-        self.backwin.addstr(0, self.back_win_col//2 +10 ,"Qquit",self.COS[5])
+        self.backwin.addstr(0, self.back_win_col//2 -15 ,"Team5",self.COS[0])
+        self.backwin.addstr(0, self.back_win_col//2 -10 ,"_Proc",self.COS[1])
+        self.backwin.addstr(0, self.back_win_col//2 -5  ,"ess__",self.COS[2])
+        self.backwin.addstr(0, self.back_win_col//2     ,"Manag",self.COS[3])
+        self.backwin.addstr(0, self.back_win_col//2 +5  ,"er___",self.COS[4])
+        self.backwin.addstr(0, self.back_win_col//2 +10 ,"Hello",self.COS[5])
         self.backwin.refresh()

@@ -41,10 +41,11 @@ lock_size = threading.Lock()
 # :) i think this ratio is fine
 # sometime get error when we change window size too fast
 sleep_resize_time = 0.01 # 10 ms
-sleep_menu_time = 0.1 # 100ms (~ 10% error)
+sleep_menu_time = 1 # 1s/time update (~ 1% error) , reduce flashing
+sleep_back_time = 3 # wait 3s say hello
 
 # main process variable
-sleep_get_user_input = 0.1#100ms
+sleep_get_user_input = 0.5#500ms
 
 '''****************************************************************************
 * Code
@@ -79,13 +80,17 @@ def update_menu_list_and_get_choice():
             continue
         # else check what user want
         else: temp_input = chr(temp_input)
+        # clean stdin buffer before unlock
+        while w_guide.backwin.getch() != -1: continue
+        
         if(temp_input == 'w'):
             w_guide.order_top()#user want upper
         elif(temp_input == 's'):
             w_guide.order_down()#user want lower
         elif(temp_input == '\n'):
             return w_guide.get_order()#user want order
-
+        
+    w_guide.backwin.addstr(1,1,"wait...")
     #if input == q
     return -1 # quit signal
 
@@ -102,12 +107,13 @@ def exit_guide_window():
 # Call these support function after init window
 # A. Resize window
 def resize_guide_window():
+    global w_guide
+    global lock_size
     # 10 ms sleep
     # 10ms is much shorter than 100ms when 'update_order'
     # so it reduces the error rate when the user suddenly 
     # changes the screen size
     time.sleep(sleep_resize_time)
-    global w_guide
     # save old background size
     old_back_col = w_guide.back_win_col
     old_back_row = w_guide.back_win_row
@@ -121,12 +127,6 @@ def resize_guide_window():
         count_before_refresh = 0
         while ((w_guide.back_win_col <= w_guide.w_back_mincol) or
         (w_guide.back_win_row <= w_guide.w_back_minrow)):
-            # idont know why need refresh before get 'get_backwin_size'
-            # but if don't do it, while will be into infinite loop because of no update size
-            # so great is call refresh before getmaxyx - get_backwin_size
-            # for reduce flashing 1 using 'noutrefresh' and 'doupdate' after few second
-            # because refresh = noutrefresh + doupdate
-            w_guide.backwin.noutrefresh()# curses update background value 
             if count_before_refresh == 0:
                 count_before_refresh += 1
                 # clear then add log error onto menu screen
@@ -135,7 +135,7 @@ def resize_guide_window():
                 w_guide.w_order.addstr(1,0,"80col 24row",w_guide.COS[0])
                 w_guide.backwin.noutrefresh()
                 # update
-                curses.doupdate()
+                curses.doupdate()#because of 'noutrefresh'
             elif count_before_refresh > 5: count_before_refresh = 0
             else: count_before_refresh +=1
             # combination witch sleep :) for reduce flashing and crash app
@@ -168,15 +168,34 @@ def resize_guide_window():
         #include : guide
         w_guide.update_guide()
 
-        # clean stdin buffer before unlock
-        while w_guide.backwin.getch() != -1: continue
-
-# B. Update static content
+# B. Update dynamic content
 # update menu
 def update_menu_list():
+    global w_guide
+    global lock_size
     #sleep 100ms for other threads and avoid continuous refreshes
     time.sleep(sleep_menu_time)
     with lock_size:
         # update list order
         w_guide.update_order()
 
+# C. Update static content
+    #no sleep, print 1 time after init window
+    #so 'no' using 'while loop' when create thread
+    #content will update in 'resize_guide_window' when resize
+def update_guide_content():
+    global w_guide
+    global lock_size
+    with lock_size:
+        w_guide.update_guide()
+
+# update background
+def update_background():
+    global w_guide
+    global lock_size
+    time.sleep(sleep_back_time)# wait opening 'Hello'
+    with lock_size:
+        #add name
+        w_guide.backwin.addstr(0,1,"[Task Manager]",w_guide.COS[4])
+        #refresh to apply new change
+        w_guide.backwin.refresh()
