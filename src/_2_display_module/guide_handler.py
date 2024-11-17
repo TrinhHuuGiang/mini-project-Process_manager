@@ -164,12 +164,12 @@ def resize_guide_window():
         #refresh to apply new change
         w_guide.backwin.refresh()
 
+        #[update static window]
+        #include : guide
+        w_guide.update_guide()
+
         # clean stdin buffer before unlock
         while w_guide.backwin.getch() != -1: continue
-    
-    #[update static window]
-    #include : guide
-    w_guide.update_guide()
 
 # B. Update static content
 # update menu
