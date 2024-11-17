@@ -22,7 +22,6 @@ end_sig = 1
 thread1 = None
 thread2 = None
 thread3 = None
-thread4 = None
 '''****************************************************************************
 * Code
 ****************************************************************************'''
@@ -41,11 +40,6 @@ def update_guide():
     global end_sig
     while end_sig:
         guide_handler.update_guide_content()
-
-def update_background():
-    global end_sig
-    while end_sig:
-        guide_handler.update_background()
     
 # start and destroy threads 
 def start_threads():
@@ -53,19 +47,17 @@ def start_threads():
     thread1 = threading.Thread(target=resize_win)
     thread2 = threading.Thread(target=update_list_order)
     thread3 = threading.Thread(target=update_guide)
-    thread4 = threading.Thread(target=update_background)
 
     thread1.start() # resize always start first
     thread2.start()
     thread3.start()
-    thread4.start()
 
 def destroy_threads():
     global thread1,thread2, thread3, thread4
     thread1.join()
     thread2.join()
     thread3.join()
-    thread4.join()
+
 
 # [guide auto run]
 # It will run processing commands step by step:

@@ -33,9 +33,9 @@ lock_size = threading.Lock()
     #- update size window
     #+ keep safe when window invalid size
     #+ re-calculate edge and coordinate
-    #- update menu, update guide, update background:
+    #+ refresh after changed
+    #- update menu, update guide:
     #+ update content with user choice
-    #- update background refresh speed for reduce flashing
     
 # sleep for cpu calculation time
 # :) i think this ratio is fine
@@ -43,10 +43,6 @@ lock_size = threading.Lock()
 sleep_resize_time = 0.01 # 10 ms
 sleep_menu_time = 0.1 # 100ms (~ 10% error)
 sleep_guide_time = 0.1 # 100ms (~ 10% error)
-
-# >>>>>>>>>>>>>> [  i think need condition variable here   ] <<<<<<<<<<<<<<<<<<<<<<
-# contact background refresh with resize_guide_window()
-sleep_back_time = 3 # 3s (no error :) but need modify for reduce flashing)
 
 # main process variable
 sleep_get_user_input = 0.1#100ms
@@ -159,6 +155,16 @@ def resize_guide_window():
         w_guide.cal_size_sub_window()
         w_guide.update_size_sub_window()
 
+        #[now refresh background after size  changed]
+        #clear
+        w_guide.backwin.clear()
+        #add box
+        w_guide.backwin.box('|','-')
+        #add name
+        w_guide.backwin.addstr(0,1,"[Task Manager]",w_guide.COS[4])
+        #refresh to apply new change
+        w_guide.backwin.refresh()
+
         # clean stdin buffer before unlock
         while w_guide.backwin.getch() != -1: continue
 
@@ -176,17 +182,3 @@ def update_guide_content():
     time.sleep(sleep_guide_time)
     with lock_size:
         w_guide.update_guide()
-
-# update background
-def update_background():
-    global w_guide
-    time.sleep(sleep_back_time)
-    with lock_size:
-        #clear
-        w_guide.backwin.clear()
-        #add box
-        w_guide.backwin.box('|','-')
-        #add name
-        w_guide.backwin.addstr(0,1,"[Task Manager]",w_guide.COS[4])
-        #refresh to apply new change
-        w_guide.backwin.refresh()
