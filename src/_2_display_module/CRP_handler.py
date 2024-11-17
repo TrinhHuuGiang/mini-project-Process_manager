@@ -39,7 +39,10 @@ def init_CRP_window():
 def getkey_CRPwindow():
     global w_CRP
     # get an temp input to end window :)
-    temp_input = w_CRP.backwin.getkey()
+    temp_input = -1
+    while (temp_input == -1):
+        # then check buffer input
+        temp_input = w_CRP.backwin.getch()
 
 
 # end

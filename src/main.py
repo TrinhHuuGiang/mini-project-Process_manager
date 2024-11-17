@@ -25,7 +25,7 @@ def main():
         input("input anything to contine :)")
         if ret == 0:
             if(CRP_auto_run()):
-                sys.exit(0) #no error, window just too small
+                sys.exit(0) # unexpected
         if ret == 1:
             pass#open auto CRD (CPU RAM DISK)
         if ret == 2:

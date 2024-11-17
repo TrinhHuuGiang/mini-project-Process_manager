@@ -24,10 +24,10 @@ class Main_win(Container):
         self.w_guide_col = None; self.w_guide_row = None
 
         # minsize for all window
-        self.w_order_mincol = 5; self.w_order_minrow = 5
-        self.w_guide_mincol = 5; self.w_guide_minrow = 5
-        self.w_back_mincol= self.w_order_mincol+self.w_guide_mincol
-        self.w_back_minrow= self.w_order_minrow+self.w_guide_minrow 
+        self.w_order_mincol = 10; self.w_order_minrow = 5
+        self.w_guide_mincol = 10; self.w_guide_minrow = 5
+        self.w_back_mincol= self.w_order_mincol + 2 # + 2 for reduce resize error rate
+        self.w_back_minrow= self.w_order_minrow + self.w_guide_minrow +1 # + 2 for reduce resize error rate
 
         # window variable
         self.w_order = None; self.w_guide = None
@@ -58,6 +58,10 @@ class Main_win(Container):
     '''_______________[interract with window]___________'''
     # [A. calculate and re-set size window]
     def cal_size_sub_window(self):
+        # row: 100% = 10% top border + 50% menu + 10% free space + 20% guide + 10% bottom border (guard)
+        # tips: increase % bottom border for 
+        # reduce the overflow rate (error) due to not having time to recalculate
+
         #order window
         self.w_order_begin_col = self.back_win_col * 10 // 100
         self.w_order_begin_row = self.back_win_row * 10 // 100
@@ -68,7 +72,7 @@ class Main_win(Container):
         self.w_guide_begin_col = self.back_win_col * 10 // 100
         self.w_guide_begin_row = self.back_win_row * 60 // 100
         self.w_guide_col = self.w_order_col
-        self.w_guide_row = self.back_win_row * 30 // 100
+        self.w_guide_row = self.back_win_row * 20 // 100
 
         #fix size if invalid, min 5
         if(self.w_order_col < self.w_order_mincol): self.w_order_col = self.w_order_mincol

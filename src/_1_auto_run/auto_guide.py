@@ -81,6 +81,9 @@ def guide_auto_run():
     ret = 0
     # init variable threads
     global end_sig
+    # The global variable will keep the change results,
+    # so when reopening this window, you need to set it to 1
+    end_sig = 1
 
     # [guide handler]
     # initialize menu guide window

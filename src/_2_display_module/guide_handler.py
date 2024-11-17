@@ -128,7 +128,7 @@ def resize_guide_window():
         # check min size window
         while((w_guide.back_win_col <=  w_guide.w_back_mincol) or
         (w_guide.back_win_row <= w_guide.w_back_minrow)):
-            w_guide.backwin.addstr(0,0,"[Stopped]",w_guide.COS[0])
+            w_guide.backwin.addstr(1,1,"[Stopped]",w_guide.COS[0])
             # idont know why need refresh before get background size
             # but if don't do it, while will be into infinite loop
             # so great is call refresh before getmaxyx
