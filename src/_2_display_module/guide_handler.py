@@ -16,6 +16,7 @@ The 'main' function then decides to process the error code and control the handl
 import sys
 import time
 import threading #mutex
+import curses
 
 # defined libraries
 from _3_display_component.main_window.main_win import Main_win #main class for guide window
@@ -122,21 +123,30 @@ def resize_guide_window():
         w_guide.get_backwin_size()
         # now check if size invalid
         # loop infinity lock for safe other threads display
+        count_before_refresh = 0
         while ((w_guide.back_win_col <= w_guide.w_back_mincol) or
         (w_guide.back_win_row <= w_guide.w_back_minrow)):
-            w_guide.clear_all_window()
-            w_guide.backwin.addstr(1,1,"[Stopped]",w_guide.COS[0])
-            w_guide.backwin.addstr(2,1,"Need:80col,24row",w_guide.COS[0])
-            # ok then call lock_size mutex
-            # idont know why need refresh before get background size
-            # but if don't do it, while will be into infinite loop
-            # so great is call refresh before getmaxyx
-            # i write an warning the all action will block when size window invalid
-            w_guide.backwin.refresh()
+            # idont know why need refresh before get 'get_backwin_size'
+            # but if don't do it, while will be into infinite loop because of no update size
+            # so great is call refresh before getmaxyx - get_backwin_size
+            # for reduce flashing 1 using 'noutrefresh' and 'doupdate' after few second
+            # because refresh = noutrefresh + doupdate
+            w_guide.backwin.noutrefresh()# curses update background value 
+            if count_before_refresh == 0:
+                count_before_refresh += 1
+                # clear then add log error onto menu screen
+                w_guide.clear_all_window()
+                w_guide.w_order.addstr(0,0,"[Stopped]",w_guide.COS[0])
+                w_guide.w_order.addstr(1,0,"80col 24row",w_guide.COS[0])
+                w_guide.backwin.noutrefresh()
+                # update
+                curses.doupdate()
+            elif count_before_refresh > 5: count_before_refresh = 0
+            else: count_before_refresh +=1
+            # combination witch sleep :) for reduce flashing and crash app
+            time.sleep(1)#s * count_before_refresh before doupdate
             # now get current size background
             w_guide.get_backwin_size()
-            # sleep :) for reduce flashing and crash app
-            time.sleep(sleep_resize_time)
 
         # [Check if size not change]
         if((old_back_col == w_guide.back_win_col) and
