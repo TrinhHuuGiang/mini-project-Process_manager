@@ -23,11 +23,9 @@ class Main_win(Container):
         self.w_guide_begin_col = None; self.w_guide_begin_row = None
         self.w_guide_col = None; self.w_guide_row = None
 
-        # minsize for all window
+        # minsize for all window (The total does not out of backwin size minimun)
         self.w_order_mincol = 10; self.w_order_minrow = 5
         self.w_guide_mincol = 10; self.w_guide_minrow = 5
-        self.w_back_mincol= self.w_order_mincol + 2 # + 2 for reduce resize error rate
-        self.w_back_minrow= self.w_order_minrow + self.w_guide_minrow +1 # + 2 for reduce resize error rate
 
         # window variable
         self.w_order = None; self.w_guide = None

@@ -12,6 +12,9 @@ class Container:
         # background window size
         self.back_win_col=None
         self.back_win_row=None
+        # at least 80col*24row
+        self.w_back_mincol= 80
+        self.w_back_minrow= 24
 
         # pseudo color or style
         # only use when call Container.Check_color_and_set()

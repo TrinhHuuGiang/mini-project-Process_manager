@@ -111,35 +111,41 @@ def resize_guide_window():
     # so it reduces the error rate when the user suddenly 
     # changes the screen size
     time.sleep(sleep_resize_time)
-
     global w_guide
     # save old background size
-    back_col = w_guide.back_win_col
-    back_row = w_guide.back_win_row
-    # get background size to check change size
-    w_guide.get_backwin_size()
-    if((back_col == w_guide.back_win_col) and
-       (back_row == w_guide.back_win_row)):
-        return #size not change
-    
-    #[mutex before modidy sub window edge]
-    # if size window invalid so lock display any thing
+    old_back_col = w_guide.back_win_col
+    old_back_row = w_guide.back_win_row
+    # lock mutex, start check and modify size
     with lock_size:
-        # check min size window
-        while((w_guide.back_win_col <=  w_guide.w_back_mincol) or
+        # [Check size valid]
+        # get background size to check change size
+        w_guide.get_backwin_size()
+        # now check if size invalid
+        # loop infinity lock for safe other threads display
+        while ((w_guide.back_win_col <= w_guide.w_back_mincol) or
         (w_guide.back_win_row <= w_guide.w_back_minrow)):
+            w_guide.clear_all_window()
             w_guide.backwin.addstr(1,1,"[Stopped]",w_guide.COS[0])
+            w_guide.backwin.addstr(2,1,"Need:80col,24row",w_guide.COS[0])
+            # ok then call lock_size mutex
             # idont know why need refresh before get background size
             # but if don't do it, while will be into infinite loop
             # so great is call refresh before getmaxyx
             # i write an warning the all action will block when size window invalid
             w_guide.backwin.refresh()
-            # w_back_minrow may have to be+1 because 
-            # sometimes w_guide_begin_col = back_win_col * 10 // 100 may = 1
-            w_guide.get_backwin_size()  # dont update size :)
-                                        #will error by print addstr out of range
-        # when size suitable
-        # calculate, resize
+            # now get current size background
+            w_guide.get_backwin_size()
+            # sleep :) for reduce flashing and crash app
+            time.sleep(sleep_resize_time)
+
+        # [Check if size not change]
+        if((old_back_col == w_guide.back_win_col) and
+        (old_back_row == w_guide.back_win_row)):
+            return #size not change/ auto unlock mutex
+        
+        #[If size valid and changed]
+        # mutex before modidy sub window edge
+        # calculate, resize all sub window
         w_guide.cal_size_sub_window()
         w_guide.update_size_sub_window()
 
