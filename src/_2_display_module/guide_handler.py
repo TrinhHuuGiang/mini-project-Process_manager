@@ -40,12 +40,17 @@ lock_size = threading.Lock()
 # sleep for cpu calculation time
 # :) i think this ratio is fine
 # sometime get error when we change window size too fast
+# resize cycle
 sleep_resize_time = 0.01 # 10 ms
-sleep_menu_time = 1 # 1s/time update (~ 1% error) , reduce flashing
-sleep_back_time = 3 # wait 3s say hello
+# dynamic content cycle
+sleep_menu_time = 0.1 # 100ms/time update (~ 10% error when resize)
+# static content cycle
+sleep_back_time = 0.1 # 100ms/time update (~ 10% error when resize)
+# push to screen cycle
+screen_refresh_cycle = 0.5# 500ms/time
 
 # main process variable
-sleep_get_user_input = 0.5#500ms
+sleep_get_user_input = 0.4#400ms
 
 '''****************************************************************************
 * Code
@@ -89,8 +94,6 @@ def update_menu_list_and_get_choice():
             w_guide.order_down()#user want lower
         elif(temp_input == '\n'):
             return w_guide.get_order()#user want order
-        
-    w_guide.backwin.addstr(1,1,"wait...")
     #if input == q
     return -1 # quit signal
 
@@ -154,15 +157,15 @@ def resize_guide_window():
         w_guide.cal_size_sub_window()
         w_guide.update_size_sub_window()
 
-        #[now refresh background after size  changed]
+        #[now renew background after size  changed]
         #clear
         w_guide.backwin.clear()
         #add box
         w_guide.backwin.box('|','-')
         #add name
         w_guide.backwin.addstr(0,1,"[Task Manager]",w_guide.COS[4])
-        #refresh to apply new change
-        w_guide.backwin.refresh()
+        #noutrefresh to apply new change
+        w_guide.backwin.noutrefresh()
 
         #[update static window]
         #include : guide
@@ -197,5 +200,14 @@ def update_background():
     with lock_size:
         #add name
         w_guide.backwin.addstr(0,1,"[Task Manager]",w_guide.COS[4])
-        #refresh to apply new change
-        w_guide.backwin.refresh()
+        #noutrefresh to apply new change
+        w_guide.backwin.noutrefresh()
+
+# D. push content to background
+def push_to_screen():
+    global w_guide
+    global lock_size
+    time.sleep(screen_refresh_cycle)
+    #after time sleep, push content to screen
+    with lock_size:
+        curses.doupdate()
