@@ -85,11 +85,6 @@ def init_guide_window():
     renew_global_variable()
     #init guide window object
     w_guide = Main_win()
-    #test color
-    w_guide.Hello_World()
-    #static content
-    w_guide.update_guide()
-    w_guide.update_background()
     #get max number choice
     return w_guide.max_num_choice
 
@@ -178,11 +173,19 @@ def check_size_valid():
             if((old_back_col != w_guide.back_win_col) or
             (old_back_row != w_guide.back_win_row)):
                 error_size = 2 # size changed
-            
+
             # else notify other threads (only one time at start)
             if notify_size_checked:
                 notify_size_checked = 0
                 condition_wait_checksize.notify_all()
+
+                #and if size ok
+                if not error_size:
+                    #test color
+                    w_guide.Hello_World()
+                    #static content
+                    w_guide.update_guide()
+                    w_guide.update_background()
 
         # 10 ms sleep for others thread working
         # then continue check the user suddenly 
