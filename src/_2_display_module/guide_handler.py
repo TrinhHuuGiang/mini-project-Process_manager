@@ -24,47 +24,67 @@ from _3_display_component.main_window.main_win import Main_win #main class for g
 '''****************************************************************************
 * Variable
 ****************************************************************************'''
+debug = 1# 0 if no debug :)
+
 # window
 w_guide = None
 
 # keymutex
 lock_size = threading.Lock()
-    #using between
-    #- update size window
-    #+ keep safe when window invalid size
-    #+ re-calculate edge and coordinate
-    #+ update static window: guide
-    #- update menu:
-    #+ update content with user choice
+    #Synchronize content updates and push content to the screen
+    #using mutex 3 threads:
+    #- check size, changed window
+    #=> keep safe before print when window invalid size
+    #- update dynamic window:
+    #=> update content with user choice
     #- push content to screen
-    
-# sleep for cpu calculation time
-# :) i think this ratio is fine
-# sometime get error when we change window size too fast
-# resize cycle
-sleep_resize_time = 0.01 # 10 ms
+    #=> sure not print missing content
+end_sig = None #default = 1, threadings loop
+
+#condition variables
+condition_checksize_first = threading.Condition(lock_size)
+notify_size_checked = None #default = 1, unchecked
+
+# check size cycle
+cycle_check_resize = 0.01 # 10 ms
 # dynamic content cycle
-sleep_menu_time = 0.1 # 100ms/time update (~ 10% error when resize)
-# static content cycle
-sleep_back_time = 0.1 # 100ms/time update (~ 10% error when resize)
+cycle_menu_update = 0.2 # 200ms/time update
 # push to screen cycle
-screen_refresh_cycle = 0.5# 500ms/time for reduce flashing
+cycle_screen_refresh = 0.3# 300ms/time for reduce flashing
 
 # main process variable
-sleep_get_user_input = 0.4#400ms
+cycle_user_input = 0.2#200ms
+
+#error code
+error_size = None # default = 0 , no error size
 
 '''****************************************************************************
 * Code
 ****************************************************************************'''
+#renew global variable if recall this window
+def renew_global_variable():
+    global end_sig
+    global error_size
+    global notify_size_checked
+
+    end_sig = 1#end sig = 0 to end thread
+    error_size = 0#error_size !=0 if find error
+    notify_size_checked = 1#size_checked = 0 is checked
+
 # [handler for guide window]
 # initialize and check size, set color, set box
 # return number order
 def init_guide_window():
     global w_guide
+    #renew global variables
+    renew_global_variable()
     #init guide window object
     w_guide = Main_win()
     #test color
     w_guide.Hello_World()
+    #static content
+    w_guide.update_guide()
+    w_guide.update_background()
     #get max number choice
     return w_guide.max_num_choice
 
@@ -74,11 +94,12 @@ def init_guide_window():
 # i will run it with main process
 def update_menu_list_and_get_choice():
     global w_guide
+    global end_sig
     # wait user then update or execute or quit 'q'
     temp_input = 'nothing'
-    while (temp_input != 'q'):
+    while (temp_input != 'q') and (error_size == 0):
         # sleep for user react
-        time.sleep(sleep_get_user_input)
+        time.sleep(cycle_user_input)
         # then check buffer input
         temp_input = w_guide.w_order.getch()
         # if nothing -> compare -1
@@ -94,118 +115,108 @@ def update_menu_list_and_get_choice():
         elif(temp_input == 's'):
             w_guide.order_down()#user want lower
         elif(temp_input == '\n'):
+            #end
+            end_sig = 0
             return w_guide.get_order()#user want order
+    
+    #end
+    end_sig = 0
     #if input == q
-    return -1 # quit signal
+    if temp_input == 'q': return -1 # quit signal
+    # error size
+    elif error_size == 1: return -2 # < size min
+    elif error_size == 2: return -3 #size changed
+    else: return -4
 
 # end
 def exit_guide_window():
     global w_guide
     del w_guide #free completely window curses and switch back to the original terminal 
-    print("[OK - {}] closed the guide window".format(exit_guide_window.__name__),
-    file=sys.stderr)
+    if debug: print("[OK - {}] closed the guide window".format(exit_guide_window.__name__),
+                    file=sys.stderr)
     # no return
 
 
 # ___________[Thread_Function]___________
 # Call these support function after init window
 # A. Resize window
-def resize_guide_window():
+# check resize or size not invalid
+def check_size_valid():
     global w_guide
     global lock_size
-    # 10 ms sleep
-    # 10ms is much shorter than 100ms when 'update_order'
-    # so it reduces the error rate when the user suddenly 
-    # changes the screen size
-    time.sleep(sleep_resize_time)
-    # save old background size
-    old_back_col = w_guide.back_win_col
-    old_back_row = w_guide.back_win_row
-    # lock mutex, start check and modify size
-    with lock_size:
-        # [Check size valid]
-        # get background size to check change size
-        w_guide.get_backwin_size()
-        # now check if size invalid
-        # loop infinity lock for safe other threads display
-        count_before_refresh = 0
-        while ((w_guide.back_win_col <= w_guide.w_back_mincol) or
-        (w_guide.back_win_row <= w_guide.w_back_minrow)):
-            if count_before_refresh == 0:
-                count_before_refresh += 1
-                # clear then add log error onto menu screen
-                w_guide.clear_all_window()
-                w_guide.w_order.addstr(0,0,"[Stopped]",w_guide.COS[0])
-                w_guide.w_order.addstr(1,0,"80col 24row",w_guide.COS[0])
-                w_guide.backwin.noutrefresh()
-                # update
-                curses.doupdate()#because of 'noutrefresh'
-            elif count_before_refresh > 2: count_before_refresh = 0
-            else: count_before_refresh +=1
-            # combination witch sleep :) for reduce flashing and crash app
-            time.sleep(1)#s * count_before_refresh before doupdate
-            # now get current size background
+    global error_size
+    global condition_checksize_first
+    global notify_size_checked
+    time.sleep(0.1) # wait 100ms for all thread wait start condition
+    while(end_sig):
+        # lock mutex, start check size invalid
+        with lock_size:
+            # save old background size
+            old_back_col = w_guide.back_win_col
+            old_back_row = w_guide.back_win_row
+
+            # [Check size valid]
+            # get background size to check change size
             w_guide.get_backwin_size()
+            # now check if size invalid
+            if((w_guide.back_win_col < w_guide.w_back_mincol) or
+            (w_guide.back_win_row < w_guide.w_back_minrow)):
+                error_size = 1 # error size < min
 
-        # [Check if size not change]
-        if((old_back_col == w_guide.back_win_col) and
-        (old_back_row == w_guide.back_win_row)):
-            return #size not change/ auto unlock mutex
-        
-        #[If size valid and changed]
-        # mutex before modidy sub window edge
-        # calculate, resize all sub window
-        w_guide.cal_size_sub_window()
-        w_guide.update_size_sub_window()
+            # [Check if size change]
+            if((old_back_col != w_guide.back_win_col) or
+            (old_back_row != w_guide.back_win_row)):
+                error_size = 2 # size changed
+            
+            # else notify other threads
+            if notify_size_checked:
+                notify_size_checked = 0
+                condition_checksize_first.notify_all()
 
-        #[now renew background after size  changed]
-        #clear
-        w_guide.backwin.clear()
-        #add box
-        w_guide.backwin.box('|','-')
-        #add name
-        w_guide.backwin.addstr(0,1,"[Task Manager]",w_guide.COS[4])
-        #noutrefresh to apply new change
-        w_guide.backwin.noutrefresh()
-
-        #[update static window]
-        #include : guide
-        w_guide.update_guide()
+        # 10 ms sleep for others thread working
+        # then continue check the user suddenly 
+        # changes the screen
+        time.sleep(cycle_check_resize)
 
 # B. Update dynamic content
 # update menu
 def update_menu_list():
     global w_guide
     global lock_size
-    #sleep 100ms for other threads and avoid continuous refreshes
-    time.sleep(sleep_menu_time)
-    with lock_size:
-        # update list order
-        w_guide.update_order()
+    global error_size
+    global condition_checksize_first
 
-# C. Update static content
-    #no sleep, print 1 time after init window
-    #so 'no' using 'while loop' when create thread
-    #content will update in 'resize_guide_window' when resize
-def update_guide_content():
-    global w_guide
-    global lock_size
     with lock_size:
-        w_guide.update_guide()
+        #wait check size first time
+        condition_checksize_first.wait()
+    #if error size
+    if error_size:
+        return
+    #else update menu list
+    while(end_sig):
+        with lock_size:
+            # update list order
+            w_guide.update_order()
+        #sleep for other threads and avoid continuous refreshes
+        time.sleep(cycle_menu_update)
 
-# update background
-def update_background():
-    global w_guide
-    global lock_size
-    time.sleep(sleep_back_time)# wait opening 'Hello'
-    with lock_size:
-        w_guide.update_background()
-
-# D. push content to background
+# C. push content to background
 def push_to_screen():
     global w_guide
     global lock_size
-    time.sleep(screen_refresh_cycle)
-    #after time sleep, push content to screen
+    global error_size
+    global condition_checksize_first
+    
     with lock_size:
-        curses.doupdate()
+        #wait check size first time
+        condition_checksize_first.wait()
+    #if error size
+    if error_size:
+        return
+    #else push content to screen
+    while(end_sig):
+        #after time sleep, push content to screen
+        with lock_size:
+            curses.doupdate()
+        #sleep
+        time.sleep(cycle_screen_refresh)

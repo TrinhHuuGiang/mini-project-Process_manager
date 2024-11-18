@@ -11,68 +11,45 @@ from _2_display_module import guide_handler
 '''****************************************************************************
 * Variable
 ****************************************************************************'''
+debug = 1# 0 if no debug :)
+
 # list function handle of guide window
 guide_window = [guide_handler.init_guide_window,guide_handler.update_menu_list_and_get_choice,
 guide_handler.exit_guide_window]
 
-# global signal for thread
-end_sig = 1
-
 # threads
 thread1 = None#for loop check resize
 thread2 = None#for loop update list order content
-thread3 = None#for 1 time at start update static guide content 
-thread4 = None#for 1 time at start update static background 
-thread5 = None#for loop push content to screen
+thread3 = None#for loop push content to screen
 '''****************************************************************************
 * Code
 ****************************************************************************'''
 # [Initialize support threads]
 def resize_win():
-    global end_sig
-    while end_sig:
-        guide_handler.resize_guide_window()
+    guide_handler.check_size_valid()
 
 def update_list_order():
-    global end_sig
-    while end_sig:
-        guide_handler.update_menu_list()
-
-def update_static_guide():
-    #no loop
-    guide_handler.update_guide_content()
-
-def update_static_background():
-    #no loop
-    guide_handler.update_background()
+    guide_handler.update_menu_list()
 
 def push_content_to_screen():
-    global end_sig
-    while end_sig:
-        guide_handler.push_to_screen()
+    guide_handler.push_to_screen()
     
 # start and destroy threads 
 def start_threads():
-    global thread1,thread2,thread3,thread4, thread5
+    global thread1,thread2,thread3
     thread1 = threading.Thread(target=resize_win)
     thread2 = threading.Thread(target=update_list_order)
-    thread3 = threading.Thread(target=update_static_guide)
-    thread4 = threading.Thread(target=update_static_background)
-    thread5 = threading.Thread(target=push_content_to_screen)
+    thread3 = threading.Thread(target=push_content_to_screen)
 
-    thread1.start() # resize always start first
+    thread1.start()
     thread2.start()
     thread3.start()
-    thread4.start()
-    thread5.start()
 
 def destroy_threads():
-    global thread1,thread2,thread3,thread4,thread5
+    global thread1,thread2,thread3
     thread1.join()
     thread2.join()
     thread3.join()
-    thread4.join()
-    thread5.join()
 
 
 # [guide auto run]
@@ -87,11 +64,6 @@ def guide_auto_run():
     # init variable window
     global guide_window
     ret = 0
-    # init variable threads
-    global end_sig
-    # The global variable will keep the change results,
-    # so when reopening this window, you need to set it to 1
-    end_sig = 1
 
     # [guide handler]
     # initialize menu guide window
@@ -104,24 +76,21 @@ def guide_auto_run():
     ret = guide_window[1]()
     if(ret == -1):
         # wait thread end
-        end_sig = 0
         destroy_threads()
         # close 'curses' and switch back to the original terminal
         guide_window[2]()
-        print("[OK - {}] - Closed".format(guide_auto_run.__name__), file=sys.stderr)
+        if debug: print("[OK - {}] - Closed".format(guide_auto_run.__name__), file=sys.stderr)
         return -1 # no error, exit
     elif((ret < 0 ) and (ret >= max_num_choice )):
         # wait thread end
-        end_sig = 0
         destroy_threads()
         # close 'curses' and switch back to the original terminal
         guide_window[2]()
-        print("[ERR - {}] - Unexpected event".format(guide_auto_run.__name__), file=sys.stderr)
+        if debug: print("[ERR - {}] - Unexpected event".format(guide_auto_run.__name__), file=sys.stderr)
         return -2 # unexpected ret choice
     
     # else 0<= ret < max_numchoice 
     # wait thread end
-    end_sig = 0
     destroy_threads()
     # close the guide window and return the selected event handler
     guide_window[2]()

@@ -22,10 +22,6 @@ class Main_win(Container):
         self.w_guide_begin_col = None; self.w_guide_begin_row = None
         self.w_guide_col = None; self.w_guide_row = None
 
-        # minsize for all window (The total does not out of backwin size minimun)
-        self.w_order_mincol = 10; self.w_order_minrow = 5
-        self.w_guide_mincol = 10; self.w_guide_minrow = 5
-
         # window variable
         self.w_order = None; self.w_guide = None
         # init backwindow
@@ -43,10 +39,6 @@ class Main_win(Container):
 
         # add no delay for using getch()
         self.w_order.nodelay(True); self.w_order.nodelay(True)
-
-        # set border
-        self.Set_border()
-        self.Refresh_all()
 
     # De-init
     def __del__(self):
@@ -71,42 +63,14 @@ class Main_win(Container):
         self.w_guide_col = self.w_order_col
         self.w_guide_row = self.back_win_row * 20 // 100
 
-        #fix size if invalid, min 5
-        if(self.w_order_col < self.w_order_mincol): self.w_order_col = self.w_order_mincol
-        if(self.w_order_row < self.w_order_minrow): self.w_order_row = self.w_order_minrow
-        if(self.w_guide_col < self.w_guide_mincol): self.w_guide_col = self.w_guide_mincol
-        if(self.w_guide_row < self.w_guide_minrow): self.w_guide_row = self.w_guide_minrow
-
     # clear all window
     def clear_all_window(self):
         self.backwin.clear()
         self.w_order.clear()
         self.w_guide.clear()
 
-
-    #update size and move coordinate after calculate
-    def update_size_sub_window(self):
-        # update size
-        self.w_order.resize(self.w_order_row,self.w_order_col)
-        self.w_guide.resize(self.w_guide_row,self.w_guide_col)
-        # update coordinate
-        self.w_order.mvwin(self.w_order_begin_row,self.w_order_begin_col)
-        self.w_guide.mvwin(self.w_guide_begin_row,self.w_guide_begin_col)
-
-    # [B. add border window]
-    def Set_border(self):
-        self.backwin.box('|','-')
-        self.w_order.box('|','-')
-        self.w_guide.box('|','-')
-    
-    def Refresh_all(self):
-        #refresh
-        self.backwin.refresh()
-        self.w_order.refresh()
-        self.w_guide.refresh()
-
     # [C. order menu for order window]
-
+    
     def update_order(self):
         #clear screen first
         self.w_order.clear()
