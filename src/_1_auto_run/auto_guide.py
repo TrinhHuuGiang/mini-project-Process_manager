@@ -19,11 +19,11 @@ guide_handler.exit_guide_window]
 end_sig = 1
 
 # threads
-thread1 = None
-thread2 = None
-thread3 = None
-thread4 = None
-thread5 = None
+thread1 = None#for loop check resize
+thread2 = None#for loop update list order content
+thread3 = None#for 1 time at start update static guide content 
+thread4 = None#for 1 time at start update static background 
+thread5 = None#for loop push content to screen
 '''****************************************************************************
 * Code
 ****************************************************************************'''

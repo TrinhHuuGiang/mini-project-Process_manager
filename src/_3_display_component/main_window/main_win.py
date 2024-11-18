@@ -15,9 +15,8 @@ class Main_win(Container):
         self.w_order_begin_col = None; self.w_order_begin_row = None
         self.w_order_col = None; self.w_order_row = None
         self.numerical_order = 0
-        self.order_choice = ("CPU - RAM - PROCESS","order 1","order 2",
-                             "order 3","order 4","order 5",
-                             "order 6","order 7","order 8")
+        self.order_choice = ("PROCESSES","CPU/RAM/DISK","NET/SERVICES",
+                             "about us")
         self.max_num_choice = len(self.order_choice)
         #sub guide window
         self.w_guide_begin_col = None; self.w_guide_begin_row = None
@@ -144,7 +143,7 @@ class Main_win(Container):
         # renew border
         self.w_order.box('|','-')
         # add name
-        self.w_order.addstr(0,1,"[Menu Function]", self.COS[3])
+        self.w_order.addstr(0,1,"[Menu Functions]", self.COS[3])
         # noutrefresh display
         self.w_order.noutrefresh()
 
@@ -178,7 +177,13 @@ class Main_win(Container):
         # renew border
         self.w_guide.box('|','-')
         # add name
-        self.w_guide.addstr(0,1,"[Guide]", self.COS[1])
+        self.w_guide.addstr(0,1,"[How to use]", self.COS[1])
         # noutrefresh display
         self.w_guide.noutrefresh()
 
+    #[E. background]
+    def update_background(self):
+        #add name
+        self.backwin.addstr(0,1,"[Task Manager]",self.COS[4])
+        #noutrefresh to apply new change
+        self.backwin.noutrefresh()

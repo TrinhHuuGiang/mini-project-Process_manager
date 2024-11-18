@@ -36,6 +36,7 @@ lock_size = threading.Lock()
     #+ update static window: guide
     #- update menu:
     #+ update content with user choice
+    #- push content to screen
     
 # sleep for cpu calculation time
 # :) i think this ratio is fine
@@ -47,7 +48,7 @@ sleep_menu_time = 0.1 # 100ms/time update (~ 10% error when resize)
 # static content cycle
 sleep_back_time = 0.1 # 100ms/time update (~ 10% error when resize)
 # push to screen cycle
-screen_refresh_cycle = 0.5# 500ms/time
+screen_refresh_cycle = 0.5# 500ms/time for reduce flashing
 
 # main process variable
 sleep_get_user_input = 0.4#400ms
@@ -139,7 +140,7 @@ def resize_guide_window():
                 w_guide.backwin.noutrefresh()
                 # update
                 curses.doupdate()#because of 'noutrefresh'
-            elif count_before_refresh > 5: count_before_refresh = 0
+            elif count_before_refresh > 2: count_before_refresh = 0
             else: count_before_refresh +=1
             # combination witch sleep :) for reduce flashing and crash app
             time.sleep(1)#s * count_before_refresh before doupdate
@@ -198,10 +199,7 @@ def update_background():
     global lock_size
     time.sleep(sleep_back_time)# wait opening 'Hello'
     with lock_size:
-        #add name
-        w_guide.backwin.addstr(0,1,"[Task Manager]",w_guide.COS[4])
-        #noutrefresh to apply new change
-        w_guide.backwin.noutrefresh()
+        w_guide.update_background()
 
 # D. push content to background
 def push_to_screen():

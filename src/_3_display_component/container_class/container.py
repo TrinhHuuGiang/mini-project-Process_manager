@@ -57,11 +57,12 @@ class Container:
     # ______________[checking resource]_____________
     # [A. Should check size main window before printing anything]
     def get_backwin_size(self):
-        # idont know why need refresh before get 'get_backwin_size'
-        # but if don't do it, while will be into infinite loop because of no update size
+        # idont know why need refresh before get background size (getmaxyx)
+        # but if don't do it, we will be into infinite loop
+        # because of no update size by some function using it
         # so great is call refresh before getmaxyx - get_backwin_size
-        # for reduce flashing 1 using 'noutrefresh' and 'doupdate' after few second
         # because refresh = noutrefresh + doupdate
+        # so we use noutrefresh if dont need push anything to screen
         self.backwin.noutrefresh()# curses update background value 
         self.back_win_row, self.back_win_col = self.backwin.getmaxyx()
     
