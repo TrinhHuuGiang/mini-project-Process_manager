@@ -30,6 +30,10 @@ def main():
             pass#open auto CRD (CPU RAM DISK)
         if ret == 2:
             pass#open auto NS  (NET SERVICE)
+        if ret == 3:
+            with open("about.txt", "r", encoding="utf-8") as file:
+                print("\n\n",file.read())
+            input("\n[Press any thing to close]\n")
         ret = guide_auto_run()
 
     #exit
