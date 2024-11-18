@@ -8,24 +8,12 @@ Process Manager
 This is a simple process management application for Linux, developed in Python.
 It allows users to view, suspend, resume, and terminate processes via a text-based user interface.
 
-Prerequisites:
----------------
-- Linux operating system
-- Python 3.x
-- psutil library
-- Disable Unikey or any input method editor (IME) to avoid unintended behavior when using the application.
-
 Contributors:
 -------------
-1. Giang Trinh
-   - Role: Project Manager
+1. Giang Trinh (Role: Project Manager)
    - Contributions: Lead development for TUI using curses, overall project coordination.
-
-2. VuongNQ
-   - Role: Lead Developer
+2. VuongNQ (Lead Developer)
    - Contributions: Process management using psutil, documentation writing, and system integration.
-
-3. haidang143
-   - Role: Documentation Specialist
+3. haidang143 (Documentation Specialist)
    - Contributions: Supporting documentation for CPU, RAM, and disk usage.
    

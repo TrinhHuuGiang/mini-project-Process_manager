@@ -11,6 +11,11 @@ from _1_auto_run.auto_CRP import CRP_auto_run
 '''****************************************************************************
 * Variable
 ****************************************************************************'''
+debug = 0# 0 if no debug :)
+
+'''****************************************************************************
+* Code
+****************************************************************************'''
 #[main]
 # exit code:
 # (0) normal exit
@@ -20,9 +25,11 @@ def main():
     #run guilde window first
     ret = guide_auto_run()
     while(ret >= 0):
-        # open another window
-        print("return window:",ret)
-        input("input anything to contine :)")
+        # check choice returned
+        if debug:
+            print("return window:",ret)
+            input("input anything to contine :)")
+        # open choice window
         if ret == 0:
             if(CRP_auto_run()):
                 sys.exit(0) # unexpected
@@ -39,8 +46,6 @@ def main():
     #exit
     sys.exit(0)
 
-'''****************************************************************************
-* Code
-****************************************************************************'''
+
 if __name__ == "__main__":
     main()
