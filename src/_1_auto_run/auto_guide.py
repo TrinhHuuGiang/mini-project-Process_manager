@@ -81,12 +81,12 @@ def guide_auto_run():
         guide_window[2]()
         if debug: print("[OK - {}] - Closed".format(guide_auto_run.__name__), file=sys.stderr)
         return -1 # no error, exit
-    elif((ret < 0 ) and (ret >= max_num_choice )):
+    elif (ret < 0 ) or (ret >= max_num_choice ):
         # wait thread end
         destroy_threads()
         # close 'curses' and switch back to the original terminal
         guide_window[2]()
-        if debug: print("[ERR - {}] - Unexpected event".format(guide_auto_run.__name__), file=sys.stderr)
+        if debug: print("[ERR - {}] - Unexpected event (wrong size minimize, size changed,...)".format(guide_auto_run.__name__), file=sys.stderr)
         return -2 # unexpected ret choice
     
     # else 0<= ret < max_numchoice 

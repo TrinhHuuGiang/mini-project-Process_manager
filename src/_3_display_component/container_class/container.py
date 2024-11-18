@@ -100,4 +100,4 @@ class Container:
         self.backwin.addstr(0, self.back_win_col//2     ,"Manag",self.COS[3])
         self.backwin.addstr(0, self.back_win_col//2 +5  ,"er___",self.COS[4])
         self.backwin.addstr(0, self.back_win_col//2 +10 ,"Hello",self.COS[5])
-        self.backwin.refresh()
+        self.backwin.noutrefresh()

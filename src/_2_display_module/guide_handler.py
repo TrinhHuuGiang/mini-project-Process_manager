@@ -42,8 +42,11 @@ lock_size = threading.Lock()
 end_sig = None #default = 1, threadings loop
 
 #condition variables
-condition_checksize_first = threading.Condition(lock_size)
+condition_wait_checksize = threading.Condition(lock_size)
 notify_size_checked = None #default = 1, unchecked
+condition_wait_all_wait = threading.Condition(lock_size)
+total_waiting = None
+max_waiting = 2 # one is dynamic window thread, other is push thread
 
 # check size cycle
 cycle_check_resize = 0.01 # 10 ms
@@ -66,10 +69,12 @@ def renew_global_variable():
     global end_sig
     global error_size
     global notify_size_checked
+    global total_waiting
 
     end_sig = 1#end sig = 0 to end thread
     error_size = 0#error_size !=0 if find error
     notify_size_checked = 1#size_checked = 0 is checked
+    total_waiting = 0# total will increase after one wait()
 
 # [handler for guide window]
 # initialize and check size, set color, set box
@@ -145,9 +150,15 @@ def check_size_valid():
     global w_guide
     global lock_size
     global error_size
-    global condition_checksize_first
+    global condition_wait_checksize
     global notify_size_checked
-    time.sleep(0.1) # wait 100ms for all thread wait start condition
+    global condition_wait_all_wait
+    global total_waiting
+
+    with lock_size:
+        if(max_waiting != total_waiting):
+            #wait all thread wait
+            condition_wait_all_wait.wait()
     while(end_sig):
         # lock mutex, start check size invalid
         with lock_size:
@@ -168,10 +179,10 @@ def check_size_valid():
             (old_back_row != w_guide.back_win_row)):
                 error_size = 2 # size changed
             
-            # else notify other threads
+            # else notify other threads (only one time at start)
             if notify_size_checked:
                 notify_size_checked = 0
-                condition_checksize_first.notify_all()
+                condition_wait_checksize.notify_all()
 
         # 10 ms sleep for others thread working
         # then continue check the user suddenly 
@@ -184,11 +195,16 @@ def update_menu_list():
     global w_guide
     global lock_size
     global error_size
-    global condition_checksize_first
+    global condition_wait_checksize
+    global total_waiting
 
     with lock_size:
-        #wait check size first time
-        condition_checksize_first.wait()
+        #increase total waiting
+        total_waiting+=1
+        if(total_waiting == max_waiting):
+            condition_wait_all_wait.notify()#wake up 'resize check' thread
+        #wait check size first time notify all
+        condition_wait_checksize.wait()
     #if error size
     if error_size:
         return
@@ -205,11 +221,17 @@ def push_to_screen():
     global w_guide
     global lock_size
     global error_size
-    global condition_checksize_first
+    global condition_wait_checksize
+    global condition_wait_all_wait
+    global total_waiting
     
     with lock_size:
-        #wait check size first time
-        condition_checksize_first.wait()
+        #increase total waiting
+        total_waiting+=1
+        if(total_waiting == max_waiting):
+            condition_wait_all_wait.notify()#wake up check size first time thread
+        #wait check size first time notify all
+        condition_wait_checksize.wait()
     #if error size
     if error_size:
         return
