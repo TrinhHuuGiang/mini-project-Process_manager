@@ -168,11 +168,13 @@ def check_size_valid():
 
         #and if size ok print static content only one time
         if error_size == ErrorCode.OK :
+            #clear all window
+            w_guide.clear_all_window()
             #test color
             w_guide.Hello_World()
             #static content
+            w_guide.update_background()#do first
             w_guide.update_guide()
-            w_guide.update_background()
     # return error_size code
     return error_size
 
@@ -193,6 +195,12 @@ def update_menu_list():
             
             #else update list order
             w_guide.update_order()
+
+            #check size screen after push data to buffer screen
+            #this step sure that before and after push to buffer, screen not changed
+            if check_size_valid() != ErrorCode.OK:
+                return #end looping :) end thread
+            
         #sleep for other threads and avoid continuous push data to buffer
         time.sleep(cycle_menu_update)
 

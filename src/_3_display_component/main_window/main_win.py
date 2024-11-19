@@ -38,7 +38,7 @@ class Main_win(Container):
         self.w_order.keypad(True); self.w_guide.keypad(True)
 
         # add no delay for using getch()
-        self.w_order.nodelay(True); self.w_order.nodelay(True)
+        self.w_order.nodelay(True); self.w_guide.nodelay(True)
 
     # De-init
     def __del__(self):
@@ -55,11 +55,11 @@ class Main_win(Container):
         self.w_order_begin_col = self.back_win_col * 10 // 100
         self.w_order_begin_row = self.back_win_row * 10 // 100
         self.w_order_col = self.back_win_col * 80 // 100
-        self.w_order_row = self.back_win_row * 50 // 100
+        self.w_order_row = self.back_win_row * 55 // 100
 
         #guide window
         self.w_guide_begin_col = self.back_win_col * 10 // 100
-        self.w_guide_begin_row = self.back_win_row * 60 // 100
+        self.w_guide_begin_row = self.back_win_row * 70 // 100
         self.w_guide_col = self.w_order_col
         self.w_guide_row = self.back_win_row * 20 // 100
 
@@ -131,15 +131,11 @@ class Main_win(Container):
 
     #[D. guide users window]
     def update_guide(self):
-        #clear screen first
-        self.w_guide.clear()
-
-        self.w_guide.addstr(1,1,"W-up S-down")
-        self.w_guide.addstr(2,1,"Q-quit")
-        self.w_guide.addstr(3,1,"Enter-select")
-
         # renew border
         self.w_guide.box('|','-')
+        # content
+        self.w_guide.addstr(1,1,"W-up   |S-down")
+        self.w_guide.addstr(2,1,"Q-quit |Enter-select")
         # add name
         self.w_guide.addstr(0,1,"[How to use]", self.COS[1])
         # noutrefresh display
@@ -147,6 +143,8 @@ class Main_win(Container):
 
     #[E. background]
     def update_background(self):
+        # renew border
+        self.backwin.box('|','-')
         #add name
         self.backwin.addstr(0,1,"[Task Manager]",self.COS[4])
         #noutrefresh to apply new change

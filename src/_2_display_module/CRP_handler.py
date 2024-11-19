@@ -14,10 +14,13 @@ The 'main' function then decides to process the error code and control the handl
 ****************************************************************************'''
 # common libraries
 import sys
+import curses
 
 # defined libraries
 from _3_display_component.CPU_RAM_PROC.CRP_win import CRPwin #inherit class for CRP window
 
+# error code
+from error_code import *
 '''****************************************************************************
 * Variable
 ****************************************************************************'''
@@ -32,12 +35,15 @@ def init_CRP_window():
     global w_CRP
     #init guide window object
     w_CRP = CRPwin()
-    #test color
-    w_CRP.Hello_World()
 
 # wait to get key
 def getkey_CRPwindow():
     global w_CRP
+    w_CRP.clear_all_window()
+    w_CRP.update_background()
+    w_CRP.update_guide();w_CRP.update_proc_content()
+    w_CRP.update_total_content()
+    curses.doupdate()
     # get an temp input to end window :)
     temp_input = -1
     while (temp_input == -1):
@@ -49,6 +55,7 @@ def getkey_CRPwindow():
 def exit_CRP_window():
     global w_CRP
     del w_CRP #free completely window curses and switch back to the original terminal 
-    print("[OK - {}] closed the CRP window".format(exit_CRP_window.__name__),
-    file=sys.stderr)
+    if debug == ErrorCode.DEBUG:
+        print("[OK - {}] closed the CRP window".format(exit_CRP_window.__name__),
+              file=sys.stderr)
     # no return
