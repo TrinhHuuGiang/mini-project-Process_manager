@@ -18,16 +18,12 @@ guide_window = [guide_handler.init_guide_window,guide_handler.update_menu_list_a
 guide_handler.exit_guide_window]
 
 # threads
-thread1 = None#for loop check resize
-thread2 = None#for loop update list order content
-thread3 = None#for loop push content to screen
+thread1 = None#for loop update list order content
+thread2 = None#for loop push content to screen
 '''****************************************************************************
 * Code
 ****************************************************************************'''
 # [Initialize support threads]
-def resize_win():
-    guide_handler.check_size_valid()
-
 def update_list_order():
     guide_handler.update_menu_list()
 
@@ -36,21 +32,21 @@ def push_content_to_screen():
     
 # start and destroy threads 
 def start_threads():
-    global thread1,thread2,thread3
-    thread1 = threading.Thread(target=resize_win)
-    thread2 = threading.Thread(target=update_list_order)
-    thread3 = threading.Thread(target=push_content_to_screen)
+    global thread1
+    global thread2
+
+    thread1 = threading.Thread(target=update_list_order)
+    thread2 = threading.Thread(target=push_content_to_screen)
 
     thread1.start()
     thread2.start()
-    thread3.start()
 
 def destroy_threads():
-    global thread1,thread2,thread3
+    global thread1
+    global thread2
+
     thread1.join()
     thread2.join()
-    thread3.join()
-
 
 # [guide auto run]
 # It will run processing commands step by step:

@@ -29,29 +29,26 @@ debug = 1# 0 if no debug :)
 # window
 w_guide = None
 
+#thread
+end_sig = None #default = 1, threadings loop
+
 # keymutex
 lock_size = threading.Lock()
     #Synchronize content updates and push content to the screen
-    #using mutex 3 threads:
-    #- check size, changed window
-    #=> keep safe before print when window invalid size
+    #using mutex 2 threads:
     #- update dynamic window:
+    #=> keep safe before push data to buffer screen
     #=> update content with user choice
-    #- push content to screen
     #=> sure not print missing content
-end_sig = None #default = 1, threadings loop
+    #- push content to screen
+    #=> keep safe before push data from buffer to screen
+    #=> sure push data is not changed
 
-#condition variables
-condition_wait_checksize = threading.Condition(lock_size)
-notify_size_checked = None #default = 1, unchecked
-condition_wait_all_wait = threading.Condition(lock_size)
-total_waiting = None
-max_waiting = 2 # one is dynamic window thread, other is push thread
+size_not_checked_fisrt_time =None #  default 1 is not check
 
-# check size cycle
-cycle_check_resize = 0.01 # 10 ms
 # dynamic content cycle
 cycle_menu_update = 0.2 # 200ms/time update
+
 # push to screen cycle
 cycle_screen_refresh = 0.3# 300ms/time for reduce flashing
 
@@ -68,13 +65,11 @@ error_size = None # default = 0 , no error size
 def renew_global_variable():
     global end_sig
     global error_size
-    global notify_size_checked
-    global total_waiting
+    global size_not_checked_fisrt_time
 
     end_sig = 1#end sig = 0 to end thread
+    size_not_checked_fisrt_time = 1# if = 0 is checked
     error_size = 0#error_size !=0 if find error
-    notify_size_checked = 1#size_checked = 0 is checked
-    total_waiting = 0# total will increase after one wait()
 
 # [handler for guide window]
 # initialize and check size, set color, set box
@@ -139,109 +134,78 @@ def exit_guide_window():
 
 # ___________[Thread_Function]___________
 # Call these support function after init window
-# A. Resize window
+# A. Resize window (support)
 # check resize or size not invalid
 def check_size_valid():
     global w_guide
-    global lock_size
     global error_size
-    global condition_wait_checksize
-    global notify_size_checked
-    global condition_wait_all_wait
-    global total_waiting
+    global size_not_checked_fisrt_time
 
-    with lock_size:
-        if(max_waiting != total_waiting):
-            #wait all thread wait
-            condition_wait_all_wait.wait()
-    while(end_sig):
-        # lock mutex, start check size invalid
-        with lock_size:
-            # save old background size
-            old_back_col = w_guide.back_win_col
-            old_back_row = w_guide.back_win_row
+    # save old background size
+    old_back_col = w_guide.back_win_col
+    old_back_row = w_guide.back_win_row
 
-            # [Check size valid]
-            # get background size to check change size
-            w_guide.get_backwin_size()
-            # now check if size invalid
-            if((w_guide.back_win_col < w_guide.w_back_mincol) or
-            (w_guide.back_win_row < w_guide.w_back_minrow)):
-                error_size = 1 # error size < min
+    # [Check size valid]
+    # get background size to check change size
+    w_guide.get_backwin_size()
+    # now check if size invalid
+    if((w_guide.back_win_col < w_guide.w_back_mincol) or
+    (w_guide.back_win_row < w_guide.w_back_minrow)):
+        error_size = 1 # error size < min
 
-            # [Check if size change]
-            if((old_back_col != w_guide.back_win_col) or
-            (old_back_row != w_guide.back_win_row)):
-                error_size = 2 # size changed
+    # [Check if size change]
+    if((old_back_col != w_guide.back_win_col) or
+    (old_back_row != w_guide.back_win_row)):
+        error_size = 2 # size changed
 
-            # else notify other threads (only one time at start)
-            if notify_size_checked:
-                notify_size_checked = 0
-                condition_wait_checksize.notify_all()
+    # if this is first time checksize, update static content
+    if size_not_checked_fisrt_time:
+        size_not_checked_fisrt_time = 0#checked
 
-                #and if size ok
-                if not error_size:
-                    #test color
-                    w_guide.Hello_World()
-                    #static content
-                    w_guide.update_guide()
-                    w_guide.update_background()
+        #and if size ok print static content only one time
+        if not error_size:
+            #test color
+            w_guide.Hello_World()
+            #static content
+            w_guide.update_guide()
+            w_guide.update_background()
+    # return error_size code
+    return error_size
 
-        # 10 ms sleep for others thread working
-        # then continue check the user suddenly 
-        # changes the screen
-        time.sleep(cycle_check_resize)
 
 # B. Update dynamic content
 # update menu
 def update_menu_list():
     global w_guide
+    global end_sig
     global lock_size
-    global error_size
-    global condition_wait_checksize
-    global total_waiting
 
-    with lock_size:
-        #increase total waiting
-        total_waiting+=1
-        if(total_waiting == max_waiting):
-            condition_wait_all_wait.notify()#wake up 'resize check' thread
-        #wait check size first time notify all
-        condition_wait_checksize.wait()
-    #if error size
-    if error_size:
-        return
-    #else update menu list
+    # update menu list
     while(end_sig):
         with lock_size:
-            # update list order
+            #check size screen first before push data to buffer screen
+            if check_size_valid():
+                return #end looping :) end thread
+            
+            #else update list order
             w_guide.update_order()
-        #sleep for other threads and avoid continuous refreshes
+        #sleep for other threads and avoid continuous push data to buffer
         time.sleep(cycle_menu_update)
 
 # C. push content to background
 def push_to_screen():
     global w_guide
+    global end_sig
     global lock_size
-    global error_size
-    global condition_wait_checksize
-    global condition_wait_all_wait
-    global total_waiting
     
-    with lock_size:
-        #increase total waiting
-        total_waiting+=1
-        if(total_waiting == max_waiting):
-            condition_wait_all_wait.notify()#wake up check size first time thread
-        #wait check size first time notify all
-        condition_wait_checksize.wait()
-    #if error size
-    if error_size:
-        return
     #else push content to screen
     while(end_sig):
-        #after time sleep, push content to screen
+        # push content from buffer to screen
         with lock_size:
+            #check size screen first before push data  screen
+            if check_size_valid():
+                return #end looping :) end thread
+            #else push to screen
             curses.doupdate()
         #sleep
         time.sleep(cycle_screen_refresh)
