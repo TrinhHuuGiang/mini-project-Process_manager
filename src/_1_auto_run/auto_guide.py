@@ -8,11 +8,11 @@ import threading #for
 # handler libraries
 from _2_display_module import guide_handler
 
+# error code
+from error_code import *
 '''****************************************************************************
 * Variable
 ****************************************************************************'''
-debug = 1# 0 if no debug :)
-
 # list function handle of guide window
 guide_window = [guide_handler.init_guide_window,guide_handler.update_menu_list_and_get_choice,
 guide_handler.exit_guide_window]
@@ -54,7 +54,7 @@ def destroy_threads():
 # - run the menu to take selections from the user
 # - close the order window and return the order code.
 # return code:
-# (-1) user want quit; (-2) unexpected return ret
+# (-1) user want quit; (<-1) unexpected return ret
 # 0,1,2,3... is code of other windows
 def guide_auto_run():
     # init variable window
@@ -75,14 +75,16 @@ def guide_auto_run():
         destroy_threads()
         # close 'curses' and switch back to the original terminal
         guide_window[2]()
-        if debug: print("[OK - {}] - Closed".format(guide_auto_run.__name__), file=sys.stderr)
+        if debug == ErrorCode.DEBUG:
+            print("[OK - {}] - Closed".format(guide_auto_run.__name__), file=sys.stderr)
         return -1 # no error, exit
     elif (ret < 0 ) or (ret >= max_num_choice ):
         # wait thread end
         destroy_threads()
         # close 'curses' and switch back to the original terminal
         guide_window[2]()
-        if debug: print("[ERR - {}] - Unexpected event (wrong size minimize, size changed,...)".format(guide_auto_run.__name__), file=sys.stderr)
+        if debug == ErrorCode.DEBUG:
+            print("[ERR - {}] - Unexpected event (wrong size minimize, size changed,...)".format(guide_auto_run.__name__), file=sys.stderr)
         return -2 # unexpected ret choice
     
     # else 0<= ret < max_numchoice 

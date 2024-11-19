@@ -8,10 +8,8 @@ import sys
 from _1_auto_run.auto_guide import guide_auto_run
 from _1_auto_run.auto_CRP import CRP_auto_run
 
-'''****************************************************************************
-* Variable
-****************************************************************************'''
-debug = 1# 0 if no debug :)
+# error code
+from error_code import *
 
 '''****************************************************************************
 * Code
@@ -26,7 +24,7 @@ def main():
     ret = guide_auto_run()
     while(ret >= 0):
         # check choice returned
-        if debug:
+        if debug == ErrorCode.DEBUG:
             print("return window:",ret)
             input("input anything to contine :)")
         # open choice window

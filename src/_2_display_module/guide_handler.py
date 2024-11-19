@@ -21,11 +21,12 @@ import curses
 # defined libraries
 from _3_display_component.main_window.main_win import Main_win #main class for guide window
 
+# error code
+from error_code import *
+
 '''****************************************************************************
 * Variable
 ****************************************************************************'''
-debug = 1# 0 if no debug :)
-
 # window
 w_guide = None
 
@@ -56,7 +57,7 @@ cycle_screen_refresh = 0.3# 300ms/time for reduce flashing
 cycle_user_input = 0.2#200ms
 
 #error code
-error_size = None # default = 0 , no error size
+error_size = None # default = Errorcode.OK , no error size
 
 '''****************************************************************************
 * Code
@@ -64,12 +65,12 @@ error_size = None # default = 0 , no error size
 #renew global variable if recall this window
 def renew_global_variable():
     global end_sig
-    global error_size
     global size_not_checked_fisrt_time
+    global error_size
 
-    end_sig = 1#end sig = 0 to end thread
-    size_not_checked_fisrt_time = 1# if = 0 is checked
-    error_size = 0#error_size !=0 if find error
+    end_sig = ErrorCode.NOT_END_SIG
+    size_not_checked_fisrt_time = ErrorCode.NOT_CHECKED
+    error_size = ErrorCode.OK
 
 # [handler for guide window]
 # initialize and check size, set color, set box
@@ -92,7 +93,7 @@ def update_menu_list_and_get_choice():
     global end_sig
     # wait user then update or execute or quit 'q'
     temp_input = 'nothing'
-    while (temp_input != 'q') and (error_size == 0):
+    while (temp_input != 'q') and (error_size == ErrorCode.OK):
         # sleep for user react
         time.sleep(cycle_user_input)
         # then check buffer input
@@ -111,24 +112,27 @@ def update_menu_list_and_get_choice():
             w_guide.order_down()#user want lower
         elif(temp_input == '\n'):
             #end
-            end_sig = 0
+            #send end sig
+            end_sig = ErrorCode.END_SIG
+            #return user chosen
             return w_guide.get_order()#user want order
     
     #end
-    end_sig = 0
+    end_sig = ErrorCode.END_SIG
     #if input == q
     if temp_input == 'q': return -1 # quit signal
     # error size
-    elif error_size == 1: return -2 # < size min
-    elif error_size == 2: return -3 #size changed
+    elif error_size == ErrorCode.ERROR_INVALID_MIN_SIZE: return -2 # < size min
+    elif error_size == ErrorCode.ERROR_SIZE_CHANGED: return -3 #size changed
     else: return -4
 
 # end
 def exit_guide_window():
     global w_guide
     del w_guide #free completely window curses and switch back to the original terminal 
-    if debug: print("[OK - {}] closed the guide window".format(exit_guide_window.__name__),
-                    file=sys.stderr)
+    if debug == ErrorCode.DEBUG:
+        print("[OK - {}] closed the guide window".format(exit_guide_window.__name__),
+              file=sys.stderr)
     # no return
 
 
@@ -151,19 +155,19 @@ def check_size_valid():
     # now check if size invalid
     if((w_guide.back_win_col < w_guide.w_back_mincol) or
     (w_guide.back_win_row < w_guide.w_back_minrow)):
-        error_size = 1 # error size < min
+        error_size = ErrorCode.ERROR_INVALID_MIN_SIZE # error size < min
 
     # [Check if size change]
     if((old_back_col != w_guide.back_win_col) or
     (old_back_row != w_guide.back_win_row)):
-        error_size = 2 # size changed
+        error_size = ErrorCode.ERROR_SIZE_CHANGED # size changed
 
     # if this is first time checksize, update static content
-    if size_not_checked_fisrt_time:
-        size_not_checked_fisrt_time = 0#checked
+    if size_not_checked_fisrt_time == ErrorCode.NOT_CHECKED:
+        size_not_checked_fisrt_time = ErrorCode.CHECKED#checked
 
         #and if size ok print static content only one time
-        if not error_size:
+        if error_size == ErrorCode.OK :
             #test color
             w_guide.Hello_World()
             #static content
@@ -181,10 +185,10 @@ def update_menu_list():
     global lock_size
 
     # update menu list
-    while(end_sig):
+    while(end_sig == ErrorCode.NOT_END_SIG):
         with lock_size:
             #check size screen first before push data to buffer screen
-            if check_size_valid():
+            if check_size_valid() != ErrorCode.OK:
                 return #end looping :) end thread
             
             #else update list order
@@ -199,11 +203,11 @@ def push_to_screen():
     global lock_size
     
     #else push content to screen
-    while(end_sig):
+    while(end_sig == ErrorCode.NOT_END_SIG):
         # push content from buffer to screen
         with lock_size:
             #check size screen first before push data  screen
-            if check_size_valid():
+            if check_size_valid() != ErrorCode.OK:
                 return #end looping :) end thread
             #else push to screen
             curses.doupdate()
