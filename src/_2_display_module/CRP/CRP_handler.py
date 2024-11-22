@@ -41,8 +41,12 @@ def getkey_CRPwindow():
     global w_CRP
     w_CRP.clear_all_window()
     w_CRP.update_background()
-    w_CRP.update_guide();w_CRP.update_proc_content()
+    w_CRP.update_guide()
+
+    w_CRP.update_proc_content()
+
     w_CRP.update_total_content()
+    
     curses.doupdate()
     # get an temp input to end window :)
     temp_input = -1
@@ -55,7 +59,7 @@ def getkey_CRPwindow():
 def exit_CRP_window():
     global w_CRP
     del w_CRP #free completely window curses and switch back to the original terminal 
-    if debug == ErrorCode.DEBUG:
+    if debug == CommonErrorCode.DEBUG:
         print("[OK - {}] closed the CRP window".format(exit_CRP_window.__name__),
               file=sys.stderr)
     # no return

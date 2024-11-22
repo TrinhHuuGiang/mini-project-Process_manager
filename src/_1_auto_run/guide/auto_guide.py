@@ -6,7 +6,7 @@ import sys
 import threading #for
 
 # handler libraries
-from _2_display_module import guide_handler
+from _2_display_module.guide import guide_handler
 
 # error code
 from error_code import *
@@ -14,7 +14,7 @@ from error_code import *
 * Variable
 ****************************************************************************'''
 # list function handle of guide window
-guide_window = [guide_handler.init_guide_window,guide_handler.update_menu_list_and_get_choice,
+guide_window = [guide_handler.init_guide_window,guide_handler.get_choice_and_return,
 guide_handler.exit_guide_window]
 
 # threads
@@ -70,28 +70,22 @@ def guide_auto_run():
 
     # runs automatically until the user selects a display window
     ret = guide_window[1]()
-    if(ret == -1):
-        # wait thread end
-        destroy_threads()
-        # close 'curses' and switch back to the original terminal
-        guide_window[2]()
-        if debug == ErrorCode.DEBUG:
-            print("[OK - {}] - Closed".format(guide_auto_run.__name__), file=sys.stderr)
-        return -1 # no error, exit
-    elif (ret < 0 ) or (ret >= max_num_choice ):
-        # wait thread end
-        destroy_threads()
-        # close 'curses' and switch back to the original terminal
-        guide_window[2]()
-        if debug == ErrorCode.DEBUG:
-            print("[ERR - {}] - Unexpected event (wrong size minimize, size changed,...)".format(guide_auto_run.__name__), file=sys.stderr)
-        return -2 # unexpected ret choice
-    
-    # else 0<= ret < max_numchoice 
+
+    # then end
     # wait thread end
     destroy_threads()
-    # close the guide window and return the selected event handler
+
+    # close the guide window and check the selected event handler
     guide_window[2]()
 
+    if(ret == -1):
+        if debug == CommonErrorCode.DEBUG:
+            print("[OK - {}] - Quit signal - Closed".format(guide_auto_run.__name__), file=sys.stderr)
+    elif (ret < 0 ) or (ret >= max_num_choice ):
+        if debug == CommonErrorCode.DEBUG:
+            print("[ERR - {}] - Unexpected event (wrong size minimize, size changed,...)".format(guide_auto_run.__name__), file=sys.stderr)
+    
+    # else 0<= ret < max_numchoice
+    
     # [main will run selected event handler]
     return ret

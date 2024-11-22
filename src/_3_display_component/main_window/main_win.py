@@ -61,7 +61,7 @@ class Main_win(Container):
         self.w_guide_begin_col = self.back_win_col * 10 // 100
         self.w_guide_begin_row = self.back_win_row * 70 // 100
         self.w_guide_col = self.w_order_col
-        self.w_guide_row = self.back_win_row * 20 // 100
+        self.w_guide_row = self.back_win_row * 23 // 100 #min 5.5 ~ 5 block
 
     # clear all window
     def clear_all_window(self):
@@ -128,7 +128,7 @@ class Main_win(Container):
         if(self.numerical_order < 0):
             self.numerical_order = self.max_num_choice - 1
 
-
+    #[.static window display]
     #[D. guide users window]
     def update_guide(self):
         # renew border

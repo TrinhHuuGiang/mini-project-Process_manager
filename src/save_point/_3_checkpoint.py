@@ -5,8 +5,8 @@
 import sys
 
 # auto run libraries
-from _1_auto_run.guide.auto_guide import guide_auto_run
-from _1_auto_run.CRP.auto_CRP import CRP_auto_run
+from Process_manager.src._1_auto_run.guide.auto_guide import guide_auto_run
+from Process_manager.src._1_auto_run.CRP.auto_CRP import CRP_auto_run
 
 # error code
 from error_code import *
@@ -24,7 +24,7 @@ def main():
     ret = guide_auto_run()
     while(ret >= 0):
         # check choice returned
-        if debug == CommonErrorCode.DEBUG:
+        if debug == ErrorCode.DEBUG:
             print("return window:",ret)
             input("input anything to contine :)")
         # open choice window

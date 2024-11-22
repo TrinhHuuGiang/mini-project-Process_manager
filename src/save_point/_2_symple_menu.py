@@ -5,7 +5,10 @@
 import sys
 
 # handler libraries
-from _2_display_module import guide_handler, CRD_handler, CRP_handler, NS_handler
+from Process_manager.src._2_display_module.CRP import CRP_handler
+from Process_manager.src._2_display_module.NS import NS_handler
+from Process_manager.src._2_display_module.guide import guide_handler
+from Process_manager.src._2_display_module.CRD import CRD_handler
 from _3_display_component.main_window.main_win import max_num_choice
 
 '''****************************************************************************
