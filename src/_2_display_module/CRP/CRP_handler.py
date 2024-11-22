@@ -185,8 +185,6 @@ def check_size_valid():
             w_CRP.update_background()#do first
             w_CRP.update_guide()
 
-            w_CRP.update_total_content() # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
     # return error_size code
     return error_size
 
@@ -247,3 +245,20 @@ def update_list_proc_display():
         #then unlock R1 + R2 + R3
         #sleep
         time.sleep(cycle_update_list_proc)
+
+# E. Release data total resource will display to buffer (thread) (T4.1+T4.2)
+def update_total_resource():
+    global w_CRP
+    global end_sig
+    global mutex_R1
+
+    while(end_sig == CommonErrorCode.NOT_END_SIG):
+        with mutex_R1:
+            #check size screen first before push data  screen
+            if check_size_valid() != CommonErrorCode.OK:
+                return #end looping :) end thread
+            #else renew list proc
+            w_CRP.update_total_content()
+        #then unlock R1
+        #sleep
+        time.sleep(cycle_renew_and_update_list_total_resource)

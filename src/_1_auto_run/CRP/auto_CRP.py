@@ -21,7 +21,7 @@ CRP_window = [CRP_handler.init_CRP_window,CRP_handler.getkey_CRPwindow,
 thread1 = None
 thread2 = None
 thread3 = None
-# thread4 = None
+thread4 = None
 '''****************************************************************************
 * Code
 ****************************************************************************'''
@@ -34,29 +34,37 @@ def renew_list_precesses_data():
 
 def update_list_proc_display():
     CRP_handler.update_list_proc_display()
+
+def update_total_resource():
+    CRP_handler.update_total_resource()
     
 # start and destroy threads 
 def start_threads():
     global thread1
     global thread2
     global thread3
+    global thread4
 
     thread1 = threading.Thread(target=push_to_screen)
     thread2 = threading.Thread(target=renew_list_precesses_data)
     thread3 = threading.Thread(target=update_list_proc_display)
+    thread4 = threading.Thread(target=update_total_resource)
 
     thread1.start()
     thread2.start()
     thread3.start()
+    thread4.start()
 
 def destroy_threads():
     global thread1
     global thread2
     global thread3
+    global thread4
 
     thread1.join()
     thread2.join()
     thread3.join()
+    thread4.join()
 
 
 # [CRP auto run]

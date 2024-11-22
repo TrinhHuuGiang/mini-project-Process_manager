@@ -2,19 +2,38 @@
 * Definitions
 ****************************************************************************'''
 import psutil
-from datetime import datetime, timedelta
+from datetime import datetime
 
 '''****************************************************************************
 * Variables, Const
 ****************************************************************************'''
+# these variable using for display list process 
 list_proc = []  # list dictionary is limited by offset and number ordered 
                 # include "pid", "name", "cpu_percent", "memory_percent", "status", "create_time"
                 # but "create_time" was changed mean is time process has been run
 leng_proc = 0 # c, số phần tử trong list process
 sort_order = 0 # 0: pid, 1: name, 2:%cpu, 3: %RAM, 4: status, 5: create time
+
+
+# these variable using for total resource
+# Lấy thông tin hệ thống
+total_resource_info = None
+# {
+#     "cpu_percent": 0,  # % CPU sử dụng
+#     "total_ram": 0,  # Tổng RAM (MB)
+#     "used_ram": 0,  # RAM đã sử dụng (MB)
+#     "current_time": 0,  # Thời gian hiện tại
+#     "total_pid": 0,  # Tổng số PID
+#     "running": 0,
+#     "sleeping": 0,
+#     "stopped": 0,
+#     "zombie": 0,
+# }
+
 '''****************************************************************************
 * CODE
 ****************************************************************************'''
+########## các hàm sử dụng cho danh sách process
 def format_elapsed_hhmmss(elapsed_time):
     """Định dạng thời gian chạy thành chuỗi hh:mm:ss."""
     seconds = int(elapsed_time.total_seconds())
@@ -62,8 +81,8 @@ def get_list_proc():
         try:
             # Định dạng thông tin của mỗi tiến trình
             proc_info = p.info
-            proc_info["cpu_percent"] = f"{proc_info['cpu_percent']:.2f}%"  # Định dạng CPU %
-            proc_info["memory_percent"] = f"{proc_info['memory_percent']:.2f}%"  # Định dạng Memory %
+            proc_info["cpu_percent"] = f"{proc_info['cpu_percent']:.1f}%"  # Định dạng CPU %
+            proc_info["memory_percent"] = f"{proc_info['memory_percent']:.1f}%"  # Định dạng Memory %
 
             # Tính thời gian đã chạy
             if "create_time" in proc_info and proc_info["create_time"] is not None:
@@ -85,3 +104,42 @@ def get_list_proc():
 
     #sort by order
     sort_by_order()
+
+############các hàm sử dụng lấy tổng tài nguyên
+# Thống kê trạng thái của PID
+def get_dict_total_resource():
+    global total_resource_info
+
+    # renew
+    total_resource_info = {
+    "cpu_percent": 0,  # % CPU sử dụng
+    "total_ram": 0,  # Tổng RAM (MB)
+    "used_ram": 0,  # RAM đã sử dụng (MB)
+    "current_time": 0,  # Thời gian hiện tại
+    "total_pid": 0,  # Tổng số PID
+    "running": 0,
+    "sleeping": 0,
+    "stopped": 0,
+    "zombie": 0,
+    }
+
+    #get data
+    total_resource_info["cpu_percent"] = psutil.cpu_percent(interval=0)  # % CPU sử dụng
+    total_resource_info["total_ram"]= psutil.virtual_memory().total // (1024 ** 2)  # Tổng RAM (MB)
+    total_resource_info["used_ram"]= psutil.virtual_memory().used // (1024 ** 2)  # RAM đã sử dụng (MB)
+    total_resource_info["current_time"]= datetime.now().strftime("%H:%M")  # Thời gian hiện tại
+    total_resource_info["total_pid"]= len(psutil.pids())  # Tổng số PID
+
+    for proc in psutil.process_iter(['status']):
+        try:
+            status = proc.info['status']
+            if status == psutil.STATUS_RUNNING:
+                total_resource_info["running"] += 1
+            elif status == psutil.STATUS_SLEEPING:
+                total_resource_info["sleeping"] += 1
+            elif status == psutil.STATUS_STOPPED:
+                total_resource_info["stopped"] += 1
+            elif status == psutil.STATUS_ZOMBIE:
+                total_resource_info["zombie"] += 1
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            continue

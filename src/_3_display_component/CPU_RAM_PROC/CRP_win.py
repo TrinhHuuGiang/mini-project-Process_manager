@@ -2,6 +2,7 @@
 * Definitions
 ****************************************************************************'''
 import curses
+import psutil
 from _3_display_component.container_class.container import Container
 from _4_system_data.PROC import processes
 '''****************************************************************************
@@ -244,20 +245,22 @@ class CRPwin(Container):
 
 
     def update_total_content(self):
+        #get total data
+        processes.get_dict_total_resource()
+
         #clear screen first
         self.w_total.clear()
-        # # get total data
 
         # set total data
-        self.w_total.addstr(1,self.col_total_PID,"PID",curses.A_BOLD)
-        self.w_total.addstr(1,self.col_total_Run,"Run",curses.A_BOLD)
-        self.w_total.addstr(1,self.col_total_CPU,"CPU",self.COS[5])
-        self.w_total.addstr(2,self.col_total_Slp,"Slp",curses.A_BOLD)
-        self.w_total.addstr(2,self.col_total_Stp,"Stp",curses.A_BOLD)
-        self.w_total.addstr(2,self.col_total_RAM,"RAM",self.COS[3])
-        self.w_total.addstr(3,self.col_total_Zom,"Zom",curses.A_BOLD)
-        self.w_total.addstr(3,self.col_total_NOW,"NOW")
-        self.w_total.addstr(3,self.col_total_USE,"USE",self.COS[3])
+        self.w_total.addstr(1,self.col_total_PID,"PID {}".format(processes.total_resource_info["total_pid"]),curses.A_BOLD)
+        self.w_total.addstr(1,self.col_total_Run,"Run {}".format(processes.total_resource_info["running"]),curses.A_BOLD)
+        self.w_total.addstr(1,self.col_total_CPU,"CPU {:.2f}%".format(processes.total_resource_info["cpu_percent"]),self.COS[5])
+        self.w_total.addstr(2,self.col_total_Slp,"Slp {}".format(processes.total_resource_info["sleeping"]),curses.A_BOLD)
+        self.w_total.addstr(2,self.col_total_Stp,"Stp {}".format(processes.total_resource_info["stopped"]),curses.A_BOLD)
+        self.w_total.addstr(2,self.col_total_RAM,"RAM {}MB".format(processes.total_resource_info["total_ram"]),self.COS[3])
+        self.w_total.addstr(3,self.col_total_Zom,"Zom {}".format(processes.total_resource_info["zombie"]),curses.A_BOLD)
+        self.w_total.addstr(3,self.col_total_NOW,"NOW {}".format(processes.total_resource_info["current_time"]))
+        self.w_total.addstr(3,self.col_total_USE,"USE {}MB".format(processes.total_resource_info["used_ram"]),self.COS[3])
 
         # renew border
         self.w_total.box('|','-')
