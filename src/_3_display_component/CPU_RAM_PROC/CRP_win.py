@@ -62,10 +62,10 @@ class CRPwin(Container):
                                      self.w_guide_begin_row,self.w_guide_begin_col)
         
         # now add keypad(True)
-        self.w_proc.keypad(True); self.w_proc.keypad(True); self.w_guide.keypad(True)
+        self.w_proc.keypad(True); self.w_total.keypad(True); self.w_guide.keypad(True)
 
         # add no delay for using getch()
-        self.w_proc.nodelay(True); self.w_proc.nodelay(True); self.w_guide.nodelay(True)
+        self.w_proc.nodelay(True); self.w_total.nodelay(True); self.w_guide.nodelay(True)
 
     def __del__(self):
         Container.__del__(self)
@@ -186,6 +186,42 @@ class CRPwin(Container):
         # noutrefresh display
         self.w_proc.noutrefresh()
 
+    # move up
+    # (T3.2)
+    def move_order_up(self):
+        if self.current_order_proc == 0:
+            if self.offset_list_proc == 0:
+                return
+            else:
+                self.offset_list_proc -= 1
+        else:
+            self.current_order_proc -= 1
+        
+        # update content processes to buffer
+        self.update_proc_content()
+
+    # move down
+    # (T3.1)
+    def move_order_down(self):
+        o_plus_a = self.offset_list_proc + self.len_order_list
+        if o_plus_a == processes.leng_proc:
+            self.num_order_insert = self.len_order_list
+        elif o_plus_a < processes.leng_proc:
+            self.num_order_insert = self.len_order_list
+            if self.current_order_proc == self.num_order_insert - 1:
+                self.offset_list_proc+=1
+            else:
+                self.current_order_proc+=1
+        else:
+            self.num_order_insert = processes.leng_proc - self.offset_list_proc
+            if self.current_order_proc == self.num_order_insert - 1:
+                return
+            else:
+                self.current_order_proc+=1
+        
+        # update content processes to buffer
+        self.update_proc_content()
+
 
     #[C. Total resource window]
     # calculate after calculate size window
@@ -236,7 +272,8 @@ class CRPwin(Container):
     def update_guide(self):
         # add content
         self.w_guide.addstr(1,1,"W-up   |S-down")
-        self.w_guide.addstr(2,1,"Q-quit |Enter-select")
+        self.w_guide.addstr(2,1,"Q-Menu |C-catch")
+        self.w_guide.addstr(3,1,"Enter-more infor")
 
         # renew border
         self.w_guide.box('|','-')

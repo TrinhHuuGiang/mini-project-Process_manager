@@ -24,10 +24,10 @@ thread2 = None#for loop push content to screen
 * Code
 ****************************************************************************'''
 # [Initialize support threads]
-def update_list_order():
+def update_menu_list():
     guide_handler.update_menu_list()
 
-def push_content_to_screen():
+def push_to_screen():
     guide_handler.push_to_screen()
     
 # start and destroy threads 
@@ -35,8 +35,8 @@ def start_threads():
     global thread1
     global thread2
 
-    thread1 = threading.Thread(target=update_list_order)
-    thread2 = threading.Thread(target=push_content_to_screen)
+    thread1 = threading.Thread(target=update_menu_list)
+    thread2 = threading.Thread(target=push_to_screen)
 
     thread1.start()
     thread2.start()

@@ -183,7 +183,7 @@ def check_size_valid():
     return error_size
 
 
-# B. Update dynamic content
+# B. Update dynamic content (thread)
 # update menu
 def update_menu_list():
     global w_guide
@@ -208,13 +208,13 @@ def update_menu_list():
         #sleep for other threads and avoid continuous push data to buffer
         time.sleep(cycle_menu_update)
 
-# C. push content to background
+# C. push content to background (thread)
 def push_to_screen():
     global w_guide
     global end_sig
     global lock_size
     
-    #else push content to screen
+    # push content to screen
     while(end_sig == CommonErrorCode.NOT_END_SIG):
         # push content from buffer to screen
         with lock_size:
