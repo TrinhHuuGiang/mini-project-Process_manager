@@ -20,6 +20,7 @@ import threading #mutex
 
 # defined libraries
 from _3_display_component.CPU_RAM_PROC.CRP_win import CRPwin #inherit class for CRP window
+from _4_system_data.PROC import processes
 
 # error code
 from error_code import *
@@ -94,6 +95,7 @@ def getkey_CRPwindow():
             # clean stdin buffer before unlock
             while w_CRP.backwin.getch() != -1: continue
             
+            # common signal
             if(temp_input == 'w'):
                 w_CRP.move_order_up()#user want upper
             elif(temp_input == 's'):
@@ -104,6 +106,21 @@ def getkey_CRPwindow():
                 end_sig = CommonErrorCode.END_SIG
                 #return user chosen(>=0)
                 return 0
+            
+            #sort signal
+            elif(temp_input == '0'):
+                processes.sort_order = 0
+            elif(temp_input == '1'):
+                processes.sort_order = 1
+            elif(temp_input == '2'):
+                processes.sort_order = 2
+            elif(temp_input == '3'):
+                processes.sort_order = 3
+            elif(temp_input == '4'):
+                processes.sort_order = 4
+            elif(temp_input == '5'):
+                processes.sort_order = 5
+
         # sleep for user react and other thread do
         time.sleep(cycle_user_input)
     #end

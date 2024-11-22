@@ -154,12 +154,12 @@ class CRPwin(Container):
         # renew border
         self.w_proc.box('|','-')
         # add name
-        self.w_proc.addstr(0,self.col_proc_PID,    "|PID",curses.A_BOLD)
-        self.w_proc.addstr(0,self.col_proc_NAME,   "|NAME",curses.A_BOLD)
-        self.w_proc.addstr(0,self.col_proc_CPU,    "|CPU",curses.A_BOLD)
-        self.w_proc.addstr(0,self.col_proc_MEM,    "|MEM",curses.A_BOLD)
-        self.w_proc.addstr(0,self.col_proc_STATUS, "|STATUS",curses.A_BOLD)
-        self.w_proc.addstr(0,self.col_proc_TIME,   "|TIME",curses.A_BOLD)
+        self.w_proc.addstr(0,self.col_proc_PID,    "|PID-0",curses.A_BOLD)
+        self.w_proc.addstr(0,self.col_proc_NAME,   "|NAME-1",curses.A_BOLD)
+        self.w_proc.addstr(0,self.col_proc_CPU,    "|CPU-2",curses.A_BOLD)
+        self.w_proc.addstr(0,self.col_proc_MEM,    "|MEM-3",curses.A_BOLD)
+        self.w_proc.addstr(0,self.col_proc_STATUS, "|STATUS-4",curses.A_BOLD)
+        self.w_proc.addstr(0,self.col_proc_TIME,   "|TIME-5",curses.A_BOLD)
         self.w_proc.addstr(0,self.col_proc_endmark,"|",curses.A_BOLD)
 
         # add data
@@ -285,7 +285,7 @@ class CRPwin(Container):
     #[E. background]
     def update_background(self):
         # renew border
-        self.w_guide.box('|','-')
+        self.backwin.box('|','-')
         #add name
         self.backwin.addstr(0,1,"[Process Manager]",self.COS[4])
         #noutrefresh to apply new change
