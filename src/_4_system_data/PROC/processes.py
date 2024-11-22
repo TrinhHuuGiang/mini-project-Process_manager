@@ -14,7 +14,11 @@ leng_proc = 0 # c
 '''****************************************************************************
 * CODE
 ****************************************************************************'''
-
+# lấy thông tin tiến trình
+# khi thực nghiệm thấy rằng nếu dùng psutil.process_iter.cache_clear() theo đề xuất
+# từ https://psutil.readthedocs.io/en/latest/
+# thì cpu in ra luôn là 0 %
+# lý do là vì khi tính cpu cần dựa vào dữ liệu trước đó lấy được
 def get_list_proc():
     global list_proc
     global leng_proc
@@ -44,9 +48,9 @@ def get_list_proc():
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             # Bỏ qua các tiến trình không thể truy cập
             continue
-
+    
     # Clear psutil internal cache
-    psutil.process_iter.cache_clear()
+    # psutil.process_iter.cache_clear()
 
     # Get length
     leng_proc = len(list_proc)

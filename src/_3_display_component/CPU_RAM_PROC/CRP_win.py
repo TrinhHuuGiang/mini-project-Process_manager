@@ -168,14 +168,14 @@ class CRPwin(Container):
         for p in insert_list:
             if temp_count != self.current_order_proc:
                 self.w_proc.addstr(insert_line,self.col_proc_PID,    "|{}".format(p["pid"]))
-                self.w_proc.addstr(insert_line,self.col_proc_NAME,   "|{}".format(p["name"][:45]))#max name len = 45
+                self.w_proc.addstr(insert_line,self.col_proc_NAME,   "|{}".format(p["name"][:35]))#max name len = 45
                 self.w_proc.addstr(insert_line,self.col_proc_CPU,    "|{}".format(p["cpu_percent"]))
                 self.w_proc.addstr(insert_line,self.col_proc_MEM,    "|{}".format(p["memory_percent"]))
                 self.w_proc.addstr(insert_line,self.col_proc_STATUS, "|{}".format(p["status"]))
                 self.w_proc.addstr(insert_line,self.col_proc_TIME,   "|{}".format(p["create_time"]))
             else:
                 self.w_proc.addstr(insert_line,self.col_proc_PID,    "|{}".format(p["pid"]),self.COS[2])
-                self.w_proc.addstr(insert_line,self.col_proc_NAME,   "|{}".format(p["name"][:45]),self.COS[2])
+                self.w_proc.addstr(insert_line,self.col_proc_NAME,   "|{}".format(p["name"][:35]),self.COS[2])
                 self.w_proc.addstr(insert_line,self.col_proc_CPU,    "|{}".format(p["cpu_percent"]),self.COS[2])
                 self.w_proc.addstr(insert_line,self.col_proc_MEM,    "|{}".format(p["memory_percent"]),self.COS[2])
                 self.w_proc.addstr(insert_line,self.col_proc_STATUS, "|{}".format(p["status"]),self.COS[2])
