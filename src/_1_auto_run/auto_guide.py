@@ -6,7 +6,7 @@ import sys
 import threading #for
 
 # handler libraries
-from _2_display_module.guide import guide_handler
+from _2_display_module.menu import menu_window_module
 
 # error code
 from error_code import *
@@ -14,8 +14,8 @@ from error_code import *
 * Variable
 ****************************************************************************'''
 # list function handle of guide window
-guide_window = [guide_handler.init_guide_window,guide_handler.get_choice_and_return,
-guide_handler.exit_guide_window]
+guide_window = [menu_window_module.init_guide_window,menu_window_module.get_choice_and_return,
+menu_window_module.exit_guide_window]
 
 # threads
 thread1 = None#for loop update list order content
@@ -25,10 +25,10 @@ thread2 = None#for loop push content to screen
 ****************************************************************************'''
 # [Initialize support threads]
 def update_menu_list():
-    guide_handler.update_menu_list()
+    menu_window_module.update_menu_list()
 
 def push_to_screen():
-    guide_handler.push_to_screen()
+    menu_window_module.push_to_screen()
     
 # start and destroy threads 
 def start_threads():

@@ -4,7 +4,7 @@
 import curses
 import psutil
 from _3_display_component.container_class.container import Container
-from _4_system_data.PROC import processes
+from _4_system_data import CRP_control
 '''****************************************************************************
 * Variable
 ****************************************************************************'''
@@ -124,18 +124,18 @@ class CRPwin(Container):
     # first time run need 'calculate_coordinate_list_proc_content' to get len_order_list
     # (T2.1) 
     def renew_list_processes(self):
-        processes.get_list_proc()
+        CRP_control.get_list_proc()
         # ? o+b <= c
-        if (self.offset_list_proc + self.num_order_insert) <= processes.leng_proc:
+        if (self.offset_list_proc + self.num_order_insert) <= CRP_control.leng_proc:
             self.num_order_insert = self.len_order_list
             return
         else:
-            if processes.leng_proc >= self.len_order_list:
+            if CRP_control.leng_proc >= self.len_order_list:
                 self.num_order_insert = self.len_order_list
-                self.offset_list_proc = processes.leng_proc - self.num_order_insert
+                self.offset_list_proc = CRP_control.leng_proc - self.num_order_insert
                 return
             else:
-                self.num_order_insert = processes.leng_proc
+                self.num_order_insert = CRP_control.leng_proc
                 self.offset_list_proc = 0
                 if self.current_order_proc > self.num_order_insert - 1:
                     self.current_order_proc = self.num_order_insert - 1
@@ -147,7 +147,7 @@ class CRPwin(Container):
     # (T2.2)
     def update_proc_content(self):
         #get data by slicing from listprocesses[o;o+b)
-        insert_list = processes.list_proc[self.offset_list_proc: self.offset_list_proc+self.num_order_insert]
+        insert_list = CRP_control.list_proc[self.offset_list_proc: self.offset_list_proc+self.num_order_insert]
 
         #clear screen first
         self.w_proc.clear()
@@ -205,16 +205,16 @@ class CRPwin(Container):
     # (T3.1)
     def move_order_down(self):
         o_plus_a = self.offset_list_proc + self.len_order_list
-        if o_plus_a == processes.leng_proc:
+        if o_plus_a == CRP_control.leng_proc:
             self.num_order_insert = self.len_order_list
-        elif o_plus_a < processes.leng_proc:
+        elif o_plus_a < CRP_control.leng_proc:
             self.num_order_insert = self.len_order_list
             if self.current_order_proc == self.num_order_insert - 1:
                 self.offset_list_proc+=1
             else:
                 self.current_order_proc+=1
         else:
-            self.num_order_insert = processes.leng_proc - self.offset_list_proc
+            self.num_order_insert = CRP_control.leng_proc - self.offset_list_proc
             if self.current_order_proc == self.num_order_insert - 1:
                 return
             else:
@@ -246,21 +246,21 @@ class CRPwin(Container):
 
     def update_total_content(self):
         #get total data
-        processes.get_dict_total_resource()
+        CRP_control.get_dict_total_resource()
 
         #clear screen first
         self.w_total.clear()
 
         # set total data
-        self.w_total.addstr(1,self.col_total_PID,"PID {}".format(processes.total_resource_info["total_pid"]),curses.A_BOLD)
-        self.w_total.addstr(1,self.col_total_Run,"Run {}".format(processes.total_resource_info["running"]),curses.A_BOLD)
-        self.w_total.addstr(1,self.col_total_CPU,"CPU {:.2f}%".format(processes.total_resource_info["cpu_percent"]),self.COS[5])
-        self.w_total.addstr(2,self.col_total_Slp,"Slp {}".format(processes.total_resource_info["sleeping"]),curses.A_BOLD)
-        self.w_total.addstr(2,self.col_total_Stp,"Stp {}".format(processes.total_resource_info["stopped"]),curses.A_BOLD)
-        self.w_total.addstr(2,self.col_total_RAM,"RAM {}MB".format(processes.total_resource_info["total_ram"]),self.COS[3])
-        self.w_total.addstr(3,self.col_total_Zom,"Zom {}".format(processes.total_resource_info["zombie"]),curses.A_BOLD)
-        self.w_total.addstr(3,self.col_total_NOW,"NOW {}".format(processes.total_resource_info["current_time"]))
-        self.w_total.addstr(3,self.col_total_USE,"USE {}MB".format(processes.total_resource_info["used_ram"]),self.COS[3])
+        self.w_total.addstr(1,self.col_total_PID,"PID {}".format(CRP_control.total_resource_info["total_pid"]),curses.A_BOLD)
+        self.w_total.addstr(1,self.col_total_Run,"Run {}".format(CRP_control.total_resource_info["running"]),curses.A_BOLD)
+        self.w_total.addstr(1,self.col_total_CPU,"CPU {:.2f}%".format(CRP_control.total_resource_info["cpu_percent"]),self.COS[5])
+        self.w_total.addstr(2,self.col_total_Slp,"Slp {}".format(CRP_control.total_resource_info["sleeping"]),curses.A_BOLD)
+        self.w_total.addstr(2,self.col_total_Stp,"Stp {}".format(CRP_control.total_resource_info["stopped"]),curses.A_BOLD)
+        self.w_total.addstr(2,self.col_total_RAM,"RAM {}MB".format(CRP_control.total_resource_info["total_ram"]),self.COS[3])
+        self.w_total.addstr(3,self.col_total_Zom,"Zom {}".format(CRP_control.total_resource_info["zombie"]),curses.A_BOLD)
+        self.w_total.addstr(3,self.col_total_NOW,"NOW {}".format(CRP_control.total_resource_info["current_time"]))
+        self.w_total.addstr(3,self.col_total_USE,"USE {}MB".format(CRP_control.total_resource_info["used_ram"]),self.COS[3])
 
         # renew border
         self.w_total.box('|','-')

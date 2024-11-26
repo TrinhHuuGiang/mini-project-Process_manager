@@ -2,11 +2,10 @@
 * Definitions
 ****************************************************************************'''
 # common libraries
-import sys
 import threading 
 
 # handler libraries
-from _2_display_module.CRP import CRP_handler
+from _2_display_module.CRP import CRP_window_module
 
 # error code
 from error_code import *
@@ -14,8 +13,8 @@ from error_code import *
 * Variable
 ****************************************************************************'''
 # list function handle of CRP window
-CRP_window = [CRP_handler.init_CRP_window,CRP_handler.getkey_CRPwindow,
-              CRP_handler.exit_CRP_window]
+CRP_window = [CRP_window_module.init_CRP_window,CRP_window_module.getkey_CRPwindow,
+              CRP_window_module.exit_CRP_window]
 
 # threads
 thread1 = None
@@ -27,16 +26,16 @@ thread4 = None
 ****************************************************************************'''
 # [Initialize support threads]
 def push_to_screen():
-    CRP_handler.push_to_screen()
+    CRP_window_module.push_to_screen()
 
 def renew_list_precesses_data():
-    CRP_handler.renew_list_precesses_data()
+    CRP_window_module.renew_list_precesses_data()
 
 def update_list_proc_display():
-    CRP_handler.update_list_proc_display()
+    CRP_window_module.update_list_proc_display()
 
 def update_total_resource():
-    CRP_handler.update_total_resource()
+    CRP_window_module.update_total_resource()
     
 # start and destroy threads 
 def start_threads():

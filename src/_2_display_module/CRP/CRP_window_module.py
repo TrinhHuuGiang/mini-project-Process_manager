@@ -1,6 +1,6 @@
 '''
 Include handler functions for each window:
-    + Guide
+    + Menu/Guide
     + CPU/RAM/PROC <==
 Each function can get return user input into working window.
 Then handle and return error code to main.
@@ -17,8 +17,8 @@ import time
 import threading #mutex
 
 # defined libraries
-from _3_display_component.CPU_RAM_PROC.CRP_win import CRPwin #inherit class for CRP window
-from _4_system_data.PROC import processes
+from _3_display_component.CRP.CRP_win_component import CRPwin #inherit class for CRP window
+from _4_system_data import CRP_control
 
 # error code
 from error_code import *
@@ -107,17 +107,17 @@ def getkey_CRPwindow():
             
             #sort signal
             elif(temp_input == '0'):
-                processes.sort_order = 0
+                CRP_control.sort_order = 0
             elif(temp_input == '1'):
-                processes.sort_order = 1
+                CRP_control.sort_order = 1
             elif(temp_input == '2'):
-                processes.sort_order = 2
+                CRP_control.sort_order = 2
             elif(temp_input == '3'):
-                processes.sort_order = 3
+                CRP_control.sort_order = 3
             elif(temp_input == '4'):
-                processes.sort_order = 4
+                CRP_control.sort_order = 4
             elif(temp_input == '5'):
-                processes.sort_order = 5
+                CRP_control.sort_order = 5
 
         # sleep for user react and other thread do
         time.sleep(cycle_user_input)

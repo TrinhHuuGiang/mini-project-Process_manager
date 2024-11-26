@@ -6,8 +6,8 @@ import sys
 import os
 
 # auto run libraries
-from _1_auto_run.guide.auto_guide import guide_auto_run
-from _1_auto_run.CRP.auto_CRP import CRP_auto_run
+from _1_auto_run.auto_guide import guide_auto_run
+from _1_auto_run.auto_CRP import CRP_auto_run
 
 # error code
 from error_code import *

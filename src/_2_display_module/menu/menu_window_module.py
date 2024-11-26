@@ -1,6 +1,6 @@
 '''
 Include handler functions for each window:
-    + Guide <==
+    + Menu/Guide <==
     + CPU/RAM/PROC
 Each function can get return user input into working window.
 Then handle and return error code to main.
@@ -17,7 +17,7 @@ import threading #mutex
 import curses
 
 # defined libraries
-from _3_display_component.main_window.main_win import Main_win #main class for guide window
+from _3_display_component.menu.menu_win_component import Main_win #main class for guide window
 
 # error code
 from error_code import *
