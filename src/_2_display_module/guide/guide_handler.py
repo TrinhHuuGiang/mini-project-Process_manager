@@ -1,9 +1,7 @@
 '''
 Include handler functions for each window:
     + Guide <==
-    + CPU/RAM/DISK
     + CPU/RAM/PROC
-    + NET/SERVICE
 Each function can get return user input into working window.
 Then handle and return error code to main.
 The 'main' function then decides to process the error code and control the handler functions
@@ -174,11 +172,14 @@ def check_size_valid():
         if error_size == CommonErrorCode.OK :
             #clear all window
             w_guide.clear_all_window()
-            #test color
-            w_guide.Hello_World()
+
             #static content
             w_guide.update_background()#do first
+
+            w_guide.Hello_World()#test color
+
             w_guide.update_guide()
+            
     # return error_size code
     return error_size
 

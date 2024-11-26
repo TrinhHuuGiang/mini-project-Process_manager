@@ -15,8 +15,7 @@ class Main_win(Container):
         self.w_order_begin_col = None; self.w_order_begin_row = None
         self.w_order_col = None; self.w_order_row = None
         self.numerical_order = 0
-        self.order_choice = ("PROCESSES","CPU/RAM/DISK","NET/SERVICES",
-                             "about us")
+        self.order_choice = ("PROCESSES", "about us")
         self.max_num_choice = len(self.order_choice)
         #sub guide window
         self.w_guide_begin_col = None; self.w_guide_begin_row = None
