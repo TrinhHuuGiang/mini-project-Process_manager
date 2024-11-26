@@ -41,7 +41,7 @@ mutex_R3 = threading.Lock()# T2.1, T2.2, T3.1, T3.2
 cycle_renew_list_proc = 1 # 1s sleep then renew list processes
 cycle_update_list_proc = 0.3 # 300ms sleep then update data list process will display
 cycle_renew_and_update_list_total_resource = 1 # 1s sleep then renew and update total resource
-cycle_user_input = 0.1 # 100ms sleep then check buffer input
+cycle_user_input = 0.2 # 200ms sleep then check buffer input
 cycle_screen_refresh = 0.3 # 300ms sleep then push data buffer to screen
 
 #check size first time and update static content

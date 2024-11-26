@@ -74,6 +74,7 @@ def destroy_threads():
 # return code:
 # (-1) window too small
 def CRP_auto_run():
+    ret = None
     # [guide handler]
     # initialize display process window
     CRP_window[0]()
@@ -82,7 +83,7 @@ def CRP_auto_run():
     start_threads()
 
     #else wait use type some thing
-    CRP_window[1]()
+    ret = CRP_window[1]()
 
     # then end
     # wait thread end
@@ -93,4 +94,4 @@ def CRP_auto_run():
     CRP_window[2]()
     
     #exit ok
-    return 0
+    return ret

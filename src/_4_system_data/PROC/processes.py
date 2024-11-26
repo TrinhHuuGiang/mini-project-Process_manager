@@ -3,6 +3,7 @@
 ****************************************************************************'''
 import psutil
 from datetime import datetime
+import time
 
 '''****************************************************************************
 * Variables, Const
@@ -12,6 +13,8 @@ list_proc = []  # A list of dictionaries containing process information
                 # including "pid", "name", "cpu_percent", "memory_percent", "status", "create_time"
                 # Note: "create_time" is converted to the time the process has been running
 leng_proc = 0  # Count of processes in the list
+total_core = psutil.cpu_count() # count total core on CPU.
+#because "cpu_percent" return total % on all core of 1 process so we need divide it by number core
 sort_order = 0  # Sorting criteria: 0 = pid, 1 = name, 2 = %CPU, 3 = %RAM, 4 = status, 5 = run time
 
 # Variables for 'total system resource' statistics
@@ -31,7 +34,7 @@ total_resource_info = None
 '''****************************************************************************
 * CODE
 ****************************************************************************'''
-########## Functions for process list management
+########## [Functions for process list management]
 def format_elapsed_hhmmss(elapsed_time):
     """Format the elapsed time into hh:mm:ss."""
     seconds = int(elapsed_time.total_seconds())
@@ -63,6 +66,7 @@ def get_list_proc():
     Observations indicate that using psutil.process_iter.cache_clear() as suggested at
     https://psutil.readthedocs.io/en/latest/ results in 0% CPU usage being reported.
     This is because CPU usage calculations depend on previously retrieved data.
+    Require: this function should run after at least 100ms (not < 100ms)
     '''
     global list_proc
     global leng_proc
@@ -72,12 +76,13 @@ def get_list_proc():
 
     # Get the current time
     now = datetime.now()
-
+    
     # Fetch process data
     for p in psutil.process_iter(["pid", "name", "cpu_percent", "memory_percent", "status", "create_time"]):
         try:
             # Format each process's information
             proc_info = p.info
+            proc_info["cpu_percent"] = proc_info["cpu_percent"] / total_core
             proc_info["cpu_percent"] = f"{proc_info['cpu_percent']:.1f}%"  # Format CPU usage
             proc_info["memory_percent"] = f"{proc_info['memory_percent']:.1f}%"  # Format RAM usage
 
@@ -99,7 +104,7 @@ def get_list_proc():
     # Sort the process list based on the current order
     sort_by_order()
 
-############ Functions for system resource statistics
+############ [Functions for system resource statistics]
 def get_dict_total_resource():
     '''Collect and organize total system resource statistics.'''
     global total_resource_info
@@ -118,7 +123,7 @@ def get_dict_total_resource():
     }
 
     # Gather data
-    total_resource_info["cpu_percent"] = psutil.cpu_percent(interval=0)
+    total_resource_info["cpu_percent"] = psutil.cpu_percent(interval=None)
     total_resource_info["total_ram"] = psutil.virtual_memory().total // (1024 ** 2)
     total_resource_info["used_ram"] = psutil.virtual_memory().used // (1024 ** 2)
     total_resource_info["current_time"] = datetime.now().strftime("%H:%M")
