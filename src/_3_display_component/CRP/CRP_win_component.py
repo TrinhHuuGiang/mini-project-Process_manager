@@ -50,7 +50,7 @@ class CRPwin(Container):
         self.cal_size_sub_window()
 
         self.calculate_coordinate_list_proc_content()
-        self.renew_list_processes()
+        self.renew_list_processes(sort_order=0)
 
         self.calculate_coordinate_total_content()
 
@@ -123,7 +123,11 @@ class CRPwin(Container):
     # update list process 
     # first time run need 'calculate_coordinate_list_proc_content' to get len_order_list
     # (T2.1) 
-    def renew_list_processes(self):
+    def renew_list_processes(self, sort_order):
+        # require sort by index
+        CRP_control.sort_order = sort_order
+
+        # get newest data
         CRP_control.get_list_proc()
         # ? o+b <= c
         if (self.offset_list_proc + self.num_order_insert) <= CRP_control.leng_proc:
@@ -205,15 +209,13 @@ class CRPwin(Container):
     # (T3.1)
     def move_order_down(self):
         o_plus_a = self.offset_list_proc + self.len_order_list
-        if o_plus_a == CRP_control.leng_proc:
-            self.num_order_insert = self.len_order_list
-        elif o_plus_a < CRP_control.leng_proc:
+        if o_plus_a < CRP_control.leng_proc:
             self.num_order_insert = self.len_order_list
             if self.current_order_proc == self.num_order_insert - 1:
                 self.offset_list_proc+=1
             else:
                 self.current_order_proc+=1
-        else:
+        else: # o+a >= c
             self.num_order_insert = CRP_control.leng_proc - self.offset_list_proc
             if self.current_order_proc == self.num_order_insert - 1:
                 return

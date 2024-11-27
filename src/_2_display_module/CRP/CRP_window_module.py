@@ -1,7 +1,7 @@
 '''
 Include handler functions for each window:
     + Menu/Guide
-    + CPU/RAM/PROC <==
+    + CPU/RAM/PROC (progress list) <==
 Each function can get return user input into working window.
 Then handle and return error code to main.
 The 'main' function then decides to process the error code and control the handler functions
@@ -14,11 +14,10 @@ The 'main' function then decides to process the error code and control the handl
 import sys
 import curses
 import time
-import threading #mutex
+import threading #mutex, condition
 
 # defined libraries
 from _3_display_component.CRP.CRP_win_component import CRPwin #inherit class for CRP window
-from _4_system_data import CRP_control
 
 # error code
 from error_code import *
@@ -28,7 +27,7 @@ from error_code import *
 w_CRP = None
 
 #thread signal
-end_sig = None #default = 1, threadings loop
+end_sig = None #default threadings loop
 
 # mutex key
 mutex_R1 = threading.Lock()# T1, T2.2, T4.2
@@ -38,6 +37,7 @@ mutex_R3 = threading.Lock()# T2.1, T2.2, T3.1, T3.2
 #mutex_R4  : T4.1 T4.2 bỏ qua
 
 # time cycle
+# all cycle must <= 1s else it can take > 1s close page
 cycle_renew_list_proc = 1 # 1s sleep then renew list processes
 cycle_update_list_proc = 0.3 # 300ms sleep then update data list process will display
 cycle_renew_and_update_list_total_resource = 1 # 1s sleep then renew and update total resource
@@ -46,6 +46,15 @@ cycle_screen_refresh = 0.3 # 300ms sleep then push data buffer to screen
 
 #check size first time and update static content
 size_not_checked_fisrt_time =None #  default CommonErrorCode.NOT_CHECKED
+
+# sort order
+sort_order = None #default sort by pid
+
+# stop status for functions: renew screen, renew total resource
+mutex_catch_screen = threading.Lock()
+condition_catch_screen = threading.Condition(mutex_catch_screen)
+catch_screen_sig = None #default no catch
+total_threads_stopped = None #default 0
 
 #error code
 error_size = None # default = CommonErrorCode.OK , no error size
@@ -58,10 +67,16 @@ def renew_global_variable():
     global end_sig
     global size_not_checked_fisrt_time
     global error_size
+    global sort_order
+    global catch_screen_sig
+    global total_threads_stopped
 
     end_sig = CommonErrorCode.NOT_END_SIG
     size_not_checked_fisrt_time = CommonErrorCode.NOT_CHECKED
     error_size = CommonErrorCode.OK
+    sort_order = 0
+    catch_screen_sig = CommonErrorCode.NOT_STOP_SIG
+    total_threads_stopped = 0
 
 # [handler for CPU/RAM/PROC window]
 # initialize and check size, set color, set box
@@ -78,7 +93,12 @@ def init_CRP_window():
 def getkey_CRPwindow():
     global w_CRP
     global end_sig
+    global sort_order
     global mutex_R3
+
+    global mutex_catch_screen
+    global catch_screen_sig
+    global condition_catch_screen
     
     temp_input = "nothing"
     while (temp_input != 'q') and (error_size == CommonErrorCode.OK):
@@ -107,22 +127,50 @@ def getkey_CRPwindow():
             
             #sort signal
             elif(temp_input == '0'):
-                CRP_control.sort_order = 0
+                sort_order = 0
             elif(temp_input == '1'):
-                CRP_control.sort_order = 1
+                sort_order = 1
             elif(temp_input == '2'):
-                CRP_control.sort_order = 2
+                sort_order = 2
             elif(temp_input == '3'):
-                CRP_control.sort_order = 3
+                sort_order = 3
             elif(temp_input == '4'):
-                CRP_control.sort_order = 4
+                sort_order = 4
             elif(temp_input == '5'):
-                CRP_control.sort_order = 5
+                sort_order = 5
+            
+            # stop screen update data
+            elif(temp_input == 'c'):
+                with mutex_catch_screen:
+                    if catch_screen_sig == CommonErrorCode.NOT_STOP_SIG:
+                        # notify stop update process data
+                        catch_screen_sig = CommonErrorCode.STOP_SIG
+                        # log
+                        temp_log = "[stopped]"
+                        # print red log stopped
+                        w_CRP.backwin.addstr(0,w_CRP.back_win_col-1-len(temp_log),temp_log,w_CRP.COS[0])
+                    elif catch_screen_sig == CommonErrorCode.STOP_SIG:
+                        #notify continue update data
+                        catch_screen_sig = CommonErrorCode.NOT_STOP_SIG
+                        condition_catch_screen.notify_all()
+                        #log
+                        temp_log = "---------"
+                        # recover origin status
+                        w_CRP.backwin.addstr(0,w_CRP.back_win_col-1-len(temp_log),temp_log)
 
         # sleep for user react and other thread do
         time.sleep(cycle_user_input)
     #end
     end_sig = CommonErrorCode.END_SIG
+
+    # check threads are stopping then notify to end
+    with mutex_catch_screen:
+        #unlock mode stop to catch data
+        catch_screen_sig = CommonErrorCode.NOT_STOP_SIG
+        #check if any threads still be stopping
+        if total_threads_stopped > 0:
+            condition_catch_screen.notify_all()
+
     #if input == q
     if temp_input == 'q':
         return -1 # quit signal
@@ -204,21 +252,34 @@ def push_to_screen():
         #sleep
         time.sleep(cycle_screen_refresh)
 
-# C. Renew processes list data (thread) (T2.1) 
+# C. Renew processes list data (thread) (T2.1) (stop condition)
 def renew_list_precesses_data():
     global w_CRP
     global end_sig
+
+    global mutex_catch_screen
+    global condition_catch_screen
+    global total_threads_stopped
+
     global mutex_R2
     global mutex_R3
 
-    while(end_sig == CommonErrorCode.NOT_END_SIG):
+    while end_sig == CommonErrorCode.NOT_END_SIG :
+        # stop renew processes list by condition variable
+        mutex_catch_screen.acquire()
+        total_threads_stopped +=1
+        while catch_screen_sig == CommonErrorCode.STOP_SIG:
+            condition_catch_screen.wait()
+        total_threads_stopped -=1
+        mutex_catch_screen.release()
+        # get mutex then update total resource
         with mutex_R2:
             with mutex_R3:
                 #check size screen first before push data  screen
                 if check_size_valid() != CommonErrorCode.OK:
                     return #end looping :) end thread
                 #else renew list proc
-                w_CRP.renew_list_processes()
+                w_CRP.renew_list_processes(sort_order)
         #then unlock R2 + R3
         #sleep
         time.sleep(cycle_renew_list_proc)
@@ -244,13 +305,26 @@ def update_list_proc_display():
         #sleep
         time.sleep(cycle_update_list_proc)
 
-# E. Release data total resource will display to buffer (thread) (T4.1+T4.2)
+# E. Release data total resource will display to buffer (thread) (T4.1+T4.2) (stop condition)
 def update_total_resource():
     global w_CRP
     global end_sig
+
+    global mutex_catch_screen
+    global condition_catch_screen
+    global total_threads_stopped
+
     global mutex_R1
 
-    while(end_sig == CommonErrorCode.NOT_END_SIG):
+    while end_sig == CommonErrorCode.NOT_END_SIG:
+        # stop total resource by condition variable
+        mutex_catch_screen.acquire()
+        total_threads_stopped +=1
+        while catch_screen_sig == CommonErrorCode.STOP_SIG:
+            condition_catch_screen.wait()
+        total_threads_stopped -=1
+        mutex_catch_screen.release()
+        # get mutex then update total resource
         with mutex_R1:
             #check size screen first before push data  screen
             if check_size_valid() != CommonErrorCode.OK:

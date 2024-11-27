@@ -9,6 +9,8 @@ class CommonErrorCode(Enum):
     NOT_CHECKED = 4
     DEBUG = 5
     NOT_DEBUG = 6
+    STOP_SIG = 7
+    NOT_STOP_SIG = 8
 
 
     #[ -20 -> -1 ] special negative signals
