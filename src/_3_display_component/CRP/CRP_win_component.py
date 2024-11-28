@@ -2,7 +2,6 @@
 * Definitions
 ****************************************************************************'''
 import curses
-import psutil
 from _3_display_component.container_class.container import Container
 from _4_system_data import CRP_control
 '''****************************************************************************
@@ -173,14 +172,14 @@ class CRPwin(Container):
         for p in insert_list:
             if temp_count != self.current_order_proc:
                 self.w_proc.addstr(insert_line,self.col_proc_PID,    "|{}".format(p["pid"]))
-                self.w_proc.addstr(insert_line,self.col_proc_NAME,   "|{}".format(p["name"][:35]))#max name len = 45
+                self.w_proc.addstr(insert_line,self.col_proc_NAME,   "|{:35}".format(p["name"]))#max name len = 35
                 self.w_proc.addstr(insert_line,self.col_proc_CPU,    "|{}".format(p["cpu_percent"]))
                 self.w_proc.addstr(insert_line,self.col_proc_MEM,    "|{}".format(p["memory_percent"]))
                 self.w_proc.addstr(insert_line,self.col_proc_STATUS, "|{}".format(p["status"]))
                 self.w_proc.addstr(insert_line,self.col_proc_TIME,   "|{}".format(p["create_time"]))
             else:
                 self.w_proc.addstr(insert_line,self.col_proc_PID,    "|{}".format(p["pid"]),self.COS[2])
-                self.w_proc.addstr(insert_line,self.col_proc_NAME,   "|{}".format(p["name"][:35]),self.COS[2])
+                self.w_proc.addstr(insert_line,self.col_proc_NAME,   "|{:35}".format(p["name"]),self.COS[2])
                 self.w_proc.addstr(insert_line,self.col_proc_CPU,    "|{}".format(p["cpu_percent"]),self.COS[2])
                 self.w_proc.addstr(insert_line,self.col_proc_MEM,    "|{}".format(p["memory_percent"]),self.COS[2])
                 self.w_proc.addstr(insert_line,self.col_proc_STATUS, "|{}".format(p["status"]),self.COS[2])
@@ -276,9 +275,9 @@ class CRPwin(Container):
     #[D. guide users window]
     def update_guide(self):
         # add content
-        self.w_guide.addstr(1,1,"W-up   |S-down")
-        self.w_guide.addstr(2,1,"Q-Menu |C-catch")
-        self.w_guide.addstr(3,1,"Enter-more infor")
+        self.w_guide.addstr(1,1,"w-Up   |s-Down")
+        self.w_guide.addstr(2,1,"c-Catch|ent-More info")
+        self.w_guide.addstr(3,1,"q-Quit |m-Menu")
 
         # renew border
         self.w_guide.box('|','-')

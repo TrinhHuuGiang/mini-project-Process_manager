@@ -18,13 +18,14 @@ import threading #mutex, condition
 
 # defined libraries
 from _3_display_component.CRP.CRP_win_component import CRPwin #inherit class for CRP window
+from _4_system_data import CRP_control
 
 # error code
 from error_code import *
 '''****************************************************************************
 * Variable
 ****************************************************************************'''
-w_CRP = None
+w_CRP = None # variable save object CRP window
 
 #thread signal
 end_sig = None #default threadings loop
@@ -101,10 +102,14 @@ def getkey_CRPwindow():
     global condition_catch_screen
     
     temp_input = "nothing"
-    while (temp_input != 'q') and (error_size == CommonErrorCode.OK):
+    while ( (temp_input != '\n') and
+        (temp_input != 'm') and
+        (temp_input != 'q') and 
+        (error_size == CommonErrorCode.OK)):
+
         with mutex_R3:
             # check buffer input
-            temp_input = w_CRP.w_proc.getch()
+            temp_input = w_CRP.backwin.getch()
             # if nothing -> compare -1
             if temp_input == -1:
                 continue
@@ -118,12 +123,6 @@ def getkey_CRPwindow():
                 w_CRP.move_order_up()#user want upper
             elif(temp_input == 's'):
                 w_CRP.move_order_down()#user want lower
-            elif(temp_input == '\n'):
-                #end
-                #send end sig
-                end_sig = CommonErrorCode.END_SIG
-                #return user chosen(>=0)
-                return 0
             
             #sort signal
             elif(temp_input == '0'):
@@ -171,16 +170,25 @@ def getkey_CRPwindow():
         if total_threads_stopped > 0:
             condition_catch_screen.notify_all()
 
-    #if input == q
-    if temp_input == 'q':
-        return -1 # quit signal
+    # check if special signal input
+    # open menu
+    if temp_input == "m":
+        return -1
+    # if input == \n -> more PID properties
+    elif temp_input == '\n':
+        return CRP_control.list_proc[w_CRP.offset_list_proc + w_CRP.current_order_proc]["pid"]#PID
+    #if input == q -> quit
+    elif temp_input == 'q':
+        return -2 # quit signal
+    
+    #check if error
     # error size
     elif error_size == CommonErrorCode.ERROR_INVALID_MIN_SIZE:
-        return -2 # < size min
+        return -3 # < size min
     elif error_size == CommonErrorCode.ERROR_SIZE_CHANGED:
-        return -3 #size changed
+        return -4 #size changed
     else:
-        return -4
+        return -5
 
 # end
 def exit_CRP_window():

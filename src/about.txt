@@ -18,3 +18,5 @@ Contributors:
 3. haidang143 (Documentation Specialist)
    - Contributions: Supporting documentation for CPU, RAM, and disk usage.
    
+
+[Press any thing to close]

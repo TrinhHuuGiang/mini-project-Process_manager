@@ -17,7 +17,7 @@ import threading #mutex
 import curses
 
 # defined libraries
-from _3_display_component.menu.menu_win_component import Main_win #main class for guide window
+from _3_display_component.menu.menu_win_component import Main_win #main class for menu window
 
 # error code
 from error_code import *
@@ -26,13 +26,13 @@ from error_code import *
 * Variable
 ****************************************************************************'''
 # window
-w_guide = None
+w_menu = None
 
 #thread
 end_sig = None #default = 1, threadings loop
 
 # keymutex
-lock_size = threading.Lock()
+lock_screen = threading.Lock()
     #Synchronize content updates and push content to the screen
     #using mutex 2 threads:
     #- update dynamic window:
@@ -70,24 +70,24 @@ def renew_global_variable():
     size_not_checked_fisrt_time = CommonErrorCode.NOT_CHECKED
     error_size = CommonErrorCode.OK
 
-# [handler for guide window]
+# [handler for menu window]
 # initialize and check size, set color, set box
 # return number order
-def init_guide_window():
-    global w_guide
+def init_menu_window():
+    global w_menu
     #renew global variables
     renew_global_variable()
-    #init guide window object
-    w_guide = Main_win()
+    #init menu window object
+    w_menu = Main_win()
     #get max number choice
-    return w_guide.max_num_choice
+    return w_menu.max_num_choice
 
 # auto handle manu
 # -1: quit| 0,1,2,... is order choice
 # it can be run as thread but
 # i will run it with main process
 def get_choice_and_return():
-    global w_guide
+    global w_menu
     global end_sig
     # wait user then update or execute or quit 'q'
     temp_input = 'nothing'
@@ -95,25 +95,25 @@ def get_choice_and_return():
         # sleep for user react
         time.sleep(cycle_user_input)
         # then check buffer input
-        temp_input = w_guide.w_order.getch()
+        temp_input = w_menu.backwin.getch()
         # if nothing -> compare -1
         if temp_input == -1:
             continue
         # else check what user want
         else: temp_input = chr(temp_input)
         # clean stdin buffer before unlock
-        while w_guide.backwin.getch() != -1: continue
+        while w_menu.backwin.getch() != -1: continue
         
         if(temp_input == 'w'):
-            w_guide.order_top()#user want upper
+            w_menu.order_top()#user want upper
         elif(temp_input == 's'):
-            w_guide.order_down()#user want lower
+            w_menu.order_down()#user want lower
         elif(temp_input == '\n'):
             #end
             #send end sig
             end_sig = CommonErrorCode.END_SIG
             #return user chosen(>=0)
-            return w_guide.get_order()#user want order
+            return w_menu.get_order()#user want order
     
     #end
     end_sig = CommonErrorCode.END_SIG
@@ -129,11 +129,11 @@ def get_choice_and_return():
         return -4
 
 # end
-def exit_guide_window():
-    global w_guide
-    del w_guide #free completely window curses and switch back to the original terminal 
+def exit_menu_window():
+    global w_menu
+    del w_menu #free completely window curses and switch back to the original terminal 
     if debug == CommonErrorCode.DEBUG:
-        print("[OK - {}] closed the guide window".format(exit_guide_window.__name__),
+        print("[OK - {}] closed the menu window".format(exit_menu_window.__name__),
               file=sys.stderr)
     # no return
 
@@ -143,25 +143,25 @@ def exit_guide_window():
 # A. Resize window (support)
 # check resize or size not invalid
 def check_size_valid():
-    global w_guide
+    global w_menu
     global error_size
     global size_not_checked_fisrt_time
 
     # save old background size
-    old_back_col = w_guide.back_win_col
-    old_back_row = w_guide.back_win_row
+    old_back_col = w_menu.back_win_col
+    old_back_row = w_menu.back_win_row
 
     # [Check size valid]
     # get background size to check change size
-    w_guide.get_backwin_size()
+    w_menu.get_backwin_size()
     # now check if size invalid
-    if((w_guide.back_win_col < w_guide.w_back_mincol) or
-    (w_guide.back_win_row < w_guide.w_back_minrow)):
+    if((w_menu.back_win_col < w_menu.w_back_mincol) or
+    (w_menu.back_win_row < w_menu.w_back_minrow)):
         error_size = CommonErrorCode.ERROR_INVALID_MIN_SIZE # error size < min
 
     # [Check if size change]
-    if((old_back_col != w_guide.back_win_col) or
-    (old_back_row != w_guide.back_win_row)):
+    if((old_back_col != w_menu.back_win_col) or
+    (old_back_row != w_menu.back_win_row)):
         error_size = CommonErrorCode.ERROR_SIZE_CHANGED # size changed
 
     # if this is first time checksize, update static content
@@ -171,14 +171,14 @@ def check_size_valid():
         #and if size ok print static content only one time
         if error_size == CommonErrorCode.OK :
             #clear all window
-            w_guide.clear_all_window()
+            w_menu.clear_all_window()
 
             #static content
-            w_guide.update_background()#do first
+            w_menu.update_background()#do first
 
-            w_guide.Hello_World()#test color
+            w_menu.Hello_World()#test color
 
-            w_guide.update_guide()
+            w_menu.update_guide()
             
     # return error_size code
     return error_size
@@ -187,38 +187,33 @@ def check_size_valid():
 # B. Update dynamic content (thread)
 # update menu
 def update_menu_list():
-    global w_guide
+    global w_menu
     global end_sig
-    global lock_size
+    global lock_screen
 
     # update menu list
     while(end_sig == CommonErrorCode.NOT_END_SIG):
-        with lock_size:
+        with lock_screen:
             #check size screen first before push data to buffer screen
             if check_size_valid() != CommonErrorCode.OK:
                 return #end looping :) end thread
             
             #else update list order
-            w_guide.update_order()
-
-            #check size screen after push data to buffer screen
-            #this step sure that before and after push to buffer, screen not changed
-            if check_size_valid() != CommonErrorCode.OK:
-                return #end looping :) end thread
+            w_menu.update_order()
             
         #sleep for other threads and avoid continuous push data to buffer
         time.sleep(cycle_menu_update)
 
 # C. push content to background (thread)
 def push_to_screen():
-    global w_guide
+    global w_menu
     global end_sig
-    global lock_size
+    global lock_screen
     
     # push content to screen
     while(end_sig == CommonErrorCode.NOT_END_SIG):
         # push content from buffer to screen
-        with lock_size:
+        with lock_screen:
             #check size screen first before push data  screen
             if check_size_valid() != CommonErrorCode.OK:
                 return #end looping :) end thread

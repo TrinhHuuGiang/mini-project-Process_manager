@@ -17,19 +17,9 @@ from error_code import *
 ****************************************************************************'''
 #[main]
 def main():
-    # init CRP_window first
-    ret_CRP = CRP_auto_run()
-    if debug == CommonErrorCode.DEBUG:
-        print("[Note - {}] CRP return:".format(main.__name__),ret_CRP)
-        input("input anything to contine.")
-    # if any negative signal -> close app
-    if ret_CRP < 0:
-        sys.exit(0)
-
-    # [if CRP return 0 - open menu]
     ret_menu = 0
     while(ret_menu >= 0):
-        #run menu window first
+        #run guilde window first
         ret_menu = menu_auto_run()
         # check choice returned
         if debug == CommonErrorCode.DEBUG:
@@ -40,7 +30,7 @@ def main():
         if ret_menu == 0:
             ret_CRP = CRP_auto_run()
             if debug == CommonErrorCode.DEBUG:
-                print("[Note - {}] CRP return:".format(main.__name__),ret_CRP)
+                print("[Note - {}]CRP return:".format(main.__name__),ret_CRP)
                 input("input anything to contine.")
             # if any negative signal -> close app
             if ret_CRP < 0:

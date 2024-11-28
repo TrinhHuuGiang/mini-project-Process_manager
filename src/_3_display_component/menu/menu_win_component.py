@@ -133,8 +133,8 @@ class Main_win(Container):
         # renew border
         self.w_guide.box('|','-')
         # content
-        self.w_guide.addstr(1,1,"W-up   |S-down")
-        self.w_guide.addstr(2,1,"Q-quit |Enter-select")
+        self.w_guide.addstr(1,1,"w-Up   |s-Down")
+        self.w_guide.addstr(2,1,"q-Quit |ent-Select")
         # add name
         self.w_guide.addstr(0,1,"[How to use]", self.COS[1])
         # noutrefresh display
