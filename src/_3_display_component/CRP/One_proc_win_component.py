@@ -99,7 +99,7 @@ class OneProcWin(Container):
             line_div_3 = self.w_proc_col//3
 
             self.w_proc.addstr(0,1,"[Basic Info]",curses.A_BOLD)
-            self.w_proc.addstr(1,1,"Name: ".format(CRP_control.PID_properties["Name"][:50]),self.COS[3])
+            self.w_proc.addstr(1,1,"Name: {}".format(CRP_control.PID_properties["Name"][:50]),self.COS[3])
             self.w_proc.addstr(2,1,"PID: "+CRP_control.PID_properties["PID"],self.COS[3])
             self.w_proc.addstr(2,line_div_2,"PPID: "+CRP_control.PID_properties["PPID"],self.COS[3])
             self.w_proc.addstr(3,1,"Status: "+CRP_control.PID_properties["Status"],self.COS[3])
