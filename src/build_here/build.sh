@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pyinstaller --onefile --icon="../Dino.ico" --name="PRM" \
+pyinstaller --onefile --icon="../computer.ico" --name="PRM" \
     --add-data="../about.txt:." \
     ../main.py
 
