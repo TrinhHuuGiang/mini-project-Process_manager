@@ -4,7 +4,6 @@
 import curses
 from _3_display_component.container_class.container import Container
 from _4_system_data import CRP_control
-import psutil
 '''****************************************************************************
 * Variable
 ****************************************************************************'''
@@ -131,7 +130,7 @@ class OneProcWin(Container):
     # while pid properties is displaying we can use
     # suspend (0), resume (1), terminate (2), kill (3)
     # to control process
-    def send_sig(your_order):
+    def send_sig(self, your_order):
         try:
             if your_order == 0:  # Suspend
                 CRP_control.PID_object.suspend()

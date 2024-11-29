@@ -110,7 +110,7 @@ def getkey_One_proc_window():
         while w_OneProc.w_proc.getch() != -1: continue
         
         if temp_input == 'u':
-            temp_log = "[sigterm unlocked]"
+            temp_log = "[send signal unlocked]"
             w_OneProc.backwin.addstr(0,w_OneProc.back_win_col-1-len(temp_log),temp_log,w_OneProc.COS[0])
             #enable sigterm
             enable_sigterm = CommonErrorCode.CHECKED
@@ -191,10 +191,10 @@ def check_size_valid():
         if error_size == CommonErrorCode.OK :
             #clear all window
             w_OneProc.clear_all_window()
+            w_OneProc.update_background()#do first
             #test color
             w_OneProc.Hello_World()
             #static content
-            w_OneProc.update_background()#do first
             w_OneProc.update_guide()
 
     # return error_size code

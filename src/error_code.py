@@ -25,4 +25,4 @@ class CommonErrorCode(Enum):
 
 
 #debug mode default
-debug = CommonErrorCode.DEBUG
+debug = CommonErrorCode.NOT_DEBUG

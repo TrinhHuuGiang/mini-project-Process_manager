@@ -233,10 +233,10 @@ def check_size_valid():
         if error_size == CommonErrorCode.OK :
             #clear all window
             w_CRP.clear_all_window()
+            w_CRP.update_background()#do first
             #test color
             w_CRP.Hello_World()
             #static content
-            w_CRP.update_background()#do first
             w_CRP.update_guide()
 
     # return error_size code
