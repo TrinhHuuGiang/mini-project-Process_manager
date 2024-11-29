@@ -11,22 +11,22 @@ This is a simple process management application for Linux, developed in Python. 
 1. Install dependencies:
 - pip install psutil
 2. Clone the repository:
+- git clone https://github.com/TrinhHuuGiang/Process_manager.git
 
 ## Features
 - List all running processes.
 - Suspend and resume processes.
-- Terminate processes by PID.
+- Terminate and kill processes by PID.
 
 ## Contributers
 - [Giang Trinh](https://github.com/TrinhHuuGiang)  
-  - **Role**: Project Manager  
-  - **Contributions**: Lead development for TUI using `curses`, overall project coordination.  
+  - **Role**: Project Manager, Lead Developer  
+  - **Contributions**: Main code development, project management, and leading the TUI implementation using `curses`.
 
 - [VuongNQ](https://github.com/nqv96)  
-  - **Role**: Lead Developer  
-  - **Contributions**: Process management using `psutil`, documentation writing, and system integration.  
+  - **Role**: Developer, Tester  
+  - **Contributions**: Process management using `psutil`, testing, and documenting the process management features.
 
 - [haidang143](https://github.com/haidang143)  
   - **Role**: Documentation Specialist  
-  - **Contributions**: Supporting documentation for CPU, RAM, and disk usage.
-
+  - **Contributions**: Writing documentation for CPU, RAM, and disk usage.
