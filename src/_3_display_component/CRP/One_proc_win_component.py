@@ -4,6 +4,7 @@
 import curses
 from _3_display_component.container_class.container import Container
 from _4_system_data import CRP_control
+import psutil
 '''****************************************************************************
 * Variable
 ****************************************************************************'''
@@ -49,10 +50,7 @@ class OneProcWin(Container):
     '''_______________[interract with window]___________'''
     # [A. calculate and re-set size window]
     def cal_size_sub_window(self):
-        # row: 100% = 10% top border + 50% menu + 10% free space + 20% guide + 10% bottom border (guard)
-        # tips: increase % bottom border for 
-        # reduce the overflow rate (error) due to not having time to recalculate
-
+        # row: 100% = 10% top border + 65% menu + 5% free space + 15% guide + 5% bottom border (guard)
         #proc window
         self.w_proc_begin_col = self.back_win_col * 10 // 100
         self.w_proc_begin_row = self.back_win_row * 10 // 100
@@ -71,7 +69,7 @@ class OneProcWin(Container):
         self.w_proc.clear()
         self.w_guide.clear()
 
-    #[B. guide users window]
+    #[B. PID properties window]
     def get_and_update_PID_properties(self, pid):
         #get properties. if error , log error
         ret = CRP_control.get_process_info(pid)
@@ -99,14 +97,14 @@ class OneProcWin(Container):
             line_div_3 = self.w_proc_col//3
 
             self.w_proc.addstr(0,1,"[Basic Info]",curses.A_BOLD)
-            self.w_proc.addstr(1,1,"Name: {}".format(CRP_control.PID_properties["Name"][:50]),self.COS[3])
+            self.w_proc.addstr(1,1,"Name: {}".format(CRP_control.PID_properties["Name"][:self.w_proc_col-10]),self.COS[3])
             self.w_proc.addstr(2,1,"PID: "+CRP_control.PID_properties["PID"],self.COS[3])
             self.w_proc.addstr(2,line_div_2,"PPID: "+CRP_control.PID_properties["PPID"],self.COS[3])
             self.w_proc.addstr(3,1,"Status: "+CRP_control.PID_properties["Status"],self.COS[3])
             self.w_proc.addstr(3,line_div_2,"Username: "+CRP_control.PID_properties["Username"],self.COS[3])
-            self.w_proc.addstr(4,1,"Command: {}".format(CRP_control.PID_properties["Command"][:50]),self.COS[3])
-            self.w_proc.addstr(5,1,"Execute: {}".format(CRP_control.PID_properties["Executable"][:50]),self.COS[3])
-            self.w_proc.addstr(6,1,"CWD: {}".format(CRP_control.PID_properties["CWD"][:50]),self.COS[3])
+            self.w_proc.addstr(4,1,"Command: {}".format(CRP_control.PID_properties["Command"][:self.w_proc_col-13]),self.COS[3])
+            self.w_proc.addstr(5,1,"Execute: {}".format(CRP_control.PID_properties["Executable"][:self.w_proc_col-13]),self.COS[3])
+            self.w_proc.addstr(6,1,"CWD: {}".format(CRP_control.PID_properties["CWD"][:self.w_proc_col-13]),self.COS[3])
             self.w_proc.addstr(7,1,"-"*(self.w_proc_col-2),curses.A_BOLD)
             self.w_proc.addstr(7,1,"[Memory Info]",curses.A_BOLD)
             self.w_proc.addstr(8,1,"VMS: "+CRP_control.PID_properties["MEM_VMS"]+"MB",self.COS[3])
@@ -129,18 +127,35 @@ class OneProcWin(Container):
         # noutrefresh display
         self.w_proc.noutrefresh()
         
+    #[C. send signal]
+    # while pid properties is displaying we can use
+    # suspend (0), resume (1), terminate (2), kill (3)
+    # to control process
+    def send_sig(your_order):
+        try:
+            if your_order == 0:  # Suspend
+                CRP_control.PID_object.suspend()
+            elif your_order == 1:  # Resume
+                CRP_control.PID_object.resume()
+            elif your_order == 2:  # Terminate
+                CRP_control.PID_object.terminate()
+            elif your_order == 3:  # Kill
+                CRP_control.PID_object.kill()
+            else:
+                return
+        except Exception as e:#ignore nosuch PID, AccessDenied,...
+            return
 
-
-    #[.static window display]
-    #[C. guide users window]
+    #[static window display]
+    #[D. guide users window]
     def update_guide(self):
         # add content
-        self.w_guide.addstr(1,1,"s-Suspend |r-Resume |k-Kill |t-terminate|q-Quit |l-list")
+        self.w_guide.addstr(1,1,"s-Suspend |r-Resume |t-terminate |k-Kill |q-Quit |l-list")
 
         # renew border
         self.w_guide.box('|','-')
         # add name
-        self.w_guide.addstr(0,1,"[How to use]", self.COS[1])
+        self.w_guide.addstr(0,1,"[How to use] push 'u' before s/r/t/k", self.COS[1])
         # noutrefresh display
         self.w_guide.noutrefresh()
 

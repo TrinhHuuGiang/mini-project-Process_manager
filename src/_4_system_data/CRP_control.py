@@ -7,33 +7,43 @@ from datetime import datetime
 '''****************************************************************************
 * Variables, Const
 ****************************************************************************'''
-# Note: To get the most accurate data, functions must be called >= 1 second apart
+# Note: For accurate data, functions should be called with an interval of 
+# at least 1 second.
 
-# [Variables for displaying the 'process list']
-list_proc = None  # A list of dictionaries containing process information 
-                # including "pid", "name", "cpu_percent", "memory_percent", "status", "create_time"
-                # Note: "create_time" is converted to the time the process has been running
+# [1. Variables for displaying the 'process list']
+list_proc = None    # A list of dictionaries containing process details:
+                    # Includes: "pid" (Process ID), "name" (Name), "cpu_percent" (CPU usage %),
+                    # "memory_percent" (Memory usage %), "status" (Current status),
+                    # "create_time" (Time the process has been running, formatted).
+
 leng_proc = 0  # Count of processes in the list
-total_core = psutil.cpu_count() # count total core on CPU.
-#because "cpu_percent" return total % on all core of 1 process so we need divide it by number core
-sort_order = 0  # Sorting criteria: 0 = pid, 1 = name, 2 = %CPU, 3 = %RAM, 4 = status, 5 = run time
 
-# [Variables for 'total system resource' statistics]
-total_resource_info = None
+total_core = psutil.cpu_count() # Total number of CPU cores.
+                    # Note: "cpu_percent" returns the overall percentage
+                    # across all cores for a process,
+                    # so it must be divided by the number of cores to get per-core usage.
+
+sort_order = 0  # Sorting order for the process list:
+                # 0 = by PID, 1 = by Name, 2 = by %CPU, 3 = by %RAM,
+                # 4 = by Status, 5 = by Runtime.
+
+# [2. Variables for 'total system resource' statistics]
+total_resource_info = None # Dictionary to store overall system statistics:
+# Structure:
 # {
-#     "cpu_percent": 0,  # CPU usage (%)
-#     "total_ram": 0,  # Total RAM (MB)
-#     "used_ram": 0,  # Used RAM (MB)
-#     "current_time": 0,  # Current time
-#     "total_pid": 0,  # Total number of processes (PIDs)
-#     "running": 0,
-#     "sleeping": 0,
-#     "stopped": 0,
-#     "zombie": 0,
+#     "cpu_percent": CPU usage (%),
+#     "total_ram": Total RAM (in MB),
+#     "used_ram": Used RAM (in MB),
+#     "current_time": Current time,
+#     "total_pid": Total number of processes (PIDs),
+#     "running": Count of running processes,
+#     "sleeping": Count of sleeping processes,
+#     "stopped": Count of stopped processes,
+#     "zombie": Count of zombie processes,
 # }
 
-# [Variables for '1 PID properties']
-PID_object = None # using reference to Process with PID for : suspend, resume, terminate, kill 
+#  [3. Variables for handling a specific 'PID's properties]
+PID_object = None # Reference to a Process object for actions like suspend, resume, terminate, or kill.
 PID_properties = None  # Dictionary to store process properties as string values:
 # Structure:
 # {

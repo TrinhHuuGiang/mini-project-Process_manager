@@ -27,6 +27,9 @@ from error_code import *
 w_OneProc = None # variable save object PID properties window
 pid_input = None # PID input choice by user
 
+#Enable sigterm
+enable_sigterm = None # defaut not checked
+
 #thread signal
 end_sig = None #default threadings loop
 
@@ -62,10 +65,12 @@ def renew_global_variable():
     global end_sig
     global size_not_checked_fisrt_time
     global error_size
+    global enable_sigterm
 
     end_sig = CommonErrorCode.NOT_END_SIG
     size_not_checked_fisrt_time = CommonErrorCode.NOT_CHECKED
     error_size = CommonErrorCode.OK
+    enable_sigterm = CommonErrorCode.NOT_CHECKED
 
 # [handler for one process window]
 # initialize and check size, set color, set box
@@ -84,6 +89,9 @@ def init_One_proc_window(pid):
 def getkey_One_proc_window():
     global w_OneProc
     global end_sig
+    global enable_sigterm
+    global lock_screen
+
     # wait user then update or execute or quit 'q'
     temp_input = 'nothing'
     while ((temp_input != 'q') and
@@ -100,7 +108,28 @@ def getkey_One_proc_window():
         else: temp_input = chr(temp_input)
         # clean stdin buffer before unlock
         while w_OneProc.w_proc.getch() != -1: continue
-    
+        
+        if temp_input == 'u':
+            temp_log = "[sigterm unlocked]"
+            w_OneProc.backwin.addstr(0,w_OneProc.back_win_col-1-len(temp_log),temp_log,w_OneProc.COS[0])
+            #enable sigterm
+            enable_sigterm = CommonErrorCode.CHECKED
+
+        if enable_sigterm == CommonErrorCode.CHECKED:
+            # check user input is s(suspend),r(resume),t(terminate),k(kill)
+            if temp_input == 's':
+                with lock_screen:
+                    w_OneProc.send_sig(0)#sig 0 is suspend
+            elif temp_input == 'r':
+                with lock_screen:
+                    w_OneProc.send_sig(1)#sig 1 is resume
+            elif temp_input == 't':
+                with lock_screen:
+                    w_OneProc.send_sig(2)#sig 2 is terminate
+            elif temp_input == 'k':
+                with lock_screen:
+                    w_OneProc.send_sig(3)#sig 3 is kill
+
     #end
     end_sig = CommonErrorCode.END_SIG
 
@@ -117,9 +146,6 @@ def getkey_One_proc_window():
         return -4 #size changed
     else:
         return -5
-
-
-
 
 
 # end
