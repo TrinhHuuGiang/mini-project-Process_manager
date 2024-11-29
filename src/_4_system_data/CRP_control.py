@@ -1,3 +1,16 @@
+"""
+File: CRP_control.py
+Description: This Python script uses the 'psutil' library to monitor
+and manage system processes.
+It provides detailed information on running processes, system resource statistics,
+and process management functionalities based on the process ID (PID).
+
+Copyright (C) 2024  Giang Trinh, VuongNQ.
+
+This file is part of the Process Manager project and is licensed
+under the GNU General Public License v3 or later.
+"""
+
 '''****************************************************************************
 * Definitions
 ****************************************************************************'''
@@ -68,9 +81,6 @@ PID_properties = None  # Dictionary to store process properties as string values
 #     "Open Files Count": Number of files currently opened by the process (int)
 #     "Number of Threads": Number of threads in the process (int)
 # }
-
-
-
 
 '''****************************************************************************
 * CODE

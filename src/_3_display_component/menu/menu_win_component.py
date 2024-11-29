@@ -1,3 +1,16 @@
+"""
+menu_win_component.py
+
+This module defines the 'Main_win' class, a subclass of the Container class.
+The Main_win class provides functionality to render and handle basic user interactions
+for menu selection.
+
+Copyright (C) 2024  Giang Trinh.
+
+This file is part of the Process Manager project and is licensed
+under the GNU General Public License v3 or later.
+"""
+
 '''****************************************************************************
 * Definitions
 ****************************************************************************'''

@@ -1,11 +1,18 @@
-'''
-Include handler functions for each window:
-    + Menu/Guide
-    + CPU/RAM/PROC (1 process information) <==
-Each function can get return user input into working window.
-Then handle and return error code to main.
-The 'main' function then decides to process the error code and control the handler functions
-'''
+"""
+One_proc_window_module.py
+
+These modules provide the implementation for handling the window and user interactions 
+in a curses-based interface for the Process Manager project. It includes functions to 
+initialize and manage the process information window, handle user inputs for process 
+control (e.g., suspend, resume, terminate, kill), and manage thread synchronization 
+for safe screen updates.
+
+Copyright (C) 2024, Giang Trinh.
+
+This file is part of the Process Manager project and is licensed
+under the GNU General Public License v3 or later.
+"""
+
 
 '''****************************************************************************
 * Definitions

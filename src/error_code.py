@@ -1,3 +1,14 @@
+"""
+File: error_code.py
+Description: This file defines an enumeration class `CommonErrorCode`
+that contains common error codes used in the Process Manager project.
+
+Copyright (C) 2024  Giang Trinh, VuongNQ, and the development team.
+
+This file is part of the Process Manager project and is licensed
+under the GNU General Public License v3 or later.
+"""
+
 from enum import Enum
 
 class CommonErrorCode(Enum):
@@ -21,8 +32,7 @@ class CommonErrorCode(Enum):
     ERROR_SIZE_CHANGED = -22
 
 
-    #[ -100 -> -50] process psutil error code
-
-
-#debug mode default
+#debug mode
+#Change to CommonErrorCode.DEBUG to enable debug
+#Change to CommonErrorCode.NOT_DEBUG to disable debug
 debug = CommonErrorCode.NOT_DEBUG

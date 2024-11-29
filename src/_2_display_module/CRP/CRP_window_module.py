@@ -1,11 +1,23 @@
-'''
-Include handler functions for each window:
-    + Menu/Guide
-    + CPU/RAM/PROC (progress list) <==
-Each function can get return user input into working window.
-Then handle and return error code to main.
-The 'main' function then decides to process the error code and control the handler functions
-'''
+"""
+CRP_proc_window_module.py
+
+These modules manages and handle a window for displaying CPU, RAM, and process
+information using the `curses` library.
+
+It includes functions for initializing the window, handling user input, updating
+and refreshing the display, and managing data related to processes and system resources.
+
+Multi-threading is used to ensure smooth performance and separation of tasks like
+updating data, checking user input, and refreshing the display.
+
+The code uses global variables, mutex locks, and conditions to coordinate actions across
+multiple threads and manage shared data effectively.
+
+Copyright (C) 2024, Giang Trinh.
+
+This file is part of the Process Manager project and is licensed
+under the GNU General Public License v3 or later.
+"""
 
 '''****************************************************************************
 * Definitions

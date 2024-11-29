@@ -1,3 +1,21 @@
+"""
+CRP_win_component.py
+
+This module defines the CRPwin class, a subclass of the Container class,
+which is designed to build and manage a curses-based window for displaying
+system process information.
+
+The CRPwin class provides methods for constructing basic display layouts
+and rendering the information about active system processes, as well as overall
+statistics such as total processes, CPU usage, and RAM utilization.
+
+Copyright (C) 2024  Giang Trinh.
+
+This file is part of the Process Manager project and is licensed
+under the GNU General Public License v3 or later.
+"""
+
+
 '''****************************************************************************
 * Definitions
 ****************************************************************************'''

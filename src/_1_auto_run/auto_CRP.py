@@ -1,3 +1,17 @@
+"""
+auto_CRP.py
+
+This module is responsible for coordinating the display of 2 information pages:
+process list, resources and detailed information of a process.
+Supports declaring supporting threads for each page.
+
+Copyright (C) 2024, Giang Trinh.
+
+This file is part of the Process Manager project and is licensed
+under the GNU General Public License v3 or later.
+"""
+
+
 '''****************************************************************************
 * Definitions
 ****************************************************************************'''
@@ -146,12 +160,10 @@ def CRP_auto_run():
                     print("[OK - {}] - Open menu signal".format(CRP_auto_run.__name__), file=sys.stderr)
                 return 0
             elif(ret == -2):
-                if debug == CommonErrorCode.DEBUG:
-                    print("[OK - {}] - Quit signal".format(CRP_auto_run.__name__), file=sys.stderr)
+                print("[OK - {}] - Quit signal".format(CRP_auto_run.__name__), file=sys.stderr)
                 return -1
             elif (ret < -2):
-                if debug == CommonErrorCode.DEBUG:
-                    print("[ERR - {}] - Unexpected event (wrong size minimize, size changed,...)".format(CRP_auto_run.__name__), file=sys.stderr)
+                print("[ERR - {}] - Unexpected event (wrong size minimize, size changed,...)".format(CRP_auto_run.__name__), file=sys.stderr)
                 return -1
         
         # display 1 process with pid
@@ -182,11 +194,9 @@ def CRP_auto_run():
                 all_or_one = 0
                 
             elif(ret == -2):
-                if debug == CommonErrorCode.DEBUG:
-                    print("[OK - {}] - Quit signal".format(CRP_auto_run.__name__), file=sys.stderr)
+                print("[OK - {}] - Quit signal".format(CRP_auto_run.__name__), file=sys.stderr)
                 return -1
             elif (ret < -2):
-                if debug == CommonErrorCode.DEBUG:
-                    print("[ERR - {}] - Unexpected event (wrong size minimize, size changed,...)".format(CRP_auto_run.__name__), file=sys.stderr)
+                print("[ERR - {}] - Unexpected event (wrong size minimize, size changed,...)".format(CRP_auto_run.__name__), file=sys.stderr)
                 return -1
 

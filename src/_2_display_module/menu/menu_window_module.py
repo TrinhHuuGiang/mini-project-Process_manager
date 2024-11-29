@@ -1,11 +1,18 @@
-'''
-Include handler functions for each window:
-    + Menu/Guide <==
-    + CPU/RAM/PROC
-Each function can get return user input into working window.
-Then handle and return error code to main.
-The 'main' function then decides to process the error code and control the handler functions
-'''
+"""
+menu_window_module.py
+
+These modules handle the integration and management of components to display a 
+curses-based menu interface.
+It initializes the window, coordinates multi-threaded operations with mutex for
+synchronized updates, and manages the display of dynamic, static content 
+and terminates the menu window session.
+
+Copyright (C) 2024  Giang Trinh.
+
+This file is part of the Process Manager project and is licensed
+under the GNU General Public License v3 or later.
+"""
+
 
 '''****************************************************************************
 * Definitions

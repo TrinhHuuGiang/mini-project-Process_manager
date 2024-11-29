@@ -1,3 +1,15 @@
+"""
+auto_menu.py
+
+This module is responsible for coordinating the display of information page
+list of function pages. Supports declaring accompanying threads.
+
+Copyright (C) 2024, Giang Trinh.
+
+This file is part of the Process Manager project and is licensed
+under the GNU General Public License v3 or later.
+"""
+
 '''****************************************************************************
 * Definitions
 ****************************************************************************'''
@@ -79,11 +91,9 @@ def menu_auto_run():
     menu_window[2]()
 
     if(ret == -1):
-        if debug == CommonErrorCode.DEBUG:
-            print("[OK - {}] - Quit signal".format(menu_auto_run.__name__), file=sys.stderr)
+        print("[OK - {}] - Quit signal".format(menu_auto_run.__name__), file=sys.stderr)
     elif (ret < -1 ) or (ret >= max_num_choice ):
-        if debug == CommonErrorCode.DEBUG:
-            print("[ERR - {}] - Unexpected event (wrong size minimize, size changed,...)".format(menu_auto_run.__name__), file=sys.stderr)
+        print("[ERR - {}] - Unexpected event (wrong size minimize, size changed,...)".format(menu_auto_run.__name__), file=sys.stderr)
     
     # else 0<= ret < max_numchoice
     

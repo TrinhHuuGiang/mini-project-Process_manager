@@ -1,3 +1,21 @@
+"""
+container.py
+
+This module defines the 'Container' class, which sets up and manages
+a curses-based environment.
+
+It provides basic methods for initializing the screen, retrieving
+screen size, setting color schemes and configuring input/output modes
+such as enabling keypad input, nodelay mode, cbreak mode, noecho mode,
+and hiding the cursor.
+
+Copyright (C) 2024  Giang Trinh.
+
+This file is part of the Process Manager project and is licensed
+under the GNU General Public License v3 or later.
+"""
+
+
 '''****************************************************************************
 * Definitions
 ****************************************************************************'''
@@ -58,8 +76,7 @@ class Container:
     # [A. Should check size main window before printing anything]
     def get_backwin_size(self):
         # idont know why need refresh before get background size (getmaxyx)
-        # but if don't do it, we will be into infinite loop
-        # because of no update size by some function using it
+        # but but dont do this, getmaxyx always return old size value
         # so great is call refresh before getmaxyx - get_backwin_size
         # because refresh = noutrefresh + doupdate
         # so we use noutrefresh if dont need push anything to screen
