@@ -1,3 +1,4 @@
+![Product testing](Test_program/demo.mp4)
 # Process_manager
 This is a simple process management application for Linux, developed in Python. It allows users to view, suspend, resume, and terminate processes via a text-based user interface.
 
