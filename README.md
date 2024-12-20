@@ -12,7 +12,7 @@ This is a simple process management application for Linux, developed in Python. 
 1. Install dependencies:
 - pip install psutil
 2. Clone the repository:
-- git clone https://github.com/TrinhHuuGiang/Process_manager.git
+- git clone https://github.com/TrinhHuuGiang/mini-project-Process_manager.git
 
 ## Features
 - List all running processes.
