@@ -2,12 +2,22 @@
 #include <unistd.h>
 
 int main() {
+    char dog[] = "   / \\__\n  (    @\\___\n  /         O\n /   (_____/\n/_____/   U";
+    char cat[] = "  /\\_/\\\n ( o.o )\n  > ^ <";
+    char status = 0;
     while(1)
     {
-        // "Hello Process Manager!"
-        printf("Hello Process Manager!\n");
+        if(status)
+        {
+            printf("%s\n Hello Process Manager!\n", dog);
+        }
+        else
+        {
+            printf("%s\n Hello Process Manager!\n", cat);
+        }
+        status = 1 - status;
 
-        // sleep 200ms
-        usleep(200000);
+        // sleep 300ms
+        usleep(300000);
     }
 }
